@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Catalog Connector Request Test</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script type="text/javascript" src="scripts/prototype.js"></script>
+<script type="text/javascript" src="scripts/requests.js"></script>
+
+</head>
+<body>
+<table width="100%" border="0" cellspacing="2" cellpadding="2">
+  <tr> 
+    <td bgcolor="#00CCFF"><strong>Catalog Connector examples</strong></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#CCCCCC"><strong>Request GetCapabilities</strong></td>
+  </tr>
+  <tr> 
+    <td>Request GetCapabilities JSON</td>
+  </tr>
+  <tr> 
+<td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetCapabilities&outputFormat=JSON&');">Request=GetCapabilities&outputFormat=JSON&</a></td>
+  </tr>
+  <tr> 
+    <td>Request GetCapabilities XML</td>
+  </tr>
+  <tr> 
+<td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetCapabilities&outputFormat=XML&');">Request=GetCapabilities&outputFormat=XML&</a></td>
+  </tr>
+  <tr> 
+    <td bgcolor="#CCCCCC"><strong>Request GetRecords</strong></td>
+  </tr>
+  <tr> 
+    <td>Request to one catalogue and JSON response:</td>
+  </tr>
+  <tr> 
+    <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater&');">Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater&</a></td>
+  </tr>
+  <tr> 
+    <td>Request to several catalogues and JSON response:</td>
+  </tr>
+  <tr> 
+    <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater,idee&');">Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater,idee&</a></td>
+  </tr>
+  <tr>
+    <td>Request to several catalogues using BBOX filter and JSON response:</td>
+  </tr>
+  <tr> 
+    <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=&bbox=-4.733887,39.34082,-2.097168,41.538086&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater,idee&');">Request=GetRecords&any=&bbox=-4.733887,39.34082,-2.097168,41.538086&description=&organization=&outputFormat=JSON&subject=&title=&catalogues=eWater,idee&</a></td>
+  </tr>
+  <tr> 
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>Request to one catalogue and XML response:</td>
+  </tr>
+  <tr> 
+    <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater&');">Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater&</a></td>
+  </tr>
+  <tr> 
+    <td>Request to several catalogues and XML response:</td>
+  </tr>
+  <tr> 
+    <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater,idee&');">Request=GetRecords&any=Hidro&bbox=&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater,idee&</a></td>
+  </tr>
+  <tr>
+    <td>Request to several catalogues using BBOX filter and XML response:</td>
+  </tr>
+  <tr> 
+   <td><a href="javascript:void(0)"  onClick="ajaxTest('/catalogConnector/Connector?Request=GetRecords&any=&bbox=-4.733887,39.34082,-2.097168,41.538086&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater,idee&');">Request=GetRecords&any=&bbox=-4.733887,39.34082,-2.097168,41.538086&description=&organization=&outputFormat=XML&subject=&title=&catalogues=eWater,idee&</a></td>
+  </tr>
+  
+</table>
+<table width="100%" border="1" cellspacing="1" cellpadding="1">
+  <tr>
+    <td width="70%"><textarea id="txtTest" name="txtTest" style="width:100%" rows="30"></textarea></td>
+    <td width="30%"><div id="DIV_test"><h1>Status</h1></div></td>
+  </tr>
+</table>
+
+
+
+
+
+
+</body>
+</html>

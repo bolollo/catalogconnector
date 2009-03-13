@@ -1,0 +1,32 @@
+<Service>
+    <Name>CSW Client</Name>
+    <Title>CatalogConnector</Title>
+    <Abstract>CSW Client to request OGC Catalog</Abstract>
+    <KeywordList>
+      <Keyword>CSW</Keyword>
+      <Keyword>IDEC</Keyword>
+      <Keyword>OGC</Keyword>
+    </KeywordList>
+    <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:8080/CatalogConnector/Connector" xlink:type="simple" />
+    <ContactInformation>
+      <ContactPersonPrimary>
+        <ContactPerson>IDEC</ContactPerson>
+        <ContactOrganization>IDEC</ContactOrganization>
+      </ContactPersonPrimary>
+      <ContactPosition>IDEC</ContactPosition>
+      <ContactAddress>
+        <AddressType>postal</AddressType>
+        <Address>Parc Monyjuic s/n</Address>
+        <City>Barcelona</City>
+        <StateOrProvince>Barcelona</StateOrProvince>
+        <PostCode>08038</PostCode>
+        <Country>Spain</Country>
+      </ContactAddress>
+      <ContactVoiceTelephone>+34 567 15 00</ContactVoiceTelephone>
+      <ContactFacsimileTelephone />
+      <ContactElectronicMailAddress>idec@icc.cat</ContactElectronicMailAddress>
+    </ContactInformation>
+    <Fees>no</Fees>
+    <AccessConstraints>no</AccessConstraints>
+   
+  </Service>

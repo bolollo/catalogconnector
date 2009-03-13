@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.1" 
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+>
+<xsl:output method="xml" version="1.0" encoding="ISO-8859-1" indent="yes" />
+  <xsl:template match="/">
+      <GetRecordsResponse>
+       <xsl:for-each select="GetRecordsResponse/SearchResults">
+           <numberOfRecordsMatched><xsl:value-of select="@numberOfRecordsMatched"/></numberOfRecordsMatched>
+           <numberOfRecordsReturned><xsl:value-of select="@numberOfRecordsReturned"/></numberOfRecordsReturned>
+           <nextRecord><xsl:value-of select="@nextRecord"/></nextRecord>
+           <xsl:for-each select="/GetRecordsResponse/SearchResults/Record">
+            <Record>
+                <title><xsl:value-of select="Title"/></title>
+                <description><xsl:value-of select="Abstract"/></description>
+                <identifier><xsl:value-of select="Title"/></identifier>
+            </Record>
+           </xsl:for-each>
+       </xsl:for-each>
+       </GetRecordsResponse>
+  </xsl:template>
+</xsl:stylesheet>

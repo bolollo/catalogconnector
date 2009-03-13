@@ -1,0 +1,70 @@
+<catalogues>
+<!--
+ <product>indicio</product>     Must exists a folder inside WEB-INF\catalogues with the same name -
+<csw-version>2.0.1</csw-version>     Must exists a folder inside WEB-INF\catalogues with the same name 
+-->
+<catalog>
+<name>IDEC</name>
+<title>SDI Catalonia</title>
+<abstract>IDEC metadata catalogue</abstract>
+<urlcatalog>http://delta.icc.cat/indicio/query</urlcatalog>
+<product>indicio</product>
+<csw-version>2.0.1</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+<name>IDEE</name>
+<title>SDI Spain</title>
+<abstract>IDEE metadata catalogue</abstract>
+<urlcatalog>http://idee.unizar.es/csw/servlet/cswservlet</urlcatalog>
+<product>catogc_server</product>
+<csw-version>2.0.2</csw-version>
+<xml-encoding>ISO-8859-1</xml-encoding>
+</catalog>
+
+
+<catalog>
+<name>IDEAndorra</name>
+<title>SDI Andorra</title>
+<abstract>IDEAndorra metadata catalogue</abstract>
+<urlcatalog>http://www.ideandorra.ad/metadades_and_en/Request.aspx</urlcatalog>
+<product>geomedia</product>
+<csw-version>2.0.0</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+<name>IDEG</name>
+<title>SDI Galicia</title>
+<abstract>IDE Galicia metadata catalogue</abstract>
+<urlcatalog>http://ideg.xunta.es/csw/Request.aspx</urlcatalog>
+<product>geomedia</product>
+<csw-version>2.0.0</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+
+<catalog>
+<name>eWater</name>
+<title>eWater Portal</title>
+<abstract>This GIS portal provides access to hydrogeological maps and well data of 12 EU countries. It was developed in frame of EC co-funded project "Multilingual cross-border access to ground water databases" (eWater)</abstract>
+<urlcatalog>http://www.ewater.eu/geonetwork4ewater/srv/en/csw</urlcatalog>
+<product>geonetwork</product>
+<csw-version>2.0.1</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+
+<catalog>
+<name>FAO</name>
+<title>FAO Catalogue</title>
+<abstract>GeoNetwork catalog service conform to the HTTP protocol binding 
+ of the OpenGIS Catalogue Service specification version 2.0.2</abstract>
+<urlcatalog>http://www.fao.org/geonetwork/srv/en/csw</urlcatalog>
+<product>geonetwork</product>
+<csw-version>2.0.2</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+</catalogues>

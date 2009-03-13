@@ -1,0 +1,35 @@
+<!-- Organization=o d/rim:Slot=keywordSlot,slotLanguage -->
+<csw:GetRecords xmlns:csw="http://www.opengis.net/cat/csw" xmlns:wrs="http://www.opengis.net/cat/wrs" xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:gco="http://www.isotc211.org/2005/gco" outputFormat="application/xml; charset=UTF-8"
+ startPosition="$STARTPOSITION" maxRecords="$MAXRECORDS" resultType="results"> 
+<csw:Query typeNames="ExtrinsicObject=d  d/rim:Slot=slotLanguage">
+
+<csw:ElementSetName typeNames="$d">summary</csw:ElementSetName> 
+<csw:Constraint version="1.1.0"> 
+<ogc:Filter> 
+<ogc:And>
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/@objectType</ogc:PropertyName> 
+<ogc:Literal>urn:x-ogc:specification:csw-ebrim:ObjectType:Dataset</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/$slotLanguage/@name</ogc:PropertyName> 
+<ogc:Literal>http://purl.org/dc/elements/1.1/language</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+<!-- 
+<ogc:PropertyIsEqualTo> 
+<ogc:PropertyName>/$d/$slotLanguage/ValueList/Value</ogc:PropertyName> 
+<ogc:Literal>es</ogc:Literal> 
+</ogc:PropertyIsEqualTo> 
+ -->
+$FILTER
+</ogc:And>
+</ogc:Filter> 
+</csw:Constraint> 
+<ogc:SortBy> 
+<ogc:SortProperty> 
+<ogc:PropertyName>/$d/Name/LocalizedString/@value</ogc:PropertyName> 
+<ogc:SortOrder>ASC</ogc:SortOrder> 
+</ogc:SortProperty> 
+</ogc:SortBy> 
+</csw:Query> 
+</csw:GetRecords>

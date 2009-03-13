@@ -1,0 +1,29 @@
+[
+ {
+  "product":"catogc_server",
+  "urlcatalog":"http://idee.unizar.es/csw/servlet/cswservlet",
+  "title":"Infraestructura de Datos Espaciales de España",
+  "description":"IDEE metadata catalog",
+  "XMLencoding":"ISO-8859-1",
+  "cswversion":"2.0.2",
+  "name":"idee"
+ },
+ {
+  "product":"indicio",
+  "urlcatalog":"http://delta.icc.cat/indicio/query",
+  "title":"Infraestructura de Dades Espacials de Catalunya",
+  "description":"IDEC metadata catalog",
+  "XMLencoding":"UTF-8",
+  "cswversion":"2.0.1",
+  "name":"idec"
+ },
+ {
+  "product":"geonetwork",
+  "urlcatalog":"http://155.253.20.9:8080/geonetwork/srv/en/csw",
+  "title":"Infraestructura de datos Espaciales de Castilla la Mancha",
+  "description":"IDE-CLM metadata catalog",
+  "XMLencoding":"UTF-8",
+  "cswversion":"2.0.1",
+  "name":"ide-clm"
+ }
+]

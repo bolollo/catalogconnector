@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="CONSOLE_APPENDER" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601} => %-5p %c{1}:%L - %m%n %x"/>
+    </layout>
+  </appender>
+
+  <appender name="FILE_APPENDER" class="org.apache.log4j.RollingFileAppender">
+    <param name="File" value="${log.directory}catalogconnector.log"/> <!--system property-->
+    <param name="MaxFileSize" value="2048KB"/>
+    <param name="MaxBackupIndex" value="20"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601} => %-5p %c{1}:%L - %m%n %x"/>
+    </layout>
+  </appender>
+
+  <logger name= "org.idec.catalog" >
+    <level value= "DEBUG"/>
+   <appender-ref ref="CONSOLE_APPENDER"/>
+  </logger >
+  
+</log4j:configuration>
