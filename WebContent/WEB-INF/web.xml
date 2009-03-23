@@ -21,10 +21,20 @@
 		<servlet-name>Connector</servlet-name>
 		<servlet-class>org.idec.catalog.CatalogConnector</servlet-class>
 		
-	<init-param>
+	<!--
+    Removed init param
+    <init-param>
       <param-name>catalog_config</param-name>
       <param-value>WEB-INF/catalogues.xml</param-value>
+    </init-param> -->
+    
+    <!-- New param PROJECT in order to add more catalogue configurations -->
+    <init-param>
+      <param-name>catalog_projects_folder</param-name>
+      <param-value>WEB-INF/projects/</param-value>
     </init-param> 
+    
+    
     <init-param>
       <param-name>catalog_service</param-name>
       <param-value>WEB-INF/service.xml</param-value>

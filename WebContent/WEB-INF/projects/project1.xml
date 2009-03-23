@@ -1,0 +1,29 @@
+<catalogues>
+<!--
+ <product>indicio</product>     Must exists a folder inside WEB-INF\catalogues with the same name -
+<csw-version>2.0.1</csw-version>     Must exists a folder inside WEB-INF\catalogues with the same name 
+-->
+
+<catalog>
+<name>eWater</name>
+<title>eWater Portal</title>
+<abstract>This GIS portal provides access to hydrogeological maps and well data of 12 EU countries. It was developed in frame of EC co-funded project "Multilingual cross-border access to ground water databases" (eWater)</abstract>
+<urlcatalog>http://www.ewater.eu/geonetwork4ewater/srv/en/csw</urlcatalog>
+<product>geonetwork</product>
+<csw-version>2.0.1</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+
+<catalog>
+<name>FAO</name>
+<title>FAO Catalogue</title>
+<abstract>GeoNetwork catalog service conform to the HTTP protocol binding 
+ of the OpenGIS Catalogue Service specification version 2.0.2</abstract>
+<urlcatalog>http://www.fao.org/geonetwork/srv/en/csw</urlcatalog>
+<product>geonetwork</product>
+<csw-version>2.0.2</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+</catalogues>

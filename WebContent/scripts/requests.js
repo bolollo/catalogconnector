@@ -73,8 +73,8 @@ function ajaxTest(urlServer){
 
 var cataloguesJson;
 function getCapabilities(){
-
-new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON', {   method:'get',   onSuccess: function(transport){  
+$( 'divCapabilities' ).innerHTML="";
+new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   onSuccess: function(transport){  
     cataloguesJson = transport.responseText.evalJSON(); 
 
     //console.debug(cataloguesJson.length);

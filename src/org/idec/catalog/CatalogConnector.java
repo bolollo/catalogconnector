@@ -58,10 +58,7 @@ import org.jdom.JDOMException;
  public class CatalogConnector extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
    static final long serialVersionUID = 1L;
    private static Logger logger = Logger.getLogger(CatalogConnector.class);
-   /**
-    * The path of file catalogues.xml
-    */
-   public String XML_CATALOGUES_FILE = "";
+   
    /**
     * The path of file service.xml
     */
@@ -82,6 +79,8 @@ import org.jdom.JDOMException;
     * The full path of file service.xml. AP_PATH + XML_SERVICE_FILE;
     */
    public String PATH_SERVICE="";
+   public String XML_CATALOGUES_PROJECTS_FOLDER="";
+   public String PATH_PROJECTS="";
    /**
     * Array of catalogues
     */
@@ -120,6 +119,7 @@ import org.jdom.JDOMException;
 		PrintWriter out =response.getWriter();
 		Map paramsRequest = Utils.getParametersToMap(request);
 		String resp="";
+		String PROJECT="catalogues";
 		boolean checkParams = paramsRequest.containsKey("REQUEST");
 		if(checkParams){
 			String methodRequest=(String)paramsRequest.get("REQUEST");
@@ -127,15 +127,16 @@ import org.jdom.JDOMException;
 			if(methodRequest.equalsIgnoreCase("GetCapabilities")){
 				String ot="JSON";
 				if(paramsRequest.containsKey("OUTPUTFORMAT")){ot=paramsRequest.get("OUTPUTFORMAT").toString();}
+				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
 				if(ot.equalsIgnoreCase("XML")){
 								response.setContentType("text/xml;charset=ISO-8859-1");
 								out.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
-								out.write(Capabilities.getCapabilitiesXML(PATH_CATALOGUES, PATH_SERVICE));
+								out.write(Capabilities.getCapabilitiesXML(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE));
 				}else{
 					
 								response.setContentType("text/json;charset=ISO-8859-1");
 								try {									
-									JSONArray jsonArray=Capabilities.getCapabilitiesJSON(PATH_CATALOGUES, PATH_SERVICE);						
+									JSONArray jsonArray=Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);						
 									logger.debug(jsonArray);
 									out.println( jsonArray );   
 								} catch (JDOMException e) {
@@ -145,6 +146,7 @@ import org.jdom.JDOMException;
 				}
 			
 			}else if(methodRequest.equalsIgnoreCase("GetRecords")){
+				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
 				boolean nCat=paramsRequest.get("CATALOGUES").toString().contains(",");
 				if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
 					response.setContentType("text/xml;charset=ISO-8859-1");
@@ -152,6 +154,7 @@ import org.jdom.JDOMException;
 				}else{
 					if(nCat){response.getWriter().print("[");}
 				}
+				catalogue=Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);
 				for (int i=0;i < catalogue.length;i++){
 					
 					Catalog cat =catalogue[i];
@@ -224,22 +227,26 @@ import org.jdom.JDOMException;
 	 * @see javax.servlet.GenericServlet#init()
 	 */
 	public void init() throws ServletException {
-		//logger.info("Starting servlet...");		
-		XML_CATALOGUES_FILE=getInitParameter("catalog_config");
+		logger.info("Starting servlet...");		
+		//XML_CATALOGUES_FILE=getInitParameter("catalog_config");
 		XML_SERVICE_FILE=getInitParameter("catalog_service");
+		XML_CATALOGUES_PROJECTS_FOLDER=getInitParameter("catalog_projects_folder");
 		AP_PATH=getServletContext().getRealPath("/");
 		CATALOGUES_DIR =getInitParameter("catalogues_dir");
-		PATH_CATALOGUES=AP_PATH + XML_CATALOGUES_FILE;
+		//PATH_CATALOGUES=AP_PATH + XML_CATALOGUES_FILE;
 		PATH_SERVICE=AP_PATH + XML_SERVICE_FILE;
+		PATH_PROJECTS=AP_PATH + XML_CATALOGUES_PROJECTS_FOLDER;
+		/*
 		if (XML_CATALOGUES_FILE == null || XML_CATALOGUES_FILE.length() == 0
 				|| !(new File(AP_PATH + XML_CATALOGUES_FILE)).isFile()) {
 			System.err.println("ERROR:Can't find log file:" + PATH_CATALOGUES );
-			//logger.error("ERROR:Can't find log file:" + PATH_CATALOGUES);
+			logger.error("ERROR:Can't find log file:" + PATH_CATALOGUES);
 			throw new ServletException();
 		}else{
-			//logger.info("Catalog.xml found");
+			logger.info("Catalog.xml found");
 			catalogue=Capabilities.parseCataloguesXML(AP_PATH + XML_CATALOGUES_FILE,AP_PATH + CATALOGUES_DIR);
 		}
+	*/
 	}   
 		
 	/* (non-Javadoc)

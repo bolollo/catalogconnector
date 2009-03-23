@@ -189,16 +189,20 @@ public class CatalogRequest {
 			countParameters=countParameters+1;
 		 
 		 }
-		 /*
-		 if(parameters.containsKey("LANGUAGE")){
-			//logger.debug("ENTRO****************LAnguge*");
+		/*
+		 * Language parameter implemted basically for Indicio
+		 */
+		 if(parameters.containsKey("LANGUAGE") && cat.product.equalsIgnoreCase("indicio") ){
+			
 			bodyRequest +=ut.findAndReplace(cat.getCswRequestXML("language"), "$LANGUAGE", parameters.get("LANGUAGE").toString());
-		//logger.debug("TROBO LANGUGE"+bodyRequest);
+		
 			countParameters=countParameters+1;
 		
 		}
 		
-		*/
+		
+		
+		
 		 if(parameters.containsKey("ANY")){
 			
 			bodyRequest +=ut.findAndReplace(cat.getCswRequestXML("any"), "$VALUE", parameters.get("ANY").toString());
@@ -211,11 +215,11 @@ public class CatalogRequest {
 		logger.debug("COUNT PARAMETERS:"+countParameters);
 		
 		if(countParameters >= 2){
-			//if(cat.product.equalsIgnoreCase("geonetwork")){
-				//CSWRequest= ut.findAndReplace(cat.getCswRequestXML("body"), "$FILTER", "<And>"+bodyRequest+"</And>");
-			//}else{
+			if(cat.product.equalsIgnoreCase("indicio")){
+				CSWRequest= ut.findAndReplace(cat.getCswRequestXML("body"), "$FILTER", bodyRequest);
+			}else{
 			CSWRequest= ut.findAndReplace(cat.getCswRequestXML("body"), "$FILTER", "<ogc:And>"+bodyRequest+"</ogc:And>");
-			//}
+			}
 		
 		}else if(countParameters == 1){
 			CSWRequest= ut.findAndReplace(cat.getCswRequestXML("body"), "$FILTER", bodyRequest);	
