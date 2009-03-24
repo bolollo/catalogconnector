@@ -94,9 +94,8 @@ public class Capabilities {
 	 */
 	public static JSONArray getCapabilitiesJSON(String PATH_CATALOGUES,
 			String PATH_SERVICE) throws JDOMException, IOException {
-
+		
 		String xml = Utils.file2string(PATH_CATALOGUES);
-
 		JSONArray json = new JSONArray();
 		XMLSerializer serializer = new XMLSerializer();
 		json = (JSONArray) serializer.read(xml);
