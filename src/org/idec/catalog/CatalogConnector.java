@@ -154,7 +154,12 @@ import org.jdom.JDOMException;
 				}else{
 					if(nCat){response.getWriter().print("[");}
 				}
+				
+				
 				catalogue=Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);
+				
+				
+				
 				for (int i=0;i < catalogue.length;i++){
 					
 					Catalog cat =catalogue[i];
