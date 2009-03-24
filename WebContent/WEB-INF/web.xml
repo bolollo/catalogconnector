@@ -52,11 +52,15 @@
 		<display-name>AdminConnector</display-name>
 		<servlet-name>AdminConnector</servlet-name>
 		<servlet-class>org.idec.catalog.AdminConnector</servlet-class>
-		
+	
+	<init-param>
+      <param-name>catalog_projects_folder</param-name>
+      <param-value>WEB-INF/projects/</param-value>
+    </init-param> 	
 	<init-param>
       <param-name>catalog_config</param-name>
-      <param-value>WEB-INF/catalogues.xml</param-value>
-    </init-param> 
+      <param-value>catalogues.xml</param-value>
+    </init-param>
     <init-param>
       <param-name>catalog_service</param-name>
       <param-value>WEB-INF/service.xml</param-value>

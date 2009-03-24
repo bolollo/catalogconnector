@@ -19,20 +19,39 @@
  * @author Victor Pascual
  * @author Wladimir Szczerban
  */
-
+var A_PROJECTS;
 var A_CATALOGS;
 var A_CONNECTIONS;
 var A_ENCODINGS = new Array ("UTF-8","ISO-8859-1");
 var urlServer="/catalogConnector/AdminConnector";
 var ACTIVE_CONNECTION;
+var ACTIVE_PROJECT;
 
 function createCatalog(){
 	createForm(null,null);
 }
 
 function init(){
-	loadConnections();
+	ACTIVE_PROJECT = "catalogues.xml";
+	loadProjects();
 	loadCatalogues();
+	loadConnections();
+}
+
+function loadProjects(){
+	new Ajax.Request(urlServer+'?REQUEST=GetProjects', {method:'get',   onSuccess: function(transport){
+		var json = transport.responseText.evalJSON();
+		A_PROJECTS = json;
+		var s_product = $('selProject');
+		s_product.length = 0;
+		for(i=0; i < json.length;i++){
+			var o_product = document.createElement( "option" );
+			o_product.value = json[i].project;
+			o_product.innerHTML = json[i].project;
+			s_product.appendChild(o_product);
+		}
+	}
+	});
 }
 
 function loadCatalogues(){
@@ -44,7 +63,7 @@ function loadCatalogues(){
 }
 
 function loadConnections(){
-	new Ajax.Request(urlServer+'?REQUEST=GetConnections', {method:'get',   onSuccess: function(transport){
+	new Ajax.Request(urlServer+'?REQUEST=GetConnections&PROJECT='+ACTIVE_PROJECT, {method:'get',   onSuccess: function(transport){
 		var json = transport.responseText.evalJSON();
 		A_CONNECTIONS = json;
 		$( 'divList' ).innerHTML = "";
@@ -135,18 +154,18 @@ function sendConnection(type){
 	var message;
 	if (type == "ADD"){
 		params = $('formConnection').serialize();
-		urlRequest = urlServer+'?REQUEST=SetConnections&OPERATION=A&'+params;
+		urlRequest = urlServer+'?REQUEST=SetConnections&PROJECT='+ACTIVE_PROJECT+'&OPERATION=A&'+params;
 		message = "Connection created";
 	}
 	else if (type == "UPDATE"){
 		params = $('formConnection').serialize();
 		params += "&ACTIVE_CONNECTION="+ACTIVE_CONNECTION;
-		urlRequest = urlServer+'?REQUEST=SetConnections&OPERATION=U&'+params;
+		urlRequest = urlServer+'?REQUEST=SetConnections&PROJECT='+ACTIVE_PROJECT+'&OPERATION=U&'+params;
 		message = "Connection updated";
 	}
 	else if (type == "DELETE"){
 		var params = "ACTIVE_CONNECTION="+ACTIVE_CONNECTION;
-		urlRequest = urlServer+'?REQUEST=SetConnections&OPERATION=D&'+params;
+		urlRequest = urlServer+'?REQUEST=SetConnections&PROJECT='+ACTIVE_PROJECT+'&OPERATION=D&'+params;
 		message = "Connection deleted";
 	}
 	new Ajax.Request(urlRequest, {method:'get',
@@ -397,10 +416,68 @@ function formConnectio(name, title, abstract, urlcatalog, product, csw_version, 
 	tb.appendChild( tr_blank );
 	tb.appendChild( tr_button );
 	
-	
 	table.appendChild( tb );
 	
 	form.appendChild( table );
-	$( 'divProperties' ).appendChild( form );
-				 
+	$('divProperties').appendChild( form );			 
+}
+
+function updateList(value){
+	ACTIVE_PROJECT = value;
+	loadConnections();
+	createCatalog();
+}
+
+function newProject(){
+	$('divNewProject').style.display = 'block';
+	$('divProperties').innerHTML = "";
+}
+
+function createProject(){
+	var urlRequest;
+	var message;
+	var project = $('project_name').value;
+	if (project != ""){
+		project = project + ".xml";
+		urlRequest = urlServer+'?REQUEST=SetProjects&PROJECT='+project+'&OPERATION=A&';
+		message = "Project created";
+		new Ajax.Request(urlRequest, {method:'get',
+			onSuccess: function(transport){
+				loadProjects();
+				cancelProject();
+				$('divLoading').style.display = "none";
+				writeMessage(message,"OK");
+			}
+		});
+	}else{
+		message = "Must specify a project name";
+		writeMessage(message,"ERROR");
+	}
+}
+
+function cancelProject(){
+	$('divNewProject').style.display = 'none';
+}
+
+function deleteProject(){
+	var urlRequest;
+	var message;
+	if (ACTIVE_PROJECT == "catalogues.xml"){
+		message = "You can not delete this project";
+		writeMessage(message,"ERROR");
+	}
+	else{
+		if(confirm("Are you sure you want to delete the project "+ACTIVE_PROJECT+"!  ?")) {
+			urlRequest = urlServer+'?REQUEST=SetProjects&PROJECT='+ACTIVE_PROJECT+'&OPERATION=D&';
+			message = "Project deleted";
+			new Ajax.Request(urlRequest, {method:'get',
+				onSuccess: function(transport){
+					cancelProject();
+					init();
+					$('divLoading').style.display = "none";
+					writeMessage(message,"OK");
+				}
+			});
+		}
+	}
 }

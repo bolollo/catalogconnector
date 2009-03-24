@@ -110,5 +110,4 @@ public class AdminCatalogues {
 		connection_conf.element("xml-encoding", XMLencoding);
 		return connection_conf;
 	}
-
 }

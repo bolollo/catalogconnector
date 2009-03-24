@@ -66,6 +66,8 @@ import org.apache.log4j.Logger;
    public String PATH_SERVICE="";
    public String USER_NAME="";
    public String PASSWORD="";
+   public String XML_CATALOGUES_PROJECTS_FOLDER="";
+   public String PATH_PROJECTS="";
    Capabilities cp = new Capabilities();
    public Catalog [] catalogue = null;
    
@@ -102,7 +104,36 @@ import org.apache.log4j.Logger;
 		
 		if(checkParams){
 			String methodRequest=(String)paramsRequest.get("REQUEST");
-			if(methodRequest.equalsIgnoreCase("GetCatalogues")){
+			if(methodRequest.equalsIgnoreCase("GetProjects")){
+				File dir = new File(PATH_PROJECTS);
+				if (dir.isDirectory()){
+					List list = new ArrayList();
+					File[] projects = dir.listFiles();
+					for (int i = 0; i < projects.length; i++){
+						File project = projects[i];
+						Map map = new HashMap();
+						map.put("project", project.getName());
+						list.add(map);
+					}
+					response.setContentType("text/json;charset=ISO-8859-1");
+					JSONArray jsonArray = JSONArray.fromObject( list );   
+					out.println( jsonArray ); 
+				}
+			}
+			else if(methodRequest.equalsIgnoreCase("SetProjects")){
+				String xml_file = (String)paramsRequest.get("PROJECT");
+				String operationRequest=(String)paramsRequest.get("OPERATION");
+				if (operationRequest.equalsIgnoreCase("A")){
+					JSONArray json = new JSONArray();
+					String xml = ac.json2xmlCatalogues(json);
+					ut.string2file(PATH_PROJECTS + xml_file, xml);
+				}
+				if (operationRequest.equalsIgnoreCase("D")){
+					File project = new File(PATH_PROJECTS + xml_file);
+					project.delete();
+				}
+			}
+			else if(methodRequest.equalsIgnoreCase("GetCatalogues")){
 				File dir = new File(AP_PATH + CATALOGUES_DIR);
 				if (dir.isDirectory()){
 					List list = new ArrayList();
@@ -128,13 +159,28 @@ import org.apache.log4j.Logger;
 					JSONArray jsonArray = JSONArray.fromObject( list );   
 					out.println( jsonArray ); 
 				}
-			}else if (methodRequest.equalsIgnoreCase("GetConnections")){
-				String xml = ut.file2string(AP_PATH + XML_CATALOGUES_FILE);
+			}
+			else if (methodRequest.equalsIgnoreCase("GetConnections")){
+				String xml_file = XML_CATALOGUES_FILE; 
+				if (paramsRequest.get("PROJECT") != null){
+					xml_file = (String)paramsRequest.get("PROJECT");
+				}
+				String xml = ut.file2string(PATH_PROJECTS + xml_file);
 				JSONArray json = new JSONArray();
 				XMLSerializer serializer = new XMLSerializer();
-				json = (JSONArray)serializer.read( xml );
-				out.println(json); 
-			}else if (methodRequest.equalsIgnoreCase("SetConnections")){
+				try{
+					json = (JSONArray)serializer.read( xml );
+				}catch (Exception e){
+					
+				}finally{
+					out.println(json);
+				}
+			}
+			else if (methodRequest.equalsIgnoreCase("SetConnections")){
+				String xml_file = XML_CATALOGUES_FILE; 
+				if (paramsRequest.get("PROJECT") != null){
+					xml_file = (String)paramsRequest.get("PROJECT");
+				}
 				String operationRequest=(String)paramsRequest.get("OPERATION");
 				String name = (String)paramsRequest.get("NAME");
 				String title = (String)paramsRequest.get("TITLE");
@@ -145,17 +191,23 @@ import org.apache.log4j.Logger;
 				String XMLencoding = (String)paramsRequest.get("XML_ENCODING");
 				String activeConnection = (String)paramsRequest.get("ACTIVE_CONNECTION");
 				if (operationRequest.equalsIgnoreCase("A")){
-					String xml = ut.file2string(AP_PATH + XML_CATALOGUES_FILE);
+					String xml = ut.file2string(PATH_PROJECTS + xml_file);
 					JSONArray json = new JSONArray();
 					XMLSerializer serializer = new XMLSerializer();
-					json = (JSONArray)serializer.read( xml );
+					try{
+						json = (JSONArray)serializer.read( xml );
+					}catch (Exception e){
+						
+					}finally{
+						out.println(json);
+					}
 					JSONObject connection_conf = ac.createConnection(name, title, description, urlcatalog, product, cswversion, XMLencoding);
 					json.add(connection_conf);
 					xml = ac.json2xmlCatalogues(json);
-					ut.string2file(AP_PATH + XML_CATALOGUES_FILE, xml);
+					ut.string2file(PATH_PROJECTS + xml_file, xml);
 				}
 				else if (operationRequest.equalsIgnoreCase("U")){
-					String xml = ut.file2string(AP_PATH + XML_CATALOGUES_FILE);
+					String xml = ut.file2string(PATH_PROJECTS + xml_file);
 					JSONArray json = new JSONArray();
 					XMLSerializer serializer = new XMLSerializer();
 					json = (JSONArray)serializer.read( xml );
@@ -163,18 +215,18 @@ import org.apache.log4j.Logger;
 					JSONObject connection_conf = ac.createConnection(name, title, description, urlcatalog, product, cswversion, XMLencoding);
 					json.set(ACTIVE_CONNECTION, connection_conf);
 					xml = ac.json2xmlCatalogues(json);
-					ut.string2file(AP_PATH + XML_CATALOGUES_FILE, xml);
+					ut.string2file(PATH_PROJECTS + xml_file, xml);
 				}
 				else if (operationRequest.equalsIgnoreCase("D")){
 					Integer ACTIVE_CONNECTION = Integer.parseInt(activeConnection);
-					String xml = ut.file2string(AP_PATH + XML_CATALOGUES_FILE);
+					String xml = ut.file2string(PATH_PROJECTS + xml_file);
 					JSONArray json = new JSONArray();
 					XMLSerializer serializer = new XMLSerializer();
 					json = (JSONArray)serializer.read( xml );
 					JSONObject connection_conf = json.getJSONObject(ACTIVE_CONNECTION);
 					json.remove(connection_conf);
 					xml = ac.json2xmlCatalogues(json);
-					ut.string2file(AP_PATH + XML_CATALOGUES_FILE, xml);
+					ut.string2file(PATH_PROJECTS + xml_file, xml);
 				}else{
 					//operation no reconnize
 				}
@@ -197,15 +249,29 @@ import org.apache.log4j.Logger;
 					page += "<script type='text/javascript' src='scripts/admin.js'></script>";
 					page += "</head>";
 					page += "<body onload='init();'>";
-					page += "<div id='divHeader' class='header' style='position:absolute;top:0px:left:0px;width:99%;height:50px;'>";
+					page += "<div id='divHeader' class='header' style='position:absolute;top:0px;left:0px;width:99%;height:68px;'>";
 					page += "CatalogConector Administrator";
 					page += "</div>";
-					page += "<div id='divButtons' style='position:absolute;top:60px;left:10px;height:30px;'>";
+					page += "<div align='left' style='position:absolute;top:0px:left:0px;'><img src='images/Catalog_connector.png' width='182px' height='68px'></div>";
+					page += "<div id='divProjectes' style='position:absolute;top:70px;left:10px;height:30px;'>";
+					page += "Project:&nbsp;<select id='selProject' onchange='updateList(this.value)'></select>";
+					page += "&nbsp;&nbsp;&nbsp;<input type='button' class='boto' value='New Project' onclick='newProject();'>";
+					page += "&nbsp;&nbsp;&nbsp;<input type='button' class='boto' value='Delete Project' onclick='deleteProject();'>";
+					page += "</div>";
+					
+					page += "<div id='divNewProject' style='position:absolute;top:70px;left:450px;display:none;'>";
+					page += "Project name:&nbsp;<input type='text' id='project_name' value=''>&nbsp;&nbsp;&nbsp;";
+					page += "<input type='button' class='boto' value='Create Project' onclick='createProject();'>&nbsp;";
+					page += "<input type='button' class='boto' value='Cancel' onclick='cancelProject();'>&nbsp;";
+					page += "</div>";
+					
+					page += "<div id='divButtons' style='position:absolute;top:110px;left:10px;height:30px;'>";
 					page += "<input type='button' class='boto' value='New Catalog' onclick='createCatalog();'>";
 					page += "</div>";
-					page += "<div id='divList' style='position:absolute;top:90px;left:10px;width:40%'>";
+					page += "<div id='divList' style='position:absolute;top:130px;left:10px;width:40%'>";
 					page += "</div>";
-					page += "<div id='divProperties' style='position:absolute;top:90px;right:0px;width:60%'>";
+										
+					page += "<div id='divProperties' style='position:absolute;top:110px;right:0px;width:60%'>";
 					page += "</div>";
 					page += "<div id='divLoading' class='loader' style='position:absolute;top:0px;left:0px;width:99%;height:99%;display:none;background-color:#FFFFFF;'>";
 					page += "</div>";
@@ -266,7 +332,7 @@ import org.apache.log4j.Logger;
 	 */
 	public void init() throws ServletException {
 		logger.info("Starting servlet...");		
-		
+		XML_CATALOGUES_PROJECTS_FOLDER = getInitParameter("catalog_projects_folder");
 		XML_CATALOGUES_FILE=getInitParameter("catalog_config");
 		XML_SERVICE_FILE=getInitParameter("catalog_service");
 		AP_PATH=getServletContext().getRealPath("/");
@@ -276,17 +342,19 @@ import org.apache.log4j.Logger;
 		
 		PATH_CATALOGUES=AP_PATH + XML_CATALOGUES_FILE;
 		PATH_SERVICE=AP_PATH + XML_SERVICE_FILE;
+		PATH_PROJECTS=AP_PATH + XML_CATALOGUES_PROJECTS_FOLDER;
 		
 		if (XML_CATALOGUES_FILE == null || XML_CATALOGUES_FILE.length() == 0
-				|| !(new File(AP_PATH + XML_CATALOGUES_FILE)).isFile()) {
+				|| !(new File(PATH_PROJECTS + XML_CATALOGUES_FILE)).isFile()) {
 			System.err.println("ERROR:Can't find log file:" + PATH_CATALOGUES );
 			logger.error("ERROR:Can't find log file:" + PATH_CATALOGUES);
 			throw new ServletException();
 		}else{
-			logger.info("Catalog.xml found");
+			logger.info("Catalogues.xml found");
 			
-			catalogue=Capabilities.parseCataloguesXML(AP_PATH + XML_CATALOGUES_FILE,AP_PATH + CATALOGUES_DIR);
+			catalogue=Capabilities.parseCataloguesXML(PATH_PROJECTS + XML_CATALOGUES_FILE,AP_PATH + CATALOGUES_DIR);
 		}
+		
 	}
 	
 	/* (non-Javadoc)
