@@ -55,7 +55,6 @@
 <xml-encoding>UTF-8</xml-encoding>
 </catalog>
 
-
 <catalog>
 <name>FAO</name>
 <title>FAO Catalogue</title>
@@ -63,6 +62,17 @@
  of the OpenGIS Catalogue Service specification version 2.0.2</abstract>
 <urlcatalog>http://www.fao.org/geonetwork/srv/en/csw</urlcatalog>
 <product>geonetwork</product>
+<csw-version>2.0.2</csw-version>
+<xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+<name>Deegree</name>
+<title>Deegree demo Catalogue</title>
+<abstract>Deegree catalog service conform to the HTTP protocol binding 
+ of the OpenGIS Catalogue Service specification version 2.0.2</abstract>
+<urlcatalog>http://testing.deegree.org/deegree-csw/services</urlcatalog>
+<product>deegree</product>
 <csw-version>2.0.2</csw-version>
 <xml-encoding>UTF-8</xml-encoding>
 </catalog>
