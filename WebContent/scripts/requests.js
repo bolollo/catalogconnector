@@ -19,7 +19,7 @@
  * @author Victor Pascual
  * @author Wladimir Szczerban
  */
-var urlServer="/catalogConector/Connector";
+var urlServer="/catalogConnector/Connector";
 
 function sendRequestAll(){
 $('divResults').addClassName('loader').show();
