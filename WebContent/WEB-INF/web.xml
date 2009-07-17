@@ -6,7 +6,7 @@
   <servlet-class>org.idec.catalog.Logging</servlet-class>
   <init-param>
     <param-name>log-directory</param-name>
-    <param-value>E:/usuaris/v.pascual/tomcat/webapps/catalogConnector/WEB-INF/logs/</param-value>
+    <param-value>E:/usuaris/w.szczerban/tomcat/webapps/catalogConnector/WEB-INF/logs/</param-value>
   </init-param>
   <init-param>
     <param-name>log4j-init-file</param-name>
@@ -43,7 +43,18 @@
     <init-param>
       <param-name>catalogues_dir</param-name>
       <param-value>WEB-INF/catalogues/</param-value>
-    </init-param> 
+    </init-param>
+    
+    <init-param>
+      <param-name>proxyHost</param-name>
+      <param-value></param-value>
+    </init-param>
+    
+    <init-param>
+      <param-name>proxyPort</param-name>
+      <param-value>0</param-value>
+    </init-param>
+          
      <load-on-startup>2</load-on-startup>
 	</servlet>
 	

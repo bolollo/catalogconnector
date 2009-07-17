@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.httpclient.*;
@@ -57,9 +58,6 @@ public class CatalogRequest {
 	static Utils ut = new Utils();
 	static java.io.InputStream is;
 	
-
-	
-	
 	/**
 	 * Send HTTP Post Request to Catalogue
 	 * @param cat
@@ -69,17 +67,20 @@ public class CatalogRequest {
 	public static Catalog sendRequest(Catalog cat) {
 		String res="";
 		
-	
-		
 		try {
 			logger.debug("***********************");
 			logger.debug("URL:" + cat.urlcatalog);
 			logger.debug("Charset:" + cat.XMLencoding);
 			logger.debug("REQUEST:" + cat.CSWRequest);
+			logger.debug("PROXYHOST:" + cat.ProxyHost);
+			logger.debug("PROXYPORT:" + cat.ProxyPort);
 			logger.debug("***********************");
 			PostMethod httppost = new PostMethod(cat.urlcatalog);
 			httppost.setRequestBody(cat.CSWRequest);
 			httpclient.setConnectionTimeout(20000);
+			if (cat.ProxyHost != null && !cat.ProxyHost.equalsIgnoreCase("")){
+				httpclient.getHostConfiguration().setProxy(cat.ProxyHost,cat.ProxyPort);
+			}
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+cat.XMLencoding+"");
 			httpclient.executeMethod(httppost);			
 			is = httppost.getResponseBodyAsStream();

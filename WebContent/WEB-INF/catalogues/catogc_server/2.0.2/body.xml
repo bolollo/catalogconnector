@@ -13,9 +13,7 @@ http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
 		<ElementSetName>full</ElementSetName>
 		<Constraint version="1.1.0">
 			<Filter>
-			
 				$FILTER
-				
 			</Filter>
 		</Constraint>
 	</Query>

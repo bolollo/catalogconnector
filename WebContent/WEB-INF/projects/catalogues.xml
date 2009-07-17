@@ -23,7 +23,6 @@
 <xml-encoding>ISO-8859-1</xml-encoding>
 </catalog>
 
-
 <catalog>
 <name>IDEAndorra</name>
 <title>SDI Andorra</title>
@@ -43,7 +42,6 @@
 <csw-version>2.0.0</csw-version>
 <xml-encoding>UTF-8</xml-encoding>
 </catalog>
-
 
 <catalog>
 <name>eWater</name>
@@ -75,6 +73,54 @@
 <product>deegree</product>
 <csw-version>2.0.2</csw-version>
 <xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+  <name>GPT</name>
+  <title>GeoData.gov</title>
+  <abstract>USA data catalog</abstract>
+  <urlcatalog>
+  http://gos2.geodata.gov/Portal/csw202/discovery</urlcatalog>
+  <product>gpt9</product>
+  <csw-version>2.0.2</csw-version>
+  <xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+  <name>eXcat</name>
+  <title>Alterra CSW</title>
+  <abstract>Alterra CSW: eXcat XQuery based catalog service
+  conform to the HTTP protocol binding of the OpenGIS Catalogue
+  Service specification version 2.0.2/2.0.1</abstract>
+  <urlcatalog>
+  http://www.geodata.alterra.nl/excat/csw</urlcatalog>
+  <product>excat</product>
+  <csw-version>2.0.2</csw-version>
+  <xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+  <name>conterra</name>
+  <title>GeoMIS.Sachsen</title>
+  <abstract>Metainformationssystem basierend auf dem terraCatalog
+  2.2 (con terra GmbH)</abstract>
+  <urlcatalog>
+  http://www.landesvermessung.sachsen.de/geomis/soapServices/CSWStartup</urlcatalog>
+  <product>conterra</product>
+  <csw-version>2.0.2</csw-version>
+  <xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
+    <name>geomedia2</name>
+    <title>AdVMIS Catalogue Service Web</title>
+    <abstract>Metadateninformationssystem der AdV - Catalogue
+    Service Web 2.0.2</abstract>
+    <urlcatalog>
+    http://gdz.bkg.bund.de/advmiscsw/advmiscsw</urlcatalog>
+    <product>geomedia</product>
+    <csw-version>2.0.2</csw-version>
+    <xml-encoding>UTF-8</xml-encoding>
 </catalog>
 
 </catalogues>

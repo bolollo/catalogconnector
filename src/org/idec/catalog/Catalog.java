@@ -109,7 +109,15 @@ public class Catalog {
 	 * 
 	 */
 	public String CSWFinalResponse = null;
-
+	/**
+	 * ProxyHost
+	 */
+	public String ProxyHost = "";
+	/**
+	 * ProxyPort
+	 */
+	public int ProxyPort = 0;
+	
 	Utils ut = new Utils();
 
 	/**
@@ -135,7 +143,8 @@ public class Catalog {
 	 */
 	public Catalog(String name, String title, String description,
 			String urlcatalog, String product, String cswversion,
-			String XMLRequestsPath, String XMLencoding) throws IOException {
+			String XMLRequestsPath, String XMLencoding, 
+			String ProxyHost, int ProxyPort) throws IOException {
 		this.name = name;
 		this.title = title;
 		this.description = description;
@@ -151,6 +160,8 @@ public class Catalog {
 		this.QueryString = null;
 		this.CSWResponse = null;
 		this.XSLCSWResponse = null;
+		this.ProxyHost = ProxyHost;
+		this.ProxyPort = ProxyPort;
 	}
 
 	/**
