@@ -128,7 +128,6 @@ public class Capabilities {
 			Iterator i = entry.iterator();
 			while (i.hasNext()) {
 				Element entradatmp = (Element) i.next();
-
 				cat[j] = new Catalog(entradatmp.getChild("name", NS).getText(),
 						entradatmp.getChild("title", NS).getText(), entradatmp
 								.getChild("abstract", NS).getText(), entradatmp
@@ -136,7 +135,7 @@ public class Capabilities {
 						entradatmp.getChild("product", NS).getText(),
 						entradatmp.getChild("csw-version", NS).getText(),
 						XMLfilePath, entradatmp.getChild("xml-encoding", NS)
-								.getText());
+								.getText(),"",0);
 				j = j + 1;
 			}
 

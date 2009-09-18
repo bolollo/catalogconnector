@@ -27,7 +27,7 @@
 <name>IDEAndorra</name>
 <title>SDI Andorra</title>
 <abstract>IDEAndorra metadata catalogue</abstract>
-<urlcatalog>http://www.ideandorra.ad/metadades_and_en/Request.aspx</urlcatalog>
+<urlcatalog>http://www.ideandorra.ad/metadades_and_cat/Request.aspx</urlcatalog>
 <product>geomedia</product>
 <csw-version>2.0.0</csw-version>
 <xml-encoding>UTF-8</xml-encoding>
