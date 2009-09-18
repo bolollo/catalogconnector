@@ -24,7 +24,7 @@ var urlServer="/catalogConnector/Connector";
 function sendRequestAll(){
 $('divResults').addClassName('loader').show();
 new Ajax.Request(urlServer, { parameters: $('frmRequest').serialize(true), OnLoading:function(){ 
-   
+
     $('divCapabilities').addClassName('loader');
    
     },
@@ -277,144 +277,119 @@ var ct=null;
 return ct
 }
 
-
-
 function parseWriteCatalogues(divCatalogue,json,task){
-//console.info("clean divs");
- $(divCatalogue).innerHTML="";
-//console.info(json);
-//console.info(json+".");
-
-
-if(json==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
-
-if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
-
-//var candidates=json.numberOfRecordsMatched;
-
-var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
-var cName=divCatalogue.replace('div_','');
-
-//console.warn(cName);
-
-var ct =extracPr(cName);
-var pagination='pag_'+json.Id;
-var pos=json.Position;
-var htmlText=new Array();
-
-	if(candidates >1)	{				
-						var req=json.QueryString+"&";					
-						req=req.replace(/%26/g,'&');
-						req=req.replace(/%3D/g,'=');
-						
-						htmlText.push('<table border="0"  width="100%">');
-						htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
-						htmlText.push('<tr><td>');
-						
-						for (i=0;i < json.GetRecordsResponse.Record.length;i++){
-						
-						htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%">');
-						htmlText.push('<tr bgcolor="#ECECFF">');
-						htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-						htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
-						htmlText.push('</tr>');
-						htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
-						htmlText.push('</table>');
-						}
-						
-						htmlText.push('</td></tr></table>');						
+	//console.info("clean divs");
+	$(divCatalogue).innerHTML="";
+	//console.info(json);
+	//console.info(json+".");
+	if(json==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
+	if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
+	//var candidates=json.numberOfRecordsMatched;
+	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
+	var cName=divCatalogue.replace('div_','');
+	//console.warn(cName);
+	var ct = extracPr(cName);
+	var pagination = 'pag_'+json.Id;
+	var pos = json.Position;
+	//var boundingBoxResponse = new Array(0,0,0,0);
+	var htmlText=new Array();
+	if(candidates >1){				
+		var req=json.QueryString+"&";					
+		req=req.replace(/%26/g,'&');
+		req=req.replace(/%3D/g,'=');
+		htmlText.push('<table border="0"  width="100%">');
+		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
+		htmlText.push('<tr><td>');
+		for (i=0;i < json.GetRecordsResponse.Record.length;i++){
+			/*
+			var lc = json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.split(" ");
+			var uc = json.GetRecordsResponse.Record[i].boundingBox.upperCorner.split(" ");
+			if (lc[0] < boundingBoxResponse[0]){
+				boundingBoxResponse[0] = lc[0];
+			}
+			if (lc[1] < boundingBoxResponse[1]){
+				boundingBoxResponse[1] = lc[1];
+			}
+			if (uc[0] > boundingBoxResponse[2]){
+				boundingBoxResponse[2] = uc[0];
+			}
+			if (uc[1] > boundingBoxResponse[3]){
+				boundingBoxResponse[3] = uc[1];
+			}
+			*/
+			htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			htmlText.push('<tr bgcolor="#ECECFF">');
+			htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
+			htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
+			htmlText.push('</tr>');
+			htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
+			htmlText.push('</table>');
+		}
+		htmlText.push('</td></tr></table>');
+		/*
+		var md_bounds = new OpenLayers.Bounds(boundingBoxResponse[0], boundingBoxResponse[1], boundingBoxResponse[2], boundingBoxResponse[3]);
+		map.zoomToExtent(md_bounds, false);
+		*/						
 	}else if(candidates==1){
-	var req=json.QueryString+"&";					
-						req=req.replace(/%26/g,'&');
-						req=req.replace(/%3D/g,'=');
-						
-						htmlText.push('<table border="0"  width="100%">');
-						htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
-						htmlText.push('<tr><td>');			
-						htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%">');
-						htmlText.push('<tr bgcolor="#ECECFF">');
-						htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
-						htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
-						htmlText.push('</tr>');
-						htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
-						htmlText.push('</table>');											
-						htmlText.push('</td></tr></table>');		
+		var req=json.QueryString+"&";					
+		req=req.replace(/%26/g,'&');
+		req=req.replace(/%3D/g,'=');
+		htmlText.push('<table border="0"  width="100%">');
+		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
+		htmlText.push('<tr><td>');			
+		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%">');
+		htmlText.push('<tr bgcolor="#ECECFF">');
+		htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
+		htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
+		htmlText.push('</tr>');
+		htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
+		htmlText.push('</table>');											
+		htmlText.push('</td></tr></table>');		
 	}else{
-	htmlText.push('<p> No records found </p>');
+		htmlText.push('<p> No records found </p>');
 	}					
-				
-		$(divCatalogue).innerHTML=htmlText.join(' ');
-
-var nameCat=divCatalogue.replace('div_','');
-
-
-for (j=1;j < catalogsArray.size()+1;j++){
-
-			var tb="tablink"+j;
-			
-			
-			var cp=$(tb).innerHTML
-			
-			if(nameCat == cp){
-			
+	$(divCatalogue).innerHTML=htmlText.join(' ');
+	var nameCat=divCatalogue.replace('div_','');
+	for (j=1;j < catalogsArray.size()+1;j++){
+		var tb="tablink"+j;
+		var cp=$(tb).innerHTML
+		if(nameCat == cp){
 			var po=json.GetRecordsResponse.numberOfRecordsMatched;
 			if(!po){po=0;}
-			
 			$(tb).innerHTML=nameCat+ " ("+po+")";
-			
-			}
-
-}
- 
-
-$(divCatalogue).style.display='block';
-
-//console.info("task:"+task);
-	if(task){
-	
-	//console.info(json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords'));
-	var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
-	if(pt=="NaN"){pt=0;}
-				var numberPages=Math.ceil(pt);
-				var cmExtra=new Array();
-				
-				
-				if(numberPages > 15){
-				var extr='extr_'+json.Id;
-				
-				for (j=0;j < numberPages;j++){
-				var position=parseInt((j*$F('maxRecords'))+1);
-				
-				var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
-				
-				cmExtra += '<option value="'+rs+'">go to page:'+j+'</option>';
-				
-				}
-				
-				
-				$(extr).innerHTML='<select onChange="sendRequestByCatalogue(\''+json.Id+'\', this.value,false)"><option selected>Go to page</option>'+cmExtra+'</select>';
-				
-				numberPages=15;}
-				
-				
-				if(numberPages >1){
-				
-					var pg=new Array();
-						for (k=0;k < numberPages;k++){
-							var position=parseInt((k*$F('maxRecords'))+1);
-							
-							pg.push('Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req);
-						}
-					
-					
-					//console.info(pagination);
-				var	catPag=new ajaxpageclass.createBook(
-					{pages:pg,selectedpage:0}
-					, json.Id, [pagination]);
-				}
-	
+		}
 	}
-json=null;
+	$(divCatalogue).style.display='block';
+	//console.info("task:"+task);
+	if(task){
+		//console.info(json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords'));
+		var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
+		if(pt=="NaN"){pt=0;}
+		var numberPages=Math.ceil(pt);
+		var cmExtra=new Array();
+		if(numberPages > 15){
+			var extr='extr_'+json.Id;
+			for (j=0;j < numberPages;j++){
+				var position=parseInt((j*$F('maxRecords'))+1);
+				var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
+				cmExtra += '<option value="'+rs+'">go to page:'+j+'</option>';
+			}
+			$(extr).innerHTML='<select onChange="sendRequestByCatalogue(\''+json.Id+'\', this.value,false)"><option selected>Go to page</option>'+cmExtra+'</select>';
+			numberPages=15;
+		}
+		if(numberPages >1){
+			var pg=new Array();
+			for (k=0;k < numberPages;k++){
+				var position=parseInt((k*$F('maxRecords'))+1);
+				pg.push('Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req);
+			}
+			//console.info(pagination);
+			var	catPag=new ajaxpageclass.createBook(
+				{pages:pg,selectedpage:0}
+				, json.Id, [pagination]);
+		}
+	}
+	json=null;
 }
 
 

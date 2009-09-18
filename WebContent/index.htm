@@ -47,36 +47,29 @@
 <script type="text/javascript" src="scripts/prototype.js"></script>
 <script type="text/javascript" src="scripts/requests.js"></script>
 <script type="text/javascript" src="scripts/easytabs.js"></script>
+<script type="text/javascript" src="scripts/map.js"></script>
 <!-- EASY TABS 1.2 Produced and Copyright by Koller Juergen www.kollermedia.at -->
 <script src="scripts/ajaxpagination.js" type="text/javascript"></script>
 <!--Ajax Pagination Script- Author: Dynamic Drive (http://www.dynamicdrive.com)-->
 <link rel="stylesheet" href="css/menu.css" TYPE="text/css" MEDIA="screen">
 
 <script type="text/javascript">
-
 var lon = 5;
 var lat = 40;
 var zoom = 3;
-var map, layer;
+var map, layer, boxes;
 
 function init(){
-
 //Using a sledgehammer (OpenLayers) to crack a nut (capture BBOX), sorry
-
-                map = new OpenLayers.Map('map');
-                layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-              
-                map.addLayer(layer);
-                
-                map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-                
-                
-            }
-            
-
+	map = new OpenLayers.Map('map');
+    layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+        "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+    map.addLayer(layer);
+    boxes = new OpenLayers.Layer.Vector( "Boxes" );
+    map.addLayer(boxes);
+    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+}
 </script>
-
 
 </head>
 <body  onLoad="init();getCapabilities();">
