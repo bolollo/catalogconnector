@@ -249,7 +249,7 @@ onSuccess: function(transport){
     
     //console.error("Error en la peticio");
      $(divCatalogue).removeClassName('infoTabL');
-    $(divCatalogue).innerHTML="Server Not response:"+error;
+    $(divCatalogue).innerHTML="Server did not respond:"+error;
     
     }
 
@@ -282,8 +282,8 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	$(divCatalogue).innerHTML="";
 	//console.info(json);
 	//console.info(json+".");
-	if(json==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
-	if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Not valid response returned</p>"+json;return }
+	if(json==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
+	if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
 	//var candidates=json.numberOfRecordsMatched;
 	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
 	var cName=divCatalogue.replace('div_','');
