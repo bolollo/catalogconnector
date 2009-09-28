@@ -71,8 +71,6 @@ function ajaxTest(urlServer){
 
 function switchAll()
 {
-	
-	//document.getElementById()
 	var cl=new Array();
 	var nodes = $A(document.frmRequest.chkCatalog);
 	
@@ -87,25 +85,8 @@ function switchAll()
 		}	
 	}				
 	);
-
 }
-/*	
-	//do it like this - if checked, check all. If not, check none
-	
-	
-	var cl=new Array();
-	var nodes = $A(document.frmRequest.chkCatalog);
-	
-	nodes.each(function(node)
-	{
-		if(count%2==1){
-			node.checked=true;
-		}else{
-			node.checked=false;
-		}				
-	}
-	);
-}*/
+
 
 
 
@@ -118,21 +99,6 @@ new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='
     cataloguesJson = transport.responseText.evalJSON();
     //console.debug(cataloguesJson.length);
 
-
-
-/*var checkbox = document.createElement("input");
-checkbox.type = "checkbox";checkbox.id = "chkAll";checkbox.value = "val?";checkbox.checked = false;checkbox.name="name?";checkbox.onclick=switchAll();
-
-var text = document.createTextNode("Select/Deselect All");
-var bold = document.createElement("b");
-bold.appendChild(text);
-
-var tr=document.createElement("br");
-
-$( 'divCapabilities' ).appendChild( checkbox );
-$( 'divCapabilities' ).appendChild(bold);
-$( 'divCapabilities' ).appendChild( tr );
-*/  
    
 for(i=0; i < cataloguesJson.length;i++){
 			 var cb = document.createElement( "input" );

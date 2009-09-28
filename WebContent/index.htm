@@ -69,10 +69,25 @@ function init(){
     map.addLayer(boxes);
     map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 }
+
+
+function resetAllFields()
+{
+	document.getElementById("chkallboxes").checked = false;
+	document.getElementById("chkbbox").checked = false;
+	document.getElementById("any").value = "";
+	document.getElementById("title").value = "";
+	document.getElementById("description").value = "";
+	document.getElementById("subject").value = "";
+	document.getElementById("organization").value = "";
+
+	document.getElementById("startPosition").value = "1";
+	document.getElementById("maxRecords").value = "10";
+}
 </script>
 
 </head>
-<body  onLoad="init();getCapabilities();">
+<body  onLoad="init();getCapabilities();resetAllFields();">
 
 <table width="99%" height="94%"  border="1" cellspacing="1" cellpadding="1">
   <tr bgcolor="#0099CC"> 
@@ -157,7 +172,7 @@ function init(){
           
           
           <tr> 
-            <td colspan="2"><input type="checkbox" id="chkallboxes"  checked=false name="chkallboxes" onclick='switchAll();'>
+            <td colspan="2"><input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
               Select/Deselect All</td>
           </tr>
           
