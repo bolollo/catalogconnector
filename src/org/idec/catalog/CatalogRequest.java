@@ -188,31 +188,21 @@ public class CatalogRequest {
 			bodyRequest +=ut.findAndReplace(cat.getCswRequestXML("organization"), "$VALUE", parameters.get("ORGANIZATION").toString());
 			QueryString +="&ORGANIZATION="+ parameters.get("ORGANIZATION").toString();
 			countParameters=countParameters+1;
-		 
 		 }
 		/*
 		 * Language parameter implemted basically for Indicio
 		 */
 		 if(parameters.containsKey("LANGUAGE") && cat.product.equalsIgnoreCase("indicio") ){
-			
 			bodyRequest +=ut.findAndReplace(cat.getCswRequestXML("language"), "$LANGUAGE", parameters.get("LANGUAGE").toString());
-		
+			QueryString +="&LANGUAGE="+ parameters.get("LANGUAGE").toString();
 			countParameters=countParameters+1;
-		
 		}
-		
-		
-		
-		
 		 if(parameters.containsKey("ANY")){
-			
 			bodyRequest +=ut.findAndReplace(cat.getCswRequestXML("any"), "$VALUE", parameters.get("ANY").toString());
 			QueryString +="&ANY="+ parameters.get("ANY").toString();
 			countParameters=countParameters+1;
 		}
-		 
-		
-		 
+				 
 		logger.debug("COUNT PARAMETERS:"+countParameters);
 		
 		if(countParameters >= 2){
