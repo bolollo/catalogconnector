@@ -137,7 +137,7 @@ import org.jdom.JDOMException;
 		if((aEncoding != null && aEncoding.toLowerCase().contains("gzip"))){
 			logger.debug("Gzip encoding is supported - Now using gzip encoding");
 			response.setHeader("Content-Encoding", "gzip");
-			doGZIP = true;
+			doGZIP = false;
 		}
 		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response);
 
@@ -186,7 +186,7 @@ import org.jdom.JDOMException;
 						}
 				}
 
-
+				
 				catalogue=Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);
 
 
