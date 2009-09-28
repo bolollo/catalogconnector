@@ -69,15 +69,70 @@ function ajaxTest(urlServer){
 }
 
 
+function switchAll()
+{
+	
+	//document.getElementById()
+	var cl=new Array();
+	var nodes = $A(document.frmRequest.chkCatalog);
+	
+	nodes.each(function(node)
+	{
+		if(document.getElementById("chkallboxes").checked == true)
+		{
+			node.checked=true;
+		}
+		else{
+			node.checked=false;
+		}	
+	}				
+	);
+
+}
+/*	
+	//do it like this - if checked, check all. If not, check none
+	
+	
+	var cl=new Array();
+	var nodes = $A(document.frmRequest.chkCatalog);
+	
+	nodes.each(function(node)
+	{
+		if(count%2==1){
+			node.checked=true;
+		}else{
+			node.checked=false;
+		}				
+	}
+	);
+}*/
 
 
+
+
+//This is where check boxes for catalog selections are handled
 var cataloguesJson;
 function getCapabilities(){
 $( 'divCapabilities' ).innerHTML="";
 new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   onSuccess: function(transport){  
-    cataloguesJson = transport.responseText.evalJSON(); 
-
+    cataloguesJson = transport.responseText.evalJSON();
     //console.debug(cataloguesJson.length);
+
+
+
+/*var checkbox = document.createElement("input");
+checkbox.type = "checkbox";checkbox.id = "chkAll";checkbox.value = "val?";checkbox.checked = false;checkbox.name="name?";checkbox.onclick=switchAll();
+
+var text = document.createTextNode("Select/Deselect All");
+var bold = document.createElement("b");
+bold.appendChild(text);
+
+var tr=document.createElement("br");
+
+$( 'divCapabilities' ).appendChild( checkbox );
+$( 'divCapabilities' ).appendChild(bold);
+$( 'divCapabilities' ).appendChild( tr );
+*/  
    
 for(i=0; i < cataloguesJson.length;i++){
 			 var cb = document.createElement( "input" );
@@ -88,8 +143,14 @@ for(i=0; i < cataloguesJson.length;i++){
 			 $( 'divCapabilities' ).appendChild( cb );
 			 $( 'divCapabilities' ).appendChild( text );
 			 $( 'divCapabilities' ).appendChild( tr );
-
 }
+
+	
+
+	
+	
+	
+
     },OnCreate:function(){     
     $('divCapabilities').addClassName('loader');   
     }
