@@ -364,7 +364,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<table border="0"  width="100%">');
 		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
 		htmlText.push('<tr><td>');			
-		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%">');
+		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
 		htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
