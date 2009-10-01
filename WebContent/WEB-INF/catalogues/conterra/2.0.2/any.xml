@@ -2,3 +2,4 @@
 <ogc:PropertyName>apiso:anyText</ogc:PropertyName>
 <ogc:Literal>*$VALUE*</ogc:Literal>
 </ogc:PropertyIsLike>
+
