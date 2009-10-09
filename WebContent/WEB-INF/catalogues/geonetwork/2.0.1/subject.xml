@@ -1,5 +1,5 @@
- <ogc:PropertyIsLike wildCard="*" singleChar="_" escape="\">
+<ogc:PropertyIsLike wildCard="*" singleChar="_" escape="\">
           <ogc:PropertyName>subject</ogc:PropertyName>
           <ogc:Literal>*$VALUE*</ogc:Literal>
-        </ogc:PropertyIsLike>
+</ogc:PropertyIsLike>
       

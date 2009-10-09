@@ -34,10 +34,15 @@
 package org.idec.catalog;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -45,6 +50,9 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerConfigurationException;
+
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.xml.XMLSerializer;
@@ -57,33 +65,71 @@ import org.jdom.JDOMException;
  *
  * @author Victor Pascual
  * @author Wladimir Szczerban
+ * @author Dominic Owen
  */
  public class CatalogConnector extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
-   static final long serialVersionUID = 1L;
-   private static Logger logger = Logger.getLogger(CatalogConnector.class);
+   
 
-   /**
-    * The path of file service.xml
-    */
-   public String XML_SERVICE_FILE="";
-   /**
-    * The application path
-    */
-   public String AP_PATH="";
-   /**
-    * The path of catalogues directori
-    */
-   public String CATALOGUES_DIR = "";
-   /**
-    * The full path of file catalogues.xml. AP_PATH + XML_CATALOGUES_FILE;
-    */
-   public String PATH_CATALOGUES="";
-   /**
-    * The full path of file service.xml. AP_PATH + XML_SERVICE_FILE;
-    */
-   public String PATH_SERVICE="";
-   public String XML_CATALOGUES_PROJECTS_FOLDER="";
-   public String PATH_PROJECTS="";
+	 /**
+	  * When processing a client request for GetRecordByID,
+	  * this key hashes to the id being used
+	  */	 
+	String RECORD_ID_KEY = "recordID";
+
+	 /**
+	  * When processing a client request for GetRecordByID,
+	  * this key hashes to the csw version being used
+	  */	 
+	String RECORD_VERSION_KEY = "recordVersion";
+
+	 /**
+	  * When processing a client request for GetRecordByID,
+	  * this key hashes to the record's url 
+	  */	 
+	String RECORD_URL_KEY = "recordURL";
+	 
+	 /**
+	  * When processing a client request for GetRecordByID,
+	  * this key hashes to the record's catalog's name 
+	  */	 
+	String RECORD_ENDOING_KEY = "encodingType";
+	
+	 /**
+	  * When processing a client request for GetRecordByID,
+	  * this key hashes to the record's product name 
+	  */	 
+	String RECORD_PRODUCT_KEY = "productName";
+	
+	
+	
+	static final long serialVersionUID = 1L;
+   
+	private static Logger logger = Logger.getLogger(CatalogConnector.class);
+
+	/**
+	 * The path of file service.xml
+	 */
+	public String XML_SERVICE_FILE="";
+	/**
+	 * The application path
+	 */
+	public String AP_PATH="";
+	/**
+	 * The path of catalogues directori
+	 */
+	public String CATALOGUES_DIR = "";
+	/**
+	 * The full path of file catalogues.xml. AP_PATH + XML_CATALOGUES_FILE;
+	 */
+	public String PATH_CATALOGUES="";
+	/**
+	 * The full path of file service.xml. AP_PATH + XML_SERVICE_FILE;
+	 */
+	
+	String PROJECT="catalogues";
+	public String PATH_SERVICE="";
+	public String XML_CATALOGUES_PROJECTS_FOLDER="";
+	public String PATH_PROJECTS="";
    /**
     * The proxyHost
     */
@@ -95,7 +141,7 @@ import org.jdom.JDOMException;
    /**
     * Array of catalogues
     */
-   public Catalog [] catalogue = null;
+   public Catalog [] catalogs = null;
 
    Capabilities cp = new Capabilities();
 
@@ -118,7 +164,6 @@ import org.jdom.JDOMException;
 	 * @see javax.servlet.http.HttpServlet#doDelete(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		super.doDelete(request, response);
 	}
 
@@ -128,7 +173,8 @@ import org.jdom.JDOMException;
 	 * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/xml;charset=UTF-8");
+		String charset = "UTF-8";
+		response.setContentType("text/xml;charset="+charset);
 
 
 		//Check to see if client accepts gzip compression
@@ -138,13 +184,14 @@ import org.jdom.JDOMException;
 			logger.debug("Gzip encoding is supported - Now using gzip encoding");
 			response.setHeader("Content-Encoding", "gzip");
 			doGZIP = true;
+			charset="ISO-8859-1";
 		}
 		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response);
 
 
 		Map paramsRequest = Utils.getParametersToMap(request);
 		String resp="";
-		String PROJECT="catalogues";
+		
 		boolean checkParams = paramsRequest.containsKey("REQUEST");
 		if(checkParams){
 			String methodRequest=(String)paramsRequest.get("REQUEST");
@@ -156,15 +203,14 @@ import org.jdom.JDOMException;
 				
 				
 				if(ot.equalsIgnoreCase("XML")){
-								response.setContentType("text/xml;charset=ISO-8859-1");
-								writer.write("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
+								response.setContentType("text/xml;charset="+charset);
+								writer.write("<?xml version=\"1.0\" encoding=\""+charset+"\"?>");
 								writer.write(Capabilities.getCapabilitiesXML(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE));
 				}else
 				{
-								response.setContentType("text/json;charset=ISO-8859-1");
+								response.setContentType("text/json;charset="+charset);
 								try {
 									JSONArray jsonArray=Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);
-									logger.debug(jsonArray);
 									writer.write(jsonArray.toString());
 								} catch (JDOMException e) {
 									e.printStackTrace();
@@ -178,22 +224,16 @@ import org.jdom.JDOMException;
 				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
 				boolean nCat=paramsRequest.get("CATALOGUES").toString().contains(",");
 				if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
-					response.setContentType("text/xml;charset=UTF-8");
+					response.setContentType("text/xml;charset="+charset);
 					writer.write("<CatalogConnector>");
 				}else{
 					if(nCat){
 						writer.write("[");
 						}
 				}
+				for (int i=0;i < catalogs.length;i++){
 
-				
-				catalogue=Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);
-
-
-
-				for (int i=0;i < catalogue.length;i++){
-
-					Catalog cat =catalogue[i];
+					Catalog cat =catalogs[i];
 					cat.ProxyHost = PROXY_HOST;
 					cat.ProxyPort = PROXY_PORT;
 
@@ -203,12 +243,12 @@ import org.jdom.JDOMException;
 						if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
 
 							writer.write(cat.CSWFinalResponse);
-						}else{ //JSON
+						}else{
 							//TODO: Find out why UTF-8 causes unrecognized characters when using GZIP
 							if(doGZIP){
-								response.setContentType("text/json;charset=ISO-8859-1");
+								response.setContentType("text/json;charset="+charset);
 							}else{
-								response.setContentType("text/json;charset="+catalogue[i].XMLencoding);
+								response.setContentType("text/json;charset="+catalogs[i].XMLencoding);
 							}
 							
 							JSON  jsonResponse = new JSONArray();
@@ -234,8 +274,36 @@ import org.jdom.JDOMException;
 								writer.write("]");
 					}
 				}
-			}else{
-				//interface no reconnized
+			}else if(methodRequest.equalsIgnoreCase("metadatatohtml")){				
+				String idVal = request.getParameter(this.RECORD_ID_KEY);
+				String urlVal = request.getParameter(this.RECORD_URL_KEY);
+				String versionVal = request.getParameter(this.RECORD_VERSION_KEY);
+				String encodingType = request.getParameter(this.RECORD_ENDOING_KEY);		
+				String productName = request.getParameter(RECORD_PRODUCT_KEY);
+				String catalogCharset = charset;
+
+				//Gzip + UTF-8 seem to corrupt some western european letters. So we
+				//use ISO unless GZIP isn't utilized. That is what this check is for
+				if(!doGZIP){
+					catalogCharset=encodingType;
+				}
+				
+				Catalog cat = generateRequestCatalog(idVal,urlVal,versionVal,catalogCharset);
+				String htmlResult = null;
+				try {
+					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat);
+					String xslPath = AP_PATH + CATALOGUES_DIR+productName+"/"+versionVal+"/metadata_to_html.xsl";	
+					logger.info("PATH: "+xslPath);
+					htmlResult = GetRecordByIdXSL.Transform(metadata, xslPath);
+					writer.write(htmlResult);
+				}catch (Exception e) {
+					e.printStackTrace();
+					response.sendError(-1, "Transform failed for "+ cat);
+				}
+				
+			}
+		else{
+				//interface no recognized
 				writer.write("Unknown interface");
 				logger.error("Unknown interface: Use GetCapabilities or GetRecords");
 			}
@@ -303,8 +371,9 @@ import org.jdom.JDOMException;
 			catalogue=Capabilities.parseCataloguesXML(AP_PATH + XML_CATALOGUES_FILE,AP_PATH + CATALOGUES_DIR);
 		}
 	*/
+		catalogs = Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -313,6 +382,28 @@ import org.jdom.JDOMException;
 		return super.toString();
 	}
 
+	//This class takes 4 necessary values for a GetRecordByID and creates a valid catalog, 
+	//filling in the rest of the fields. We do this, because our recordrequest method requires
+	//a catalog as a parameter (rather than a series of individual catalog fields).
+	private Catalog generateRequestCatalog(String idVal, String urlVal,String versionVal, String encoding) throws IOException 
+	{		
+		String name="";
+		String title= "";
+		String description= "";
+		String XMLRequestsPath=""; 
+		String product= "";
+		String urlcatalog= urlVal;
+		String cswversion=versionVal;
+		String XMLencoding= encoding;
+		String ProxyHost= "";
+		int ProxyPort= -1;
+	
+		Catalog cat = new Catalog(name, title, description, urlcatalog, product, cswversion, XMLRequestsPath, XMLencoding, ProxyHost, ProxyPort);
+
+		return cat;
+	}
+	
+	
 	//This class is a facade to either PrintWriter or GZIPOutputStream
 	private class OutStreamWrapper{
 		private PrintWriter pw;

@@ -1,6 +1,9 @@
 package org.idec.catalog;
 
-
+/**
+ * 
+ * @author Dominic Owen
+ */
 
 import java.io.CharArrayReader;
 import java.io.File;
@@ -37,15 +40,11 @@ public class GetRecordByIdXSL {
 			
 			
 			//Transform the string with the xsl script
-			try {
 				Transformer transformer = TransformerFactory.newInstance().newTransformer(xsltScript);	
 				transformer.transform(xmlMetadata, bufferedResult);
 				output.flush();
 				output.close();
-			} catch (TransformerException e) {
-				e.printStackTrace();
-				//logger.debug("ERROR:" + e.getMessage());
-			}
+			
 			
 /*			//Set up output
 			JSON json = new JSONArray();

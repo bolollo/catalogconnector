@@ -1,5 +1,8 @@
 package org.idec.catalog;
-
+/**
+ * 
+ * @author Dominic Owen
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,9 +36,7 @@ public class RecordRequest {
 			PostMethod httppost = new PostMethod(cat.urlcatalog);
 			httppost.setRequestBody(request);
 			httpclient.setConnectionTimeout(20000);
-			if (cat.ProxyHost != null && !cat.ProxyHost.equalsIgnoreCase("")){
-				httpclient.getHostConfiguration().setProxy(cat.ProxyHost,cat.ProxyPort);
-			}
+	
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+cat.XMLencoding+"");
 			httpclient.executeMethod(httppost);			
 			is = httppost.getResponseBodyAsStream();
@@ -49,7 +50,7 @@ public class RecordRequest {
 			}
 			is.close();
 			entry.close();			
-		logger.debug("SERVER RESPONSE"+res);
+			logger.debug("SERVER RESPONSE"+res);
 			httppost.releaseConnection();		
 												
 		} catch (IOException e) {
@@ -67,7 +68,7 @@ public class RecordRequest {
 	 * @throws IOException
 	 */
 	//This may need to be more generalized for a few params
-	private static String parseCatalogForGetRecById(String id, Catalog cat) {
+	public static String parseCatalogForGetRecById(String id, Catalog cat) {
 		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?>\r\n"+
 		"<csw:GetRecordById \r\n"+
 			"service=\"CSW\"\r\n"+ 

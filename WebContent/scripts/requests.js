@@ -18,6 +18,7 @@
  
  * @author Victor Pascual
  * @author Wladimir Szczerban
+ * @author Dominic Owen
  */
 var urlServer="/catalogConnector/Connector";
 
@@ -45,6 +46,32 @@ alert(transport.responseText);
 //End function
 }
 
+//Does Html Conversion 
+function metaDataToHTML(id,url,version,catName,product,encoding){
+	var responseDiv="div_MyTest";
+	responseDiv.innerHTML="test!";
+ 	
+
+	//myWin=window.open('','myWin',scrollbars,left=30px,top=40px,height=400px,width=600px');
+	var cName = unescape(catName);
+	var div = "div_"+cName;
+	$(div).innerHTML="";
+	$(div).addClassName('loader').show();
+	new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
+	{
+		method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), catalogName: cName,productName: escape(product),encodingType: escape(encoding)},
+		onSuccess: function(transport) 
+		{	
+			//myWin.document.write(transport.responseText); 
+			$(div).removeClassName('loader').show();	
+			$(div).innerHTML=transport.responseText;
+  		},
+  		onFailure: function(error){ 
+			$(div).removeClassName('loader').show();	
+			$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>"
+    }
+  	});
+}
 
 function ajaxTest(urlServer){
  $('DIV_test').innerHTML="<h1>Searching....</h1>";
@@ -68,7 +95,7 @@ function ajaxTest(urlServer){
 //End function
 }
 
-
+//This method switches all catalogs to selected or unselected
 function switchAll()
 {
 	var cl=new Array();
@@ -156,6 +183,11 @@ function getRecords(){
 
 //var tabcount;
 
+function advancedEasyTabs(item, i){
+	console.debug(item);
+	easytabs(1, i);
+}
+
 function createTabs(){
 
 
@@ -171,7 +203,7 @@ var i=1;
 catalogsArray.each(function(item) {
 
 
-htmlText.push('<li><a href="#" onmouseover="easytabs(\'1\', \''+i+'\');" onfocus="easytabs(\'1\', \''+i+'\');" onclick="return false;"  title="" id="tablink'+i+'">'+item+'</a></li>');
+htmlText.push('<li><a href="#" onmouseover="return false" onfocus="return false;" onclick="javascript:advancedEasyTabs(\''+item+'\','+i+');"  title="" id="tablink'+i+'">'+item+'</a></li>');
 
 
 i=i+1;
@@ -226,8 +258,6 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 	
 	//console.debug(reqF);
 	sendRequestByCatalogue(cat, reqF,true);
-	
-	
 	});
 
 
@@ -246,15 +276,7 @@ new Ajax.Request(urlServer, { parameters: request, OnLoading:function(){
    
    
    $(divCatalogue).innerHTML="<h1>Searching....</h1>";
-   
-   
-   
-   
-   
-   
-   
-   
-   
+ 
     },
 
 onSuccess: function(transport){  
@@ -276,7 +298,7 @@ onSuccess: function(transport){
     
     //console.error("Error en la peticio");
      $(divCatalogue).removeClassName('infoTabL');
-    $(divCatalogue).innerHTML="Server did not respond:"+error;
+    	$(divCatalogue).innerHTML="Server did not respond: "+error;
     
     }
 
@@ -320,6 +342,13 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	var pos = json.Position;
 	//var boundingBoxResponse = new Array(0,0,0,0);
 	var htmlText=new Array();
+	var version = escape(ct["csw-version"]);
+	var url = encodeURI(ct.urlcatalog);
+	var prod = escape(ct["product"]);
+	var encoding = escape(ct["xml-encoding"]);
+	
+	console.info(ct);
+	
 	if(candidates >1){				
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
@@ -344,10 +373,15 @@ function parseWriteCatalogues(divCatalogue,json,task){
 				boundingBoxResponse[3] = uc[1];
 			}
 			*/
+
+			
+			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
+			
 			htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 			htmlText.push('<tr bgcolor="#ECECFF">');
-			htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-			htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
+			htmlText.push('<td width="80%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
+			htmlText.push('<td width="10%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></center></td>');
+			htmlText.push('<td width="10%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">HTML Version</a></center></td>');
 			htmlText.push('</tr>');
 			htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
 			htmlText.push('</table>');
@@ -358,6 +392,10 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		map.zoomToExtent(md_bounds, false);
 		*/						
 	}else if(candidates==1){
+
+		var identifier = escape(json.GetRecordsResponse.Record.identifier);
+		
+	
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
@@ -367,7 +405,8 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
-		htmlText.push('<td><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></td>');
+		htmlText.push('<td width="10%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></center></td>');
+		htmlText.push('<td width="10%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">HTML Version</a></center></td>');
 		htmlText.push('</tr>');
 		htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
 		htmlText.push('</table>');											
@@ -376,14 +415,14 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<p> No records found </p>');
 	}					
 	$(divCatalogue).innerHTML=htmlText.join(' ');
-	var nameCat=divCatalogue.replace('div_','');
+	//var nameCat=divCatalogue.replace('div_','');
 	for (j=1;j < catalogsArray.size()+1;j++){
 		var tb="tablink"+j;
 		var cp=$(tb).innerHTML
-		if(nameCat == cp){
+		if(cName == cp){
 			var po=json.GetRecordsResponse.numberOfRecordsMatched;
 			if(!po){po=0;}
-			$(tb).innerHTML=nameCat+ " ("+po+")";
+			$(tb).innerHTML=cName+ " ("+po+")";
 		}
 	}
 	$(divCatalogue).style.display='block';
