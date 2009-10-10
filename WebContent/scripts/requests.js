@@ -48,30 +48,53 @@ alert(transport.responseText);
 
 //Does Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
-	var responseDiv="div_MyTest";
-	responseDiv.innerHTML="test!";
- 	
-
-	//myWin=window.open('','myWin',scrollbars,left=30px,top=40px,height=400px,width=600px');
+	
+	
+	
+	
+	
+	
+////////////////////////////////////	
 	var cName = unescape(catName);
-	var div = "div_"+cName;
-	$(div).innerHTML="";
+	var div = document.createElement("div_new"+cName);
+	div.style.border="4px blue";
+	div.style.width="100%";
+	
+	var input = document.createElement("input");
+	var body = $(("div_"+cName));
+	
+	/*	var mytable     = body.table;
+	var mytablebody = mytable.getElementsByTagName("tbody")[0];
+	var myrow       = mytablebody.getElementsByTagName("tr")[1];
+	var mycel       = myrow.getElementsByTagName("td")[1];
+	console.info(mycel);
+*/	
+	//TODO: Find a way to fix row retrieval here, b/c it isn't efficient to search
+	//entire DOM for an id when we know just about exactly where it is.
+	var catalogTable = $(id); 
+	
+	catalogTable.appendChild(div);
+	$(div).innerHTML="<center><br><br><br><br><br><br><br><br></center>";
 	$(div).addClassName('loader').show();
+	
 	new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
 	{
-		method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), catalogName: cName,productName: escape(product),encodingType: escape(encoding)},
-		onSuccess: function(transport) 
-		{	
-			//myWin.document.write(transport.responseText); 
+		method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding)},
+		onSuccess: function(transport)
+		{	 
 			$(div).removeClassName('loader').show();	
 			$(div).innerHTML=transport.responseText;
+			
   		},
-  		onFailure: function(error){ 
+  		onFailure: function(error)
+  		{ 
 			$(div).removeClassName('loader').show();	
-			$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>"
-    }
+			$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>";
+  		}
   	});
 }
+
+
 
 function ajaxTest(urlServer){
  $('DIV_test').innerHTML="<h1>Searching....</h1>";
@@ -181,12 +204,6 @@ function getRecords(){
 }
 
 
-//var tabcount;
-
-function advancedEasyTabs(item, i){
-	console.debug(item);
-	easytabs(1, i);
-}
 
 function createTabs(){
 
@@ -203,7 +220,7 @@ var i=1;
 catalogsArray.each(function(item) {
 
 
-htmlText.push('<li><a href="#" onmouseover="return false" onfocus="return false;" onclick="javascript:advancedEasyTabs(\''+item+'\','+i+');"  title="" id="tablink'+i+'">'+item+'</a></li>');
+htmlText.push('<li><a href="#" onmouseover="return false" onfocus="return false;" onclick="easytabs(\'1\', \''+i+'\');"  title="" id="tablink'+i+'">'+item+'</a></li>');
 
 
 i=i+1;
@@ -377,7 +394,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			
 			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
 			
-			htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 			htmlText.push('<tr bgcolor="#ECECFF">');
 			htmlText.push('<td width="80%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
 			htmlText.push('<td width="10%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></center></td>');
@@ -399,7 +416,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
-		htmlText.push('<table border="0"  width="100%">');
+		htmlText.push('<table id='+identifier+' border="0"  width="100%">');
 		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
 		htmlText.push('<tr><td>');			
 		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');

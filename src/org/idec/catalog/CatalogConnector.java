@@ -293,8 +293,8 @@ import org.jdom.JDOMException;
 				try {
 					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat);
 					String xslPath = AP_PATH + CATALOGUES_DIR+productName+"/"+versionVal+"/metadata_to_html.xsl";	
-					logger.info("PATH: "+xslPath);
 					htmlResult = GetRecordByIdXSL.Transform(metadata, xslPath);
+					logger.info("htmlResult: "+htmlResult);
 					writer.write(htmlResult);
 				}catch (Exception e) {
 					e.printStackTrace();
