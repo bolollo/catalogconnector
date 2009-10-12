@@ -49,49 +49,36 @@ alert(transport.responseText);
 //Does Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
 	
-	
-	
-	
-	
-	
-////////////////////////////////////	
-	var cName = unescape(catName);
-	var div = document.createElement("div_new"+cName);
-	div.style.border="4px blue";
-	div.style.width="100%";
-	
-	var input = document.createElement("input");
-	var body = $(("div_"+cName));
-	
-	/*	var mytable     = body.table;
-	var mytablebody = mytable.getElementsByTagName("tbody")[0];
-	var myrow       = mytablebody.getElementsByTagName("tr")[1];
-	var mycel       = myrow.getElementsByTagName("td")[1];
-	console.info(mycel);
-*/	
 	//TODO: Find a way to fix row retrieval here, b/c it isn't efficient to search
-	//entire DOM for an id when we know just about exactly where it is.
+	//entire DOM for an id when we know just about exactly where it is.		
+	//Search using escaped id b/c we used escaped id for each table
 	var catalogTable = $(id); 
 	
-	catalogTable.appendChild(div);
-	$(div).innerHTML="<center><br><br><br><br><br><br><br><br></center>";
-	$(div).addClassName('loader').show();
-	
-	new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
-	{
-		method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding)},
-		onSuccess: function(transport)
-		{	 
-			$(div).removeClassName('loader').show();	
-			$(div).innerHTML=transport.responseText;
-			
-  		},
-  		onFailure: function(error)
-  		{ 
-			$(div).removeClassName('loader').show();	
-			$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>";
-  		}
-  	});
+	//TODO: Make this less logic general (*this if stmt prevents outputing data twice!)
+	if(catalogTable.childNodes.length<3){
+		var cName = unescape(catName);
+		var div = document.createElement("div_new"+cName);
+		$(div).innerHTML="<br><br><br><br><br><br><br><br>";
+		$(div).addClassName('myloader').show();
+		
+		catalogTable.appendChild(div);
+		
+		new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
+		{
+			method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding)},
+			onSuccess: function(transport)
+			{	 
+				$(div).removeClassName('myloader').show();	
+				$(div).innerHTML=transport.responseText;
+				
+	  		},
+	  		onFailure: function(error)
+	  		{ 
+				$(div).removeClassName('loader').show();	
+				$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>";
+	  		}
+	  	});
+	}
 }
 
 
@@ -284,8 +271,8 @@ function sendRequestByCatalogue(catalogue, request,task){
 
 
 
-var divCatalogue="div_"+catalogue;
- $(divCatalogue).addClassName('infoTabL');
+	var divCatalogue="div_"+catalogue;
+	$(divCatalogue).addClassName('infoTabL');
 
 new Ajax.Request(urlServer, { parameters: request, OnLoading:function(){ 
    
@@ -364,7 +351,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	var prod = escape(ct["product"]);
 	var encoding = escape(ct["xml-encoding"]);
 	
-	console.info(ct);
+	//console.info(ct);
 	
 	if(candidates >1){				
 		var req=json.QueryString+"&";					

@@ -81,6 +81,16 @@ form {
 	background-image: url('/catalogConnector/images/loader.gif');
 	display:block;overflow:hidden;
 }
+
+.myloader{
+	filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	background-repeat:no-repeat;
+	background-position:center; 
+	background-image: url('/catalogConnector/images/loader.gif');
+	display:block;overflow:hidden;
+}
+
 .header{
 	font-size: 14px;
 	font-weight: bold;
