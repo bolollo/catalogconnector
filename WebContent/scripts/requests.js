@@ -46,38 +46,63 @@ alert(transport.responseText);
 //End function
 }
 
+//adapted function to insert elements after DOM objects
+function insertAfter(newElement,targetElement) {
+	//target is what you want it to go after. Look for this elements parent.
+	var parent = targetElement.parentNode; 
+	//if the parents lastchild is the targetElement...
+	if(parent.lastchild == targetElement) {
+		//add the newElement after the target element.
+		parent.appendChild(newElement);
+	} else {
+		// else the target has siblings, insert the new element between the target and it's next sibling.
+		parent.insertBefore(newElement, targetElement.nextSibling);
+	}
+}
+
 //Does Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
+	var catalogTable = $(id); 	
+	var cName = unescape(catName);
+	var divID = "div_new"+id;
 	
-	//TODO: Find a way to fix row retrieval here, b/c it isn't efficient to search
-	//entire DOM for an id when we know just about exactly where it is.		
-	//Search using escaped id b/c we used escaped id for each table
-	var catalogTable = $(id); 
-	
-	//TODO: Make this less logic general (*this if stmt prevents outputing data twice!)
-	if(catalogTable.childNodes.length<3){
-		var cName = unescape(catName);
-		var div = document.createElement("div_new"+cName);
-		$(div).innerHTML="<br><br><br><br><br><br><br><br>";
-		$(div).addClassName('myloader').show();
-		
-		catalogTable.appendChild(div);
-		
+	//this checks to see if metadaata has been inserted yet
+	if($(divID)==null){
+
+		var div = document.createElement('div');
+		div.id=divID;
+		div.innerHTML="<br><br><br><br><br><br><br><br>";
+		div.addClassName('myloader').show();
+				
+		insertAfter(div,catalogTable);
 		new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
 		{
 			method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding)},
 			onSuccess: function(transport)
 			{	 
-				$(div).removeClassName('myloader').show();	
-				$(div).innerHTML=transport.responseText;
-				
-	  		},
+				div.removeClassName('myloader').show();	
+				div.innerHTML=transport.responseText;
+		  	},
 	  		onFailure: function(error)
 	  		{ 
-				$(div).removeClassName('loader').show();	
-				$(div).innerHTML="<html><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></html>";
+				div.removeClassName('loader').show();	
+				div.innerHTML="<div><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></div>";
 	  		}
 	  	});
+	}else{
+		//This means we are minimizing re-maximizing the div
+		invertDisplay(divID);
+	}
+}
+
+function invertDisplay(div){
+	var display = $(div).style.display.toLowerCase();
+	//console.debug("display: " + display);
+	
+	if(display=="none"){
+		$(div).style.display="";
+	}else{
+		$(div).style.display = "none";
 	}
 }
 
@@ -147,12 +172,6 @@ for(i=0; i < cataloguesJson.length;i++){
 			 $( 'divCapabilities' ).appendChild( text );
 			 $( 'divCapabilities' ).appendChild( tr );
 }
-
-	
-
-	
-	
-	
 
     },OnCreate:function(){     
     $('divCapabilities').addClassName('loader');   
@@ -330,6 +349,10 @@ var ct=null;
 return ct
 }
 
+function doMetaDataSelect(){
+	
+}
+
 function parseWriteCatalogues(divCatalogue,json,task){
 	//console.info("clean divs");
 	$(divCatalogue).innerHTML="";
@@ -381,13 +404,18 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			
 			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
 			
-			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100% onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			
 			htmlText.push('<tr bgcolor="#ECECFF">');
-			htmlText.push('<td width="80%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-			htmlText.push('<td width="10%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></center></td>');
-			htmlText.push('<td width="10%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">HTML Version</a></center></td>');
+			
+			htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
+			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
+			htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');			
 			htmlText.push('</tr>');
-			htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
+			
+			
+			htmlText.push('<tr><td colspan="3"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
+			
 			htmlText.push('</table>');
 		}
 		htmlText.push('</td></tr></table>');
@@ -405,17 +433,21 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		req=req.replace(/%3D/g,'=');
 		htmlText.push('<table id='+identifier+' border="0"  width="100%">');
 		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
-		htmlText.push('<tr><td>');			
+		
+		htmlText.push('<tr><td>');
+		
 		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 		htmlText.push('<tr bgcolor="#ECECFF">');
-		htmlText.push('<td width="80%" ><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
-		htmlText.push('<td width="10%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">View metadata</a></center></td>');
-		htmlText.push('<td width="10%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">HTML Version</a></center></td>');
+		htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
+		htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
+		htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');	
 		htmlText.push('</tr>');
-		htmlText.push('<tr><td colspan="2"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
+		htmlText.push('<tr><td colspan="3"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
 		htmlText.push('</table>');											
+		
 		htmlText.push('</td></tr></table>');		
-	}else{
+	}
+	else{
 		htmlText.push('<p> No records found </p>');
 	}					
 	$(divCatalogue).innerHTML=htmlText.join(' ');

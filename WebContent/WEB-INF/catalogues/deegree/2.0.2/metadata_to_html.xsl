@@ -14,7 +14,7 @@ is working.
 
 <xsl:output method="xml" encoding="ISO-8859-1"/>
 <xsl:template match="/">
-  <div>
+  <div witdh="100%">
     <xsl:apply-templates/>
   </div>
 </xsl:template>
