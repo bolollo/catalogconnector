@@ -26,7 +26,7 @@ function sendRequestAll(){
 $('divResults').addClassName('loader').show();
 new Ajax.Request(urlServer, { parameters: $('frmRequest').serialize(true), OnLoading:function(){ 
 
-    $('divCapabilities').addClassName('loader');
+    $('divCapabilities').addClassName('loader').show();
    
     },
 
@@ -34,11 +34,12 @@ onSuccess: function(transport){
 alert(transport.responseText);
     //var json = transport.responseText.evalJSON(); 
    //alert(json);
-   $('divResults').innerHTML=transport.responseText;
-    $('divCapabilities').addClassName('div');
+	$('divCapabilities').removeClassName('loader').show();
+	$('divResults').innerHTML=transport.responseText;
+	$('divCapabilities').addClassName('div');
    }, OnCreate:function(){ 
    
-    $('divCapabilities').addClassName('loader');
+    $('divCapabilities').addClassName('loader').show();
    
     }
   }); 
@@ -85,7 +86,7 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 		  	},
 	  		onFailure: function(error)
 	  		{ 
-				div.removeClassName('loader').show();	
+				div.removeClassName('myloader').show();	
 				div.innerHTML="<div><h1><center><br>This operation is not yet supported for " +cName+"</br></center></h1></div>";
 	  		}
 	  	});
@@ -203,8 +204,10 @@ function getRecords(){
 	}else{
 	createTabs();
 		$('catalogues').value=catalogs;
-		//sendRequest();
 		createRequestByCatalogue();
+		
+		//This immediately selects this first tab
+		easytabs(1,1);
 	}
 
 }
@@ -238,16 +241,10 @@ var j=1;
 catalogsArray.each(function(item) {
 htmlText.push('<div style="border: 1px solid #2b66a5;" id="catalogue'+j+'"><div id="pag_'+item+'"></div><div id="extr_'+item+'"></div> <div id="div_'+item+'" class="infoTab"></div></div>');
 
-
-
-
 j=j+1;
 });
 
 $( 'divResults' ).innerHTML=htmlText.join(' ');
-
-
-
 
 }
 
@@ -287,48 +284,25 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 }
 
 function sendRequestByCatalogue(catalogue, request,task){
-
-
-
 	var divCatalogue="div_"+catalogue;
-	$(divCatalogue).addClassName('infoTabL');
+	$(divCatalogue).addClassName('infoTabL').show();
+	$(divCatalogue).innerHTML="<h1><b>Searching....</h1>";
 
-new Ajax.Request(urlServer, { parameters: request, OnLoading:function(){ 
-   
-   $(divCatalogue).addClassName('infoTabL');
-   
-   
-   $(divCatalogue).innerHTML="<h1>Searching....</h1>";
- 
-    },
+new Ajax.Request(urlServer, { parameters: request,
 
 onSuccess: function(transport){  
-
+	
+	$(divCatalogue).removeClassName('infoTabL').show();
    var json = transport.responseText.evalJSON(); 
+   parseWriteCatalogues(divCatalogue,json,task);  
    
-  
-   parseWriteCatalogues(divCatalogue,json,task);
-  
-   $(divCatalogue).removeClassName('infoTabL');
- 
-   
-   }, OnCreate:function(){ 
-   
-  
-   
-    }, onFailure: function(error){ 
-    
-    
-    //console.error("Error en la peticio");
-     $(divCatalogue).removeClassName('infoTabL');
-    	$(divCatalogue).innerHTML="Server did not respond: "+error;
-    
+   }, 
+   onFailure: function(error){    
+	   //console.error("Error en la peticio");
+	   $(divCatalogue).removeClassName('infoTabL').show();
+	   $(divCatalogue).innerHTML="<h1>Server did not respond: "+error+"</h1>";
     }
-
-  }); 
-
-
-
+  });
 }
 
 
@@ -460,7 +434,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			if(!po){po=0;}
 			$(tb).innerHTML=cName+ " ("+po+")";
 		}
-	}
+	} 
 	$(divCatalogue).style.display='block';
 	//console.info("task:"+task);
 	if(task){
