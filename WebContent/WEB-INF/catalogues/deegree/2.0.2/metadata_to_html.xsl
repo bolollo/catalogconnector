@@ -15,6 +15,52 @@ is working.
 <xsl:output method="xml" encoding="ISO-8859-1"/>
 <xsl:template match="/">
   <div witdh="100%">
+  	<style type="text/css">
+
+
+
+.meta
+  { vertical-align: top;
+  }
+
+.meta-param
+  { vertical-align: top;
+    color: #004393
+  }
+
+.meta-value
+  { vertical-align: top;
+  }
+
+h3 {
+   font-size: 1.1em;
+   color: #21507B;
+   margin-top: 0.6em;
+}
+
+
+
+.captioneddiv
+  { margin: 2em 0em 0em 0em;
+    padding: 1em;
+    height:auto;
+    border: solid #E2E2E2    1px;
+    background: #ffffff;
+  }
+ 
+.captioneddiv h3
+  { position: relative;
+    margin: 0.5em;
+    top: -2.0em;
+    left: -1.0em;
+    padding: 0em 0.5em;
+    display: inline; 
+    font-size: 0.9em;
+    background: #ffffff;
+  }
+
+
+	</style>
     <xsl:apply-templates/>
   </div>
 </xsl:template>
@@ -69,8 +115,9 @@ is working.
       <xsl:with-param name="cvalue" select="./gmd:metadataStandardVersion/gco:CharacterString"/>
       </xsl:call-template>
 </table>
-    <xsl:apply-templates select="./gmd:contact"/>
 </div>
+    <xsl:apply-templates select="./gmd:contact"/>
+
 </xsl:template>
 
 <!-- 'Metadata->Metadata author' block -->
@@ -86,7 +133,7 @@ is working.
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString"/>
       </xsl:call-template>
       <xsl:call-template name="tablerow">
-      <xsl:with-param name="cname" select="'Organisation name'"/>
+      <xsl:with-param name="cname" select="'Organization name'"/>
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString"/>
       </xsl:call-template>
       <xsl:call-template name="tablerow">
@@ -124,10 +171,18 @@ is working.
       <xsl:with-param name="cname" select="'Country'"/>
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country/gco:CharacterString"/>
       </xsl:call-template>
-      <xsl:call-template name="tablerow">
-      <xsl:with-param name="cname" select="'Email'"/>
-      <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
-      </xsl:call-template>
+ 
+  <xsl:variable name="address" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
+	<tr>
+	  <td class="meta-param">Email:</td>
+	  <td class="meta-value">
+	    <a><xsl:attribute name="href">
+	     <xsl:value-of select="concat('mailto:',./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString)"/>
+	   		</xsl:attribute>
+		<xsl:value-of select="($address)"/>
+		</a>
+	  </td>
+	</tr>
 </table></td>
 </tr>
 </table>
@@ -136,7 +191,8 @@ is working.
 
 <!-- 'Identification' block -->
 <xsl:template match="gmd:MD_DataIdentification">
-<div class="captioneddiv">
+
+	<div class="captioneddiv">
 <h3>Identification info</h3>
 <table class="meta"><tr></tr>
       <xsl:call-template name="tablerow">
@@ -156,7 +212,7 @@ is working.
       <xsl:with-param name="cvalue" select="./gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString"/>
       </xsl:call-template>
       <xsl:call-template name="tablerow">
-      <xsl:with-param name="cname" select="'Organisation name'"/>
+      <xsl:with-param name="cname" select="'Organization name'"/>
       <xsl:with-param name="cvalue" select="./gmd:pointOfContact/gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString"/>
       </xsl:call-template>
 
@@ -168,9 +224,11 @@ is working.
       </td>
       </tr>
 </table>
+	</div>
+    
     <xsl:apply-templates select="./gmd:extent"/>
     <xsl:apply-templates select="./gmd:pointOfContact"/>
-</div>
+
 </xsl:template>
 
 <!-- 'Identification->Point of Contact' block -->
@@ -186,7 +244,7 @@ is working.
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:individualName/gco:CharacterString"/>
       </xsl:call-template>
       <xsl:call-template name="tablerow">
-      <xsl:with-param name="cname" select="'Organisation name'"/>
+      <xsl:with-param name="cname" select="'Organization name'"/>
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:organisationName/gco:CharacterString"/>
       </xsl:call-template>
       <xsl:call-template name="tablerow">
@@ -224,10 +282,19 @@ is working.
       <xsl:with-param name="cname" select="'Country'"/>
       <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:country/gco:CharacterString"/>
       </xsl:call-template>
-      <xsl:call-template name="tablerow">
-      <xsl:with-param name="cname" select="'Email'"/>
-      <xsl:with-param name="cvalue" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
-      </xsl:call-template>
+	
+	<xsl:variable name="address" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
+	<tr>
+	  <td class="meta-param">Email:</td>
+	  <td class="meta-value">
+	    <a><xsl:attribute name="href">
+	     <xsl:value-of select="concat('mailto:',./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString)"/>
+	   		</xsl:attribute>
+		<xsl:value-of select="($address)"/>
+		</a>
+	  </td>
+	</tr>
+      
 </table></td>
 </tr>
 </table>
@@ -236,11 +303,11 @@ is working.
 
 <!-- 'Identification->Geographic box' block -->
 <xsl:template match="gmd:extent">
-<xsl:if test="./gmd:EX_Extent/gmd:geographicElement">
+<xsl:if test="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox">
 <div class="captioneddiv">
 <h3>Geographic box</h3>
 <br/>
-<table class="meta" width="100%" align="center"><tr></tr>
+<table class="meta" width="50%" height="30%" align="center"><tr></tr>
 <tr>
 <td></td><td class="meta-param" align="center">North bound latitude<br/>
 <font color="#000000"><xsl:value-of select="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal"/></font></td><td></td>
@@ -373,9 +440,10 @@ is working.
       </xsl:call-template>
       </xsl:for-each>
 </table>
+</div>
 <xsl:apply-templates select="./ows:BoundingBox"/>
 <xsl:apply-templates select="./ows:WGS84BoundingBox"/>
-</div>
+
 </xsl:template>
 
 

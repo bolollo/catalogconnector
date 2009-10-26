@@ -73,6 +73,14 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 		var div = document.createElement('div');
 		div.id=divID;
 		div.innerHTML="<br><br><br><br><br><br><br><br>";
+		
+		//$(div).setAttribute("align","center");
+		
+		$(div).style.marginRight ="auto";
+		$(div).style.marginLeft = "auto";
+		$(div).style.width = "92%";
+		$(div).setAttribute("textAlign","left");		
+		
 		div.addClassName('myloader').show();
 				
 		insertAfter(div,catalogTable);
@@ -101,6 +109,7 @@ function invertDisplay(div){
 	//console.debug("display: " + display);
 	
 	if(display=="none"){
+
 		$(div).style.display="";
 	}else{
 		$(div).style.display = "none";
@@ -110,7 +119,7 @@ function invertDisplay(div){
 
 
 function ajaxTest(urlServer){
- $('DIV_test').innerHTML="<h1>Searching....</h1>";
+ $('DIV_test').innerHTML="<h2>&nbsp;Searching....</h2>";
 						 $('txtTest').value="";						  
 	new Ajax.Request(urlServer,
   {
@@ -152,12 +161,12 @@ function switchAll()
 
 
 
-
-
 //This is where check boxes for catalog selections are handled
 var cataloguesJson;
 function getCapabilities(){
 $( 'divCapabilities' ).innerHTML="";
+//console.info("REQUEST=" + urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'));
+
 new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   onSuccess: function(transport){  
     cataloguesJson = transport.responseText.evalJSON();
     //console.debug(cataloguesJson.length);
@@ -276,7 +285,7 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 	
 	var reqF=req+"catalogues="+cat+"&";
 	
-	//console.debug(reqF);
+	//console.debug("REQUEST: "+ reqF);
 	sendRequestByCatalogue(cat, reqF,true);
 	});
 
@@ -286,21 +295,27 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 function sendRequestByCatalogue(catalogue, request,task){
 	var divCatalogue="div_"+catalogue;
 	$(divCatalogue).addClassName('infoTabL').show();
-	$(divCatalogue).innerHTML="<h1><b>Searching....</h1>";
-
+	$(divCatalogue).innerHTML="<h1><b>  Searching....</b></h1>";
+	//console.info("REQUEST = "+request);
+	
 new Ajax.Request(urlServer, { parameters: request,
 
-onSuccess: function(transport){  
+	onSuccess: function(transport){  
+	
 	
 	$(divCatalogue).removeClassName('infoTabL').show();
-   var json = transport.responseText.evalJSON(); 
-   parseWriteCatalogues(divCatalogue,json,task);  
-   
+	if(transport.responseText.length == 0){
+		$(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
+	}else{
+		var json = transport.responseText.evalJSON(); 
+		parseWriteCatalogues(divCatalogue,json,task);  
+
+	}	
    }, 
    onFailure: function(error){    
 	   //console.error("Error en la peticio");
 	   $(divCatalogue).removeClassName('infoTabL').show();
-	   $(divCatalogue).innerHTML="<h1>Server did not respond: "+error+"</h1>";
+	   $(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
     }
   });
 }
@@ -328,10 +343,15 @@ function doMetaDataSelect(){
 }
 
 function parseWriteCatalogues(divCatalogue,json,task){
+	
+	
 	//console.info("clean divs");
 	$(divCatalogue).innerHTML="";
 	//console.info(json);
 	//console.info(json+".");
+	
+	
+	
 	if(json==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
 	if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
 	//var candidates=json.numberOfRecordsMatched;
@@ -378,7 +398,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			
 			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
 			
-			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100% onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 			
 			htmlText.push('<tr bgcolor="#ECECFF">');
 			
@@ -406,10 +426,8 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
 		htmlText.push('<table id='+identifier+' border="0"  width="100%">');
-		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');
-		
+		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');		
 		htmlText.push('<tr><td>');
-		
 		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
