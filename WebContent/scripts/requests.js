@@ -394,20 +394,22 @@ function parseWriteCatalogues(divCatalogue,json,task){
 				boundingBoxResponse[3] = uc[1];
 			}
 			*/
-
 			
 			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
 			
-			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
-			
+			//htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="select(this)" onmouseout="unselect(this)">');
 			htmlText.push('<tr bgcolor="#ECECFF">');
 			
-			htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
+			htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
+			
+			if (!json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.blank() || !json.GetRecordsResponse.Record[i].boundingBox.upperCorner.blank()){
+				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');"/></center></td>');
+			}
+			
 			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
 			htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');			
 			htmlText.push('</tr>');
-			
-			
 			htmlText.push('<tr><td colspan="3"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
 			
 			htmlText.push('</table>');
@@ -428,9 +430,13 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<table id='+identifier+' border="0"  width="100%">');
 		htmlText.push('<tr><td><b>Found:'+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');		
 		htmlText.push('<tr><td>');
-		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+		//htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="select(this)" onmouseout="unselect(this)">');
 		htmlText.push('<tr bgcolor="#ECECFF">');
-		htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
+		htmlText.push('<td width="60%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
+		
+		htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox(\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');"/></center></td>');
+				
 		htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
 		htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');	
 		htmlText.push('</tr>');

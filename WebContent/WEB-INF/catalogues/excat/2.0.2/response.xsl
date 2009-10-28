@@ -32,6 +32,7 @@ xmlns:ows="http://www.opengis.net/ows"
                             <xsl:value-of select="dc:identifier"/>
                         </identifier>
                         <boundingBox>
+                            <latlon>1</latlon>
                             <lowerCorner>
                                 <xsl:value-of select="ows:BoundingBox/ows:LowerCorner"/>
                             </lowerCorner>

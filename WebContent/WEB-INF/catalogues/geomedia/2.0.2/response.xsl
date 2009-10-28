@@ -30,6 +30,7 @@ xmlns:dc="http://purl.org/dc/elements/1.1/">
                             <xsl:value-of select="gmd:fileIdentifier"/>
                         </identifier>
                         <boundingBox>
+                            <latlon>1</latlon>
                             <lowerCorner>
                                 <xsl:value-of select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude"/>&#160;<xsl:value-of select="gmd:identificationInfo/gmd:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude"/>
                             </lowerCorner>

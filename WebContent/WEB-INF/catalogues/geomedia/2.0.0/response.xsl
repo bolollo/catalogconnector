@@ -21,6 +21,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                         <description><xsl:value-of select="Abstract"/></description>
                         <identifier><xsl:value-of select="Title"/></identifier>
                         <boundingBox>
+                            <latlon>1</latlon>
                             <lowerCorner>
                                 <xsl:value-of select="Spatial/@WestBoundLongitude"/>&#160;<xsl:value-of select="Spatial/@SouthBoundLatitude"/>
                             </lowerCorner>

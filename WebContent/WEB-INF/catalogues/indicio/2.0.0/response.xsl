@@ -19,6 +19,7 @@ xmlns:gml="http://www.opengis.net/gml"
                 <description><xsl:value-of select="rim:Description/rim:LocalizedString/@value"/></description>
                 <identifier><xsl:value-of select="@id"/></identifier>
                 <boundingBox>
+                	<latlon>0</latlon>
                     <lowerCorner>
                         <xsl:value-of select="rim:Slot/wrs:ValueList/wrs:AnyValue/gml:Envelope/gml:lowerCorner"/>
                     </lowerCorner>

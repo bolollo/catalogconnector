@@ -32,6 +32,7 @@ xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/"
                             <xsl:value-of select="dc:identifier"/>
                         </identifier>
                         <boundingBox>
+                            <latlon>1</latlon>
                             <lowerCorner>
                                 <xsl:value-of select="dc:spatial/dcmiBox:Box/dcmiBox:westlimit"/>&#160;<xsl:value-of select="dc:spatial/dcmiBox:Box/dcmiBox:southlimit"/>
                             </lowerCorner>
