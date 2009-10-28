@@ -1,8 +1,8 @@
-function select(object){
+function selectMetadata(object){
 	object.className = "metadata-selected";
 }
 
-function unselect(object){
+function unselectMetadata(object){
 	object.className = "";
 }
 
