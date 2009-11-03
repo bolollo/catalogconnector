@@ -403,8 +403,10 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			
 			htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
 			
-			if (!json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.blank() || !json.GetRecordsResponse.Record[i].boundingBox.upperCorner.blank()){
-				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');"/></center></td>');
+			
+			
+			if (!json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString().blank()){
+				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString()+'\');"/></center></td>');
 			}
 			
 			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
@@ -413,6 +415,10 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			htmlText.push('<tr><td colspan="3"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
 			
 			htmlText.push('</table>');
+			
+
+			
+
 		}
 		htmlText.push('</td></tr></table>');
 		/*
@@ -435,12 +441,20 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="60%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
 		
-		htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox(\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');"/></center></td>');
-				
+		if (!json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record.boundingBox.upperCorner.toString().blank()){
+			htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record.boundingBox.latlon+',\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner.toString()+'\');"/></center></td>');
+		}
+		
 		htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
 		htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');	
 		htmlText.push('</tr>');
+		
+		//console.info("RECORD: " + json.GetRecordsResponse.Record);
+		//console.info("BB: " + json.GetRecordsResponse.Record.boundingBox);
+		
+		
 		htmlText.push('<tr><td colspan="3"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
+		
 		htmlText.push('</table>');											
 		
 		htmlText.push('</td></tr></table>');		
