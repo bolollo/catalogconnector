@@ -76,18 +76,26 @@ form {
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	background-repeat:no-repeat;
-	background-position: 40% 40%;
-	background-color: #F7F7F7; 
+	background-position:center; 
 	background-image: url('/catalogConnector/images/loader.gif');
 	display:block;overflow:hidden;
 }
 
-.myloader{
+.blueloader{
+	filter:alpha(opacity=60);
+	-moz-opacity:0.6;
+	background-repeat:no-repeat;
+	background-position:44% 40%;; 
+	background-image: url('/catalogConnector/images/bigloader.gif');
+	display:block;overflow:hidden;
+}
+
+.smallloader{
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	background-repeat:no-repeat;
 	background-position:center; 
-	background-image: url('/catalogConnector/images/loader.gif');
+	background-image: url('/catalogConnector/images/smallloader.gif');
 	display:block;overflow:hidden;
 }
 

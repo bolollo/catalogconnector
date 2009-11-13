@@ -77,6 +77,8 @@ public class CatalogRequest {
 			logger.debug("***********************");
 			PostMethod httppost = new PostMethod(cat.urlcatalog);
 			httppost.setRequestBody(cat.CSWRequest);
+			
+			
 			httpclient.setConnectionTimeout(20000);
 			if (cat.ProxyHost != null && !cat.ProxyHost.equalsIgnoreCase("")){
 				httpclient.getHostConfiguration().setProxy(cat.ProxyHost,cat.ProxyPort);

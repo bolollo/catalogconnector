@@ -38,6 +38,7 @@ public class RecordRequest {
 			httpclient.setConnectionTimeout(20000);
 	
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+cat.XMLencoding+"");
+			//logger.info("GET RECORD BY ID REQ:\n"+request);
 			httpclient.executeMethod(httppost);			
 			is = httppost.getResponseBodyAsStream();
 			BufferedReader entry = new BufferedReader(new InputStreamReader(is,cat.XMLencoding));
@@ -49,9 +50,9 @@ public class RecordRequest {
 				}
 			}
 			is.close();
-			entry.close();			
+			entry.close();		
 			logger.debug("SERVER RESPONSE"+res);
-			httppost.releaseConnection();		
+			httppost.releaseConnection();
 												
 		} catch (IOException e) {
 			logger.error("IO Exception:"+e);
@@ -71,35 +72,14 @@ public class RecordRequest {
 	public static String parseCatalogForGetRecById(String id, Catalog cat) {
 		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?>\r\n"+
 		"<csw:GetRecordById \r\n"+
-			"service=\"CSW\"\r\n"+ 
+			"service=\"CSW\"\r\n"+
+			//"outputSchema=\"csw:IsoRecord\"\r\n"+
 			"version=\""+cat.cswversion+"\"\r\n"+ 
 			"outputFormat=\"application/xml\"\r\n"+ 
-			"outputSchema=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\"\r\n"+
+			//"outputSchema=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\"\r\n"+
 			"xmlns:csw=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\">\r\n"+
 			"<csw:Id>"+id+"</csw:Id>\r\n"+
 			"<csw:ElementSetName>full</csw:ElementSetName>\r\n"+
 			"</csw:GetRecordById>\r\n";
-	}
-	
-	public static void main(String [] args){		
-		String name="abc";
-		String title= "abc!";
-		String description= "GeoNetwork catalog service conform to the HTTP protocol binding \n of the OpenGIS Catalogue Service specification version 2.0.2";
-		String urlcatalog= "http://75.101.143.247:8080/deegree-csw/services";
-		String product= "geonetwork"; 
-		String cswversion="2.0.2";
-		String XMLRequestsPath=null; 
-		String XMLencoding= "UTF-8";
-		String ProxyHost= "";
-		int ProxyPort= 0;
-	
-		Catalog cat = null;
-		try {
-			cat = new Catalog(name, title, description, urlcatalog, product, cswversion, XMLRequestsPath, XMLencoding, ProxyHost, ProxyPort);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-		System.out.println(getRecordByIdRequest("AZGS Geologic Map of Arizona",cat));
 	}
 }
