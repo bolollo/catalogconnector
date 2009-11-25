@@ -4,6 +4,7 @@ package org.idec.catalog;
  */
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -13,12 +14,17 @@ import org.apache.log4j.Logger;
 
 public class CapabilitiesRequest {
 	
-	private static Logger logger = Logger.getLogger(CatalogRequest.class);
-	static MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-
+	static Logger logger = Logger.getLogger(CatalogRequest.class);
+	static MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager(); 
 	static HttpClient httpclient = new HttpClient(connectionManager);
-	static Utils ut = new Utils();
-	static java.io.InputStream is;
+	private final static int TWENTY_SECONDS = 20000;
+
+	
+/*	public CapabilitiesRequest(){
+		connectionManager = new MultiThreadedHttpConnectionManager(); 
+		httpclient = new HttpClient(connectionManager);
+		ut = new Utils();
+	}*/
 	
 	/**
 	 * Get capabilities for a catalog (and parse to determine 
@@ -33,31 +39,31 @@ public class CapabilitiesRequest {
 		try {
 			PostMethod httppost = new PostMethod(catURL);
 			httppost.setRequestBody(genGetCapabilitiesRequest(encoding));
-			httpclient.setConnectionTimeout(20000);
+			httpclient.setConnectionTimeout(TWENTY_SECONDS);
 	
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+encoding+"");
 			
 			httpclient.executeMethod(httppost);			
-			is = httppost.getResponseBodyAsStream();
+			InputStream is = httppost.getResponseBodyAsStream();
 			BufferedReader entry = new BufferedReader(new InputStreamReader(is,encoding));
 			String read = "";
 			
-			
-			 
 			while (read != null) {
 				res +=read;
 				read = entry.readLine();		
 			}
 			is.close();
 			entry.close();		
-			//logger.debug("SERVER RESPONSE "+res);
-
 			httppost.releaseConnection();
 												
 		} catch (IOException e) {
-			//logger.error("IO Exception:"+e);
+			logger.error("CapabilitiesRequest Error: "+e);
 			res = null;
 		}
+		
+		//if(res!=null)
+		//logger.info("URL:" + catURL +"\nCapabilities: "+res);
+		
 		return res;
 	}
 	

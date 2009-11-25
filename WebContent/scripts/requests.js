@@ -21,7 +21,9 @@
  * @author Dominic Owen
  */
 var urlServer="/catalogConnector/Connector";
-
+var schemaInfo = new Object;
+var currSchema = new Object;
+var currMetadataSchema = new Object;
 
 //adapted function to insert elements after DOM objects
 function insertAfter(newElement,targetElement) {
@@ -37,6 +39,16 @@ function insertAfter(newElement,targetElement) {
 	}
 }
 
+//url,json.GetRecordsResponse.Record[i].identifier,version
+function loadMetaData(url,identifier,version,cname){
+	var outSchemaSetting = "";
+	if(currSchema[cname]!="Default"){
+		outSchemaSetting = '&outputSchema='+currSchema[cname]
+	}	
+	window.open(url+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+identifier+'&version='+version+outSchemaSetting);
+}
+
+
 //Does Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
 	var catalogTable = $(id); 	
@@ -49,20 +61,26 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 		var div = document.createElement('div');
 		div.id=divID;
 		div.innerHTML="<br><br><br><br><br><br><br><br>";
+
+		var outSchemaSetting = "";
+		if(currSchema[cName]!="Default"){
+			outSchemaSetting = currSchema[cName];
+		}	
+
+		//This remembers what the drop box was when metadata was loaded
+		currMetadataSchema[cName]=currSchema[cName];
 		
-		//$(div).setAttribute("align","center");
-		
-		$(div).style.marginRight ="auto";
-		$(div).style.marginLeft = "auto";
-		$(div).style.width = "92%";
-		$(div).setAttribute("textAlign","left");		
+		div.style.marginRight ="auto";
+		div.style.marginLeft = "auto";
+		div.style.width = "92%";
+		div.setAttribute("textAlign","left");		
 		
 		div.addClassName('loader').show();
 				
 		insertAfter(div,catalogTable);
 		new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
 		{
-			method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding)},
+			method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding),outSchema: outSchemaSetting},
 			onSuccess: function(transport)
 			{	 
 				div.removeClassName('loader').show();	
@@ -71,9 +89,35 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 	  		onFailure: function(error)
 	  		{ 
 				div.removeClassName('loader').show();	
-				div.innerHTML="<div><h1><center><br>This operation is not yet supported for this catalog service</br></center></h1></div>";
+				div.innerHTML="<div><h1><center><br>This operation is not yet supported for this outputschema</br></center></h1></div>";
 	  		}
 	  	});
+	}else if(currMetadataSchema[cName]!=currSchema[cName]){
+		currMetadataSchema[cName]=currSchema[cName];
+		
+		var outSchemaSetting = "";
+		if(currSchema[cName]!="Default"){
+			outSchemaSetting = currSchema[cName];
+		}	
+		
+		$(divID).innerHTML="<br><br><br><br><br><br><br><br>";
+		$(divID).addClassName('loader').show();
+		
+		new Ajax.Request(urlServer+'?REQUEST=metaDataToHTML', 
+		{
+			method: 'get',parameters: {recordID: unescape(id), recordVersion: unescape(version), recordURL: decodeURI(url), productName: escape(product),encodingType: escape(encoding),outSchema: outSchemaSetting},
+			onSuccess: function(transport)
+			{	 
+				$(divID).removeClassName('loader').show();	
+				$(divID).innerHTML=transport.responseText;
+		  	},
+			onFailure: function(error)
+			{ 
+		  		$(divID).removeClassName('loader').show();	
+		  		$(divID).innerHTML="<div><h1><center><br>This operation is not yet supported for this outputschema</br></center></h1></div>";
+			}
+		});
+		
 	}else{
 		//This means we are minimizing re-maximizing the div
 		invertDisplay(divID);
@@ -98,57 +142,59 @@ function invertDisplay(div){
 //This method switches all catalogs to selected or unselected
 function switchAll()
 {
-	var cl=new Array();
 	var nodes = $A(document.frmRequest.chkCatalog);
 	
 	nodes.each(function(node)
 	{
 		if(document.getElementById("chkallboxes").checked == true)
 		{
+			if(!node.disabled)
 			node.checked=true;
 		}
 		else{
+			if(!node.disabled)
 			node.checked=false;
 		}	
 	}				
 	);
 }
 
-
-//This is where check boxes for catalog selections are handled
-var cataloguesJson;
-function validateCatalogs(){
-//$(divCapabilities).innerHTML="<html><br><b><center>Validating Catalogs</center></b></html>";
-//$( 'divCapabilities' ).addClassName('smallloader').show();
-
-
-
-new Ajax.Request(urlServer+'?REQUEST=ValidateCatalogs&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   onSuccess: function(transport){  
-    cataloguesJson = transport.responseText.evalJSON();
-    //$( 'divCapabilities' ).innerHTML="";
-    //$( 'divCapabilities' ).removeClassName('smallloader').show();
-
-	//Do something crazy here.
-    
-    },OnCreate:function(){
-    }
-    });
+function updateCheckbox(nameKey,failed){
+	
+	var nodes = $A(document.frmRequest.chkCatalog);
+	
+	nodes.each(function(node)
+	{
+		//console.debug("node value: " +  node.value);
+		if(node.value==nameKey){
+			if(!failed){
+				node.disabled=false;
+				$(nameKey+"font").style.color="black";
+			}
+			else{
+				$(nameKey+"font").style.color="red";
+			}
+			throw $break;
+		}
+	}				
+	);
+	
 }
 
 
-//Each catalog will send one of these out and update ittself in the catalog list
+//Each catalog will send one of these out and update itself in the catalog list
 //to show that it is valid
-function getIndividualSchema(urlServerKey){
-	 $( 'divCapabilities' ).innerHTML="";
-
-	new Ajax.Request(urlServer+'?REQUEST=GetSchemas&outputFormat=JSON&PROJECT='+$F('PROJECT'), 
+function getIndividualSchema(nameKey){
+	new Ajax.Request(urlServer+'?REQUEST=GetIndivSchemas&outputFormat=JSON&PROJECT='+$F('PROJECT'), 
 		{
 			method:'get',
-			parameters: {serverKey: unescape(urlServerKey)},
+			parameters: {IndivNameKey: unescape(nameKey)},
 			onSuccess: function(transport){  
-		    	schemasJson = transport.responseText.evalJSON();
-	
-		    },OnCreate:function(){        
+				updateCheckbox(nameKey,false);
+				schemaInfo[nameKey]= transport.responseText.split(",");
+				currSchema[nameKey]="Default";
+		    }, onFailure: function(error){
+		    	updateCheckbox(nameKey,true);
 		    }
 	    }); 
 }
@@ -157,29 +203,33 @@ function getIndividualSchema(urlServerKey){
 var cataloguesJson;
 function getCapabilities(){
  $( 'divCapabilities' ).innerHTML="";
-//$(divCapabilities).innerHTML="<html><br><b><center>Validating Catalogs</center></b></html>";
-//$( 'divCapabilities' ).addClassName('smallloader').show();
 
-//console.info("REQUEST=" + urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'));
 
-new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   onSuccess: function(transport){  
+new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   
+	onSuccess: function(transport){  
     cataloguesJson = transport.responseText.evalJSON();
-    //console.debug(cataloguesJson.length);
-//    $( 'divCapabilities' ).innerHTML="";
-//    $( 'divCapabilities' ).removeClassName('smallloader').show();
-	for(i=0; i < cataloguesJson.length;i++){
-				 var cb = document.createElement( "input" );
-				  cb.type = "checkbox";cb.id = "chkCatalog";cb.value = cataloguesJson[i].name;cb.checked = false;cb.name="chkCatalog";
-				 var text = document.createTextNode( cataloguesJson[i].name+' ('+cataloguesJson[i].title+')');
-				 //console.debug(cataloguesJson[i].name);
-				 var tr=document.createElement( "br" );
-				 $( 'divCapabilities' ).appendChild( cb );
-				 $( 'divCapabilities' ).appendChild( text );
-				 $( 'divCapabilities' ).appendChild( tr );
-	}
+    //console.debug(cataloguesJson);
+		for(i=0; i < cataloguesJson.length;i++){
+					 var cb = document.createElement( "input" );
+					  cb.type = "checkbox";cb.id = "chkCatalog";cb.value = cataloguesJson[i].name;cb.checked = false;
+					  cb.name="chkCatalog";cb.disabled=true;
+					 var text = document.createTextNode( cataloguesJson[i].name+' ('+cataloguesJson[i].title+')');
 
+					 //This font/id are used for validation stuff
+					 var font = document.createElement("font");
+					 font.id = cataloguesJson[i].name+"font";
+					 font.style.color = "grey";
+					 font.appendChild(text);
+					
+					 var tr=document.createElement( "br" );
+					 $( 'divCapabilities' ).appendChild( cb );
+					 $( 'divCapabilities' ).appendChild( font );
+					 $( 'divCapabilities' ).appendChild( tr );
+		}
+		for(i=0; i < cataloguesJson.length;i++){
+			getIndividualSchema(cataloguesJson[i].name);
+		}
     },OnCreate:function(){     
-   //$('divCapabilities').addClassName('loader');   
     }
     }); 
 
@@ -210,7 +260,7 @@ function getRecords(){
 		$('catalogues').value=catalogs;
 		createRequestByCatalogue();
 		
-		//This immediately selects this first tab
+		//This immediately selects this first tab when searching for multiple catalogs
 		easytabs(1,1);
 	}
 
@@ -254,20 +304,15 @@ $( 'divResults' ).innerHTML=htmlText.join(' ');
 
 function showOptions(){
 		var cl=new Array();
-		
 		var nodes = $A(document.frmRequest.chkCatalog);
-
 		nodes.each(function(node){
 		if(node.checked){
 		cl.push(node.value);
 		}
 				
-			});
-			
-			return cl;
-			
-	}
-
+		});			
+		return cl;			
+}
 
 
 function createRequestByCatalogue(){
@@ -283,8 +328,6 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 	//console.debug("REQUEST: "+ reqF);
 	sendRequestByCatalogue(cat, reqF,true);
 	});
-
-
 }
 
 function sendRequestByCatalogue(catalogue, request,task){
@@ -293,58 +336,42 @@ function sendRequestByCatalogue(catalogue, request,task){
 	//console.info("REQUEST = "+request);
 	
 new Ajax.Request(urlServer, { parameters: request,
-
 	onSuccess: function(transport){  
-	
-	
 	$(divCatalogue).removeClassName('blueloader').show();
 	if(transport.responseText.length == 0){
 		$(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
 	}else{
 		var json = transport.responseText.evalJSON(); 
 		parseWriteCatalogues(divCatalogue,json,task);  
-
 	}	
    }, 
    onFailure: function(error){    
-	   //console.error("Error en la peticio");
 	   $(divCatalogue).removeClassName('blueloader').show();
 	   $(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
     }
   });
 }
 
-
-
 function extracPr(catalogue){
-
-
 var ct=null;
 	for(i=0; i < cataloguesJson.length;i++){
-	
 		if(cataloguesJson[i].name==catalogue){
-		
-		 ct= cataloguesJson[i];
+			ct= cataloguesJson[i];
 		}
-	
 	}
-
-return ct
+	return ct
 }
-
-function doMetaDataSelect(){
+function updateSchemaHash(cname){
+	currSchema[cname]=$(cname+"box").value;
+	//could potentially gray out metadata options here too, if no XSL exists for transform
+}
 	
-}
-
 function parseWriteCatalogues(divCatalogue,json,task){
 	$(divCatalogue).innerHTML="";
 	
-	if(json==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
-	if(json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"+json;return }
-	//var candidates=json.numberOfRecordsMatched;
+	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"/*+json.GetRecordsResponse*/;return }
 	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
 	var cName=divCatalogue.replace('div_','');
-	//console.warn(cName);
 	var ct = extracPr(cName);
 	var pagination = 'pag_'+json.Id;
 	var pos = json.Position;
@@ -353,10 +380,20 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	var version = escape(ct["csw-version"]);
 	var url = encodeURI(ct.urlcatalog);
 	var prod = escape(ct["product"]);
-	var encoding = escape(ct["xml-encoding"]);
+	var encoding = escape(ct["xml-encoding"]);		
+
+	//This block of code fills output schema drop down box
 	
-	//console.info(ct);
 	
+	var schemas = schemaInfo[cName];
+	
+	
+	var schemaResults = "";
+	
+	for(i=0; i < schemas.length;i++){
+		schemaResults = schemaResults+ '<option>'+schemaInfo[cName][i]+'</option>';
+	}	
+				
 	if(candidates >1){				
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
@@ -365,45 +402,25 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="10% align="left"><b><center>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></center></td>');
 		htmlText.push('<td width="90%" align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
-		htmlText.push(' <select><option>Default</option></select></td>');
-		
+		htmlText.push(' <select id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select></td>');		
 		htmlText.push('</tr>');
-		
-		//htmlText.push('<td><b>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></td></tr>');
-		
+				
 		htmlText.push('<tr><td colspan="4">');
 		for (i=0;i < json.GetRecordsResponse.Record.length;i++){
-
-			
-			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);
-			
-			//htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);	
 			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');
-
-			htmlText.push('<tr width="100%" bgcolor="#ECECFF">');
-			
-			
+			htmlText.push('<tr width="100%" bgcolor="#ECECFF">');			
 			if (!json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString().blank()){
 				htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString()+'\');"/></center></td>');
-				htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-				htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');			
+				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString()+'\');"/></center></td>');			
 			}else{
-				htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-				htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-				htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record[i].identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');							
+				htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');							
 			}
-			
-				
-			
+			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
+			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+json.GetRecordsResponse.Record[i].identifier+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
 			htmlText.push('</tr>');
-			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');
-			
+			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');			
 			htmlText.push('</table>');
-			
-
-			
-
 		}
 		htmlText.push('</td></tr></table>');
 		/*
@@ -413,35 +430,22 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	}else if(candidates==1){
 		//TODO: I'd like to eliminate this block of code, as it essentially repeats the code
 		//above. I plan on doing this within the next two weeks (by December)
-		
 		var identifier = escape(json.GetRecordsResponse.Record.identifier);
-		
 	
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
-		htmlText.push('<table id='+identifier+' border="0"  width="100%">');
-		//htmlText.push('<tr><td><b>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></tr></td>');		
+		htmlText.push('<table id='+identifier+' border="0"  width="100%">');		
 		htmlText.push('<tr bgcolor="#ECECFF">');
 		htmlText.push('<td width="10% align="left"><b><center>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></center></td>');
 		htmlText.push('<td width="90%" align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
-		htmlText.push(' <select><option>Default</option></select></td>');
+		htmlText.push(' <select><option>Default</option>'+schemaResults+'</select></td>');
 		
 		htmlText.push('</tr>');
-		
-				
-		
-		
-		
-		htmlText.push('<tr><td>');
-		//htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="addBox(this,\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner+'\');" onmouseout="removeBox(this);" >');
+		htmlText.push('<tr><td colspan="4">');
 		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');
 		htmlText.push('<tr bgcolor="#ECECFF">');
-//		htmlText.push('<td width="60%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');	
-//		if (!json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record.boundingBox.upperCorner.toString().blank()){
-///		htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record.boundingBox.latlon+',\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner.toString()+'\');"/></center></td>');
-//		}
-	
+		
 		if (!json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record.boundingBox.upperCorner.toString().blank()){
 			htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
 			htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record.boundingBox.latlon+',\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner.toString()+'\');"/></center></td>');
@@ -452,24 +456,16 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
 			htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');							
 		}
-			//htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-			//htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');	
-			htmlText.push('</tr>');
-			//console.info("RECORD: " + json.GetRecordsResponse.Record);
-			//console.info("BB: " + json.GetRecordsResponse.Record.boundingBox);
-		
+		htmlText.push('</tr>');
 		
 		htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
-		
 		htmlText.push('</table>');											
-		
 		htmlText.push('</td></tr></table>');		
 	}
 	else{
 		htmlText.push('<p> No records found </p>');
 	}					
 	$(divCatalogue).innerHTML=htmlText.join(' ');
-	//var nameCat=divCatalogue.replace('div_','');
 	for (j=1;j < catalogsArray.size()+1;j++){
 		var tb="tablink"+j;
 		var cp=$(tb).innerHTML
@@ -480,9 +476,7 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		}
 	} 
 	$(divCatalogue).style.display='block';
-	//console.info("task:"+task);
 	if(task){
-		//console.info(json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords'));
 		var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
 		if(pt=="NaN"){pt=0;}
 		var numberPages=Math.ceil(pt);

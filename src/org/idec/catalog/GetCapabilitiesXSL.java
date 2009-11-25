@@ -29,10 +29,11 @@ import net.sf.json.xml.XMLSerializer;
 public class GetCapabilitiesXSL {
 	private static Logger logger = Logger.getLogger(GetCapabilitiesXSL.class);
 	
-	public static JSON Transform(String recordMetadata,String xslPath) throws ParserConfigurationException
+	public static String Transform(String recordMetadata,String xslPath) throws ParserConfigurationException
 	{
 		boolean failed = false;
 		JSON json = null;
+		String result = null;
 		try {
 			//Prepare the xml string
 			Reader rd = new CharArrayReader(recordMetadata.toCharArray());
@@ -52,10 +53,11 @@ public class GetCapabilitiesXSL {
 			
 			
 			//Set up output
-			json = new JSONArray();
+			result = output.toString();
+/*			json = new JSONArray();
 			XMLSerializer xmlS = new XMLSerializer();
 			String rep = output.toString();
-			json = xmlS.read(rep);
+			json = xmlS.read(rep);*/
 
 
 			//result = output.toString();
@@ -67,6 +69,6 @@ public class GetCapabilitiesXSL {
 		if( failed){
 			json=null;
 		}
-		return json;
+		return result;
 	}
 }

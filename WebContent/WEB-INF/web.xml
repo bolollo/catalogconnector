@@ -6,7 +6,7 @@
   <servlet-class>org.idec.catalog.Logging</servlet-class>
   <init-param>
     <param-name>log-directory</param-name>
-    <param-value>E:/usuaris/w.szczerban/tomcat/webapps/catalogConnector/WEB-INF/logs/</param-value>
+    <param-value>C:\Documents and Settings\dowen\workspace\catalogConnector\WebContent\WEB-INF\logs</param-value>
   </init-param>
   <init-param>
     <param-name>log4j-init-file</param-name>

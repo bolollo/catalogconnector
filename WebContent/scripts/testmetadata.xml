@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ows:ExceptionReport xmlns:ows="http://www.opengis.net/ows" version="2.0">
+<ows:Exception exceptionCode="wrs:InvalidRequest">
+<ows:ExceptionText>XML Schema validation error. 
+</ows:ExceptionText><ows:ExceptionText>Error:Error Line:    2 Column:  85 Message: cvc-elt.1: Cannot find the declaration of element 'csw:GetCapabilities'.
+</ows:ExceptionText>
+</ows:Exception>
+</ows:ExceptionReport>

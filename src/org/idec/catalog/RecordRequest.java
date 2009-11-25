@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 public class RecordRequest {
 	
 	private static Logger logger = Logger.getLogger(CatalogRequest.class);
+	
 	static MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-
 	static HttpClient httpclient = new HttpClient(connectionManager);
 	static Utils ut = new Utils();
 	static java.io.InputStream is;
@@ -28,10 +28,13 @@ public class RecordRequest {
 	 * @return An XML response containing the record's metadata
 	 * @throws IOException
 	 */
-	public static String getRecordByIdRequest(String recordID, Catalog cat){
+	public static String getRecordByIdRequest(String recordID, Catalog cat, String outSchema){
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		
 		String res = "";
-		String request = parseCatalogForGetRecById(recordID, cat);
-
+		String request = parseCatalogForGetRecById(recordID, cat, outSchema);
+		logger.info("GET RECORD BY ID REQ:\n"+request);
+		
 		try {
 			PostMethod httppost = new PostMethod(cat.urlcatalog);
 			httppost.setRequestBody(request);
@@ -69,14 +72,20 @@ public class RecordRequest {
 	 * @throws IOException
 	 */
 	//This may need to be more generalized for a few params
-	public static String parseCatalogForGetRecById(String id, Catalog cat) {
+	public static String parseCatalogForGetRecById(String id, Catalog cat, String outputSchema) {
+		String schemaString = "";
+		if(!outputSchema.equals("")){//\"csw:IsoRecord\"
+			schemaString = "outputSchema=\""+outputSchema+"\"\r\n";
+		}
+		
+		
 		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?>\r\n"+
 		"<csw:GetRecordById \r\n"+
 			"service=\"CSW\"\r\n"+
-			//"outputSchema=\"csw:IsoRecord\"\r\n"+
 			"version=\""+cat.cswversion+"\"\r\n"+ 
 			"outputFormat=\"application/xml\"\r\n"+ 
-			//"outputSchema=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\"\r\n"+
+			schemaString+
+			//"outputSchema=\"http://www.opengis.net/cat/csw/"+
 			"xmlns:csw=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\">\r\n"+
 			"<csw:Id>"+id+"</csw:Id>\r\n"+
 			"<csw:ElementSetName>full</csw:ElementSetName>\r\n"+

@@ -33,8 +33,10 @@
 
 package org.idec.catalog;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
@@ -45,7 +47,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
+
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 
@@ -60,6 +65,10 @@ import org.jdom.JDOMException;
  public class CatalogConnector extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
    
 
+	private final int TWENTY_SECONDS = 20000;
+	
+	String RECORD_OUTSCHEMA_KEY = "outSchema";
+	
 	 /**
 	  * When processing a client request for GetRecordByID,
 	  * this key hashes to the id being used
@@ -82,7 +91,7 @@ import org.jdom.JDOMException;
 	  * When processing a client request for GetRecordByID,
 	  * this key hashes to the record's catalog's name 
 	  */	 
-	String RECORD_ENDOING_KEY = "encodingType";
+	String RECORD_ENCODING_KEY = "encodingType";
 	
 	 /**
 	  * When processing a client request for GetRecordByID,
@@ -137,6 +146,8 @@ import org.jdom.JDOMException;
    
    Capabilities cp = new Capabilities();
 
+   private static JSONArray capabilitiesArray;
+   
     /* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
 	 */
@@ -201,19 +212,12 @@ import org.jdom.JDOMException;
 				}else
 				{
 					response.setContentType("text/json;charset="+charset);
-					try {
-						JSONArray capabilitiesArray=Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);						
-						writer.write(capabilitiesArray.toString());
-							validateRecords(capabilitiesArray);
-						} catch (JDOMException e) {
-							e.printStackTrace();
-						}						
+					//JSONArray capabilitiesArray=Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);						
+					writer.write(capabilitiesArray.toString());
+					//validateRecords(capabilitiesArray);
+											
 				}
 			}
-/*			else if(methodRequest.equalsIgnoreCase("ValidateRecords")){
-			
-			
-			}*/
 			//Here we process a request to get records
 			else if(methodRequest.equalsIgnoreCase("GetRecords")){
 				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
@@ -271,12 +275,49 @@ import org.jdom.JDOMException;
 								writer.write("]");
 					}
 				}
-			}else if(methodRequest.equalsIgnoreCase("metadatatohtml")){				
+			}			
+			//Once we get schema request, wait on getcapabilities thread to finish,
+			// or timeout and return results
+			else if(methodRequest.equalsIgnoreCase("GetIndivSchemas")){
+				//logger.info("GOT SCHEMA REQUEST: "+schemaReqs);								
+				String idVal = request.getParameter("IndivNameKey");
+				
+				//busy wait for now
+				
+				
+				OutputSchemaContainer catalogInfo = capabilitesMap.get(idVal);
+				
+				long startTime = System.currentTimeMillis();
+				while(!catalogInfo.isFinishedLoadingSchemas()&&((System.currentTimeMillis()-startTime)<TWENTY_SECONDS)){
+					;//busy wait for timeout or completion
+				}
+				
+				//Test for timeout
+				if(!catalogInfo.isFinishedLoadingSchemas()){
+					catalogInfo.setValidationFailed(true);
+				}
+				
+				if(catalogInfo.isValidationFailed()){
+					response.sendError(-1, "Validation failed for "+ idVal);
+				}else{	
+					//done loading schemas
+					ArrayList<String> schemas = catalogInfo.getOutputSchemas();
+					
+					for(int i=0;i<schemas.size();i++){
+						writer.write(schemas.get(i));						
+						if(i<(schemas.size()-1))
+							writer.write(",");
+					}
+				}
+			}
+			else if(methodRequest.equalsIgnoreCase("metadatatohtml")){				
 				String idVal = request.getParameter(this.RECORD_ID_KEY);
 				String urlVal = request.getParameter(this.RECORD_URL_KEY);
 				String versionVal = request.getParameter(this.RECORD_VERSION_KEY);
-				String encodingType = request.getParameter(this.RECORD_ENDOING_KEY);		
-				String productName = request.getParameter(RECORD_PRODUCT_KEY);
+				String encodingType = request.getParameter(this.RECORD_ENCODING_KEY);		
+				String outSchema = request.getParameter(this.RECORD_OUTSCHEMA_KEY);
+				
+				//String productName = request.getParameter(RECORD_PRODUCT_KEY);
 				String catalogCharset = charset;
 
 				//Gzip + UTF-8 seem to corrupt some Western European letters. So we
@@ -289,10 +330,9 @@ import org.jdom.JDOMException;
 				String htmlResult = null;
 				try {
 					logger.debug("XSL PATH:"+AP_PATH+"/WebContent/scripts");
-					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat);
-					String xslPath = AP_PATH+"/scripts/metadata_to_html.xsl";//AP_PATH + CATALOGUES_DIR+productName+"/"+versionVal+"/metadata_to_html.xsl";	
+					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat,outSchema);
+					String xslPath = AP_PATH+"/scripts/metadata_to_html.xsl";	
 					htmlResult = GetRecordByIdXSL.Transform(metadata, xslPath);
-					//logger.info("htmlResult: "+htmlResult);
 					writer.write(htmlResult);
 				}catch (Exception e) {
 					e.printStackTrace();
@@ -300,14 +340,12 @@ import org.jdom.JDOMException;
 				}
 			}
 		else{
-				//interface no recognized
+				//interface not recognized
 				writer.write("Unknown interface");
 				logger.error("Unknown interface: Use GetCapabilities or GetRecords");
 			}
 		}else{
-			//response.getWriter().print("Error no request param");
 			writer.write("Error: No request parameter");
-			//writer.flush();
 			logger.error("NO request parameter defined");
 		}
 		writer.flush();
@@ -319,19 +357,17 @@ import org.jdom.JDOMException;
 	private void validateRecords(JSONArray capabilitiesArray) {
 		//start thread here that will run until all are validated but allows initial
 		//response to get back w/ out any delay
-		
-	
 		for(int i = 0; i<capabilitiesArray.size();i++){
+			String name = (String) capabilitiesArray.getJSONObject(i).get("name");
 			String url = (String) capabilitiesArray.getJSONObject(i).get("urlcatalog");
 			String encoding = (String) capabilitiesArray.getJSONObject(i).get("xml-encoding");
 			
+			
 			//Here, initialize a catalog in the map. Used later to confirm 
 			//whether all getcapabilities requests are finished.
-			capabilitesMap.put(url, new OutputSchemaContainer());
+			capabilitesMap.put(name, new OutputSchemaContainer());
 			
-			//logger.info("\nurl: "+url +"\nencoding: "+encoding);
-		
-			new ValidationThread(url,encoding).start();
+			new ValidationThread(name,url,encoding).start();
 			
 		}
 		
@@ -348,7 +384,6 @@ import org.jdom.JDOMException;
 	 * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		super.doPut(request, response);
 	}
 
@@ -356,7 +391,6 @@ import org.jdom.JDOMException;
 	 * @see javax.servlet.Servlet#getServletInfo()
 	 */
 	public String getServletInfo() {
-		// TODO Auto-generated method stub
 		return super.getServletInfo();
 	}
 
@@ -378,19 +412,19 @@ import org.jdom.JDOMException;
 			PROXY_PORT = Integer.parseInt(port);
 		}
 		PROXY_HOST = getInitParameter("proxyHost");
-
-		/*
-		if (XML_CATALOGUES_FILE == null || XML_CATALOGUES_FILE.length() == 0
-				|| !(new File(AP_PATH + XML_CATALOGUES_FILE)).isFile()) {
-			System.err.println("ERROR:Can't find log file:" + PATH_CATALOGUES );
-			logger.error("ERROR:Can't find log file:" + PATH_CATALOGUES);
-			throw new ServletException();
-		}else{
-			logger.info("Catalog.xml found");
-			catalogue=Capabilities.parseCataloguesXML(AP_PATH + XML_CATALOGUES_FILE,AP_PATH + CATALOGUES_DIR);
+		catalogs = Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);
+	
+		try {
+			capabilitiesArray = Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);
+			validateRecords(capabilitiesArray);
+		} catch (JDOMException e) {
+			logger.error("Problem fetching project.xml file. Make sure file exists");
+		} catch (IOException e) {
+			logger.error("Problem fetching project.xml file. Make sure file exists");
 		}
-	*/
-		catalogs = Capabilities.parseCataloguesXML(PATH_PROJECTS  + PROJECT +".xml",AP_PATH + CATALOGUES_DIR);;
+		
+
+	
 	}
 	
 	/* (non-Javadoc)
@@ -418,7 +452,7 @@ import org.jdom.JDOMException;
 		int ProxyPort= -1;
 	
 		Catalog cat = new Catalog(name, title, description, urlcatalog, product, cswversion, XMLRequestsPath, XMLencoding, ProxyHost, ProxyPort);
-
+		
 		return cat;
 	}
 	
@@ -475,46 +509,70 @@ import org.jdom.JDOMException;
 	
 	//each service has important information regarding: id, status and outputSchema 
 	private class ValidationThread extends Thread{		
-		String URL;
+		String name;
 		String encoding;
-		public ValidationThread(String urlArg, String encodingArg){
-			URL = urlArg;
+		String url;
+		public ValidationThread(String nameArg,String urlArg,String encodingArg){
+			name = nameArg;
+			url = urlArg;
 			encoding=encodingArg;
 		}
 		
 		//TODO: Make this work
-		public void run() {
-			
+		public void run() {			
 			//For now, this is a proof of concept and the only actual schema will be the default one.
-			capabilitesMap.get(URL).getOutputSchemas().add("http://www.opengis.net/cat/csw/2.0.2");
-			capabilitesMap.get(URL).setFinishedLoadingSchemas(true);
+			capabilitesMap.get(name).getOutputSchemas().add("http://www.opengis.net/cat/csw/2.0.2");
+			//capabilitesMap.get(name).getOutputSchemas().add("http://www.isotc211.org/2005/gmd");
+
+			boolean error = false;			
+			String capabilities = "";			
 			
-			
-/*			String capabilities = null;			
 			try{
-				capabilities = CapabilitiesRequest.getCapabilities(encoding,URL);			
+				capabilities =  CapabilitiesRequest.getCapabilities(encoding,url);			
 			}catch(Exception e){
-				logger.error("Error in get capabilities request.");
-			}				
-			if(null == capabilities){
-				logger.error("Server did not respond");
+				error = true;
 			}
-			else{				
-				logger.info("RESULT: " + capabilities);
-				
+			
+			
+			if(null == capabilities){
+				error = true;
+			}
+			else if(capabilities.length()>0){
+			{
 				String xslPath = AP_PATH+"scripts/parse_capabilities.xsl";
-				try {
-					JSON json = GetCapabilitiesXSL.Transform(capabilities, xslPath);									
-					if(json==null){
-						logger.error("Improperly formatted response, server probably failed");
+				try 
+				{
+					String result = GetCapabilitiesXSL.Transform(capabilities, xslPath);
+					if(result !=null){
+						JSON json = new XMLSerializer().read(result);
+						Object results =  JSONObject.fromObject(json).get("outSchema");
+						if(results instanceof JSONArray){
+							for(Object schema : (JSONArray)results){
+								if(!((String)schema).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
+									capabilitesMap.get(name).getOutputSchemas().add((String) schema);
+								}
+							}	
+						}else if(results instanceof String){
+							if(!((String)results).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
+									capabilitesMap.get(name).getOutputSchemas().add((String)results);
+							}
+						}
 					}else{
-						logger.info("Results " + json.toString());
+						logger.info("Validation request succeeded but unable to parse results. Probably" +
+								" malformed.");
 					}
 				}
 				catch (ParserConfigurationException e) {
 					logger.error("Get Cababilities Parse Failed");
 				}
-			}*/
+				}
+			}
+			
+			
+			if(error){
+				capabilitesMap.get(name).setValidationFailed(true);
+			}
+			capabilitesMap.get(name).setFinishedLoadingSchemas(true);
 		}
 	}
 }
