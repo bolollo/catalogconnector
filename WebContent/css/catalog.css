@@ -144,3 +144,46 @@ form {
 .metadata-selected{
 	background-color:#B3D4EF;
 }
+
+/* CatalogConnector Header */
+#cc-header{
+	background-image: url(../images/header/cc_banner_repeat.jpg);
+	margin: 0px;
+	padding: 0px;
+	height: 65px;
+	width: 100%;
+	background-color: #09F;
+	position: relative;
+	background-repeat: repeat-x;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+}
+#cc-header h1{
+	font-style: normal;
+	text-align: left;
+	margin: 5px;
+	padding: 5px;
+	text-transform: none;
+}
+#cc-banner{
+	background-image: url(../images/header/cc_banner_left.jpg);
+	background-repeat: no-repeat;
+	margin: 0px;
+	padding: 0px;
+	height: 65px;
+	width: 666;
+	position: absolute;
+	top: 0px;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	left: 0px;
+}
+#cc-logo{
+	position: absolute;
+	left: 5px;
+	top: 5px;
+}
