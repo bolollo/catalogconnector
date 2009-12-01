@@ -38,7 +38,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>CatalogConnector sample client</title>
+<title>CatalogConnector CSW Client</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="css/catalog.css" rel="stylesheet" type="text/css">
 <link href="css/ajaxpagination.css" rel="stylesheet" type="text/css"  />
@@ -70,7 +70,6 @@ function init(){
     map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 }
 
-
 function resetAllFields()
 {
 	document.getElementById("chkallboxes").checked = false;
@@ -93,10 +92,17 @@ function resetAllFields()
 </head>
 <body  onLoad="init();getCapabilities();resetAllFields();">
 
-<table width="99%" height="90%" align="center" border="1" cellspacing="0" cellpadding="1" >
-  <tr height="14%" align="center" bgcolor="#0099CC"> 
-    <td height="65px" colspan="2" bgcolor="#FFFFFF" >
-    	<img align="middle" src="images/cc_banner.jpg" width="100%" height="100%"></img>     	
+<table width="99%" height="98%" align="center" border="1" cellspacing="0" cellpadding="1" >
+  <tr align="center" bgcolor="#0099CC"> 
+    <td height="65px" colspan="2" bgcolor="#FFFFFF">
+    <div id="cc-header">
+	    <h1>CatalogConnector CSW Client</h1> 
+    	<div id="cc-banner"></div>
+    	<div id="cc-logo">
+    		<img src="images/header/logo_idec.jpg" width="152" height="50" alt="IDEC Logo" border="0">&nbsp;
+        	<img src="images/header/logo_azgs.png" width="50" height="50" alt="AZGS Logo" border="0">
+    	</div>    	
+    </div>
   </td>
   </tr>
     
