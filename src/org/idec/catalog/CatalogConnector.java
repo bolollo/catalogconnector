@@ -65,7 +65,7 @@ import org.jdom.JDOMException;
  public class CatalogConnector extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
    
 
-	private final int TWENTY_SECONDS = 20000;
+	private final int TEN_SECONDS = 10000;
 	
 	String RECORD_OUTSCHEMA_KEY = "outSchema";
 	
@@ -288,7 +288,7 @@ import org.jdom.JDOMException;
 				OutputSchemaContainer catalogInfo = capabilitesMap.get(idVal);
 				
 				long startTime = System.currentTimeMillis();
-				while(!catalogInfo.isFinishedLoadingSchemas()&&((System.currentTimeMillis()-startTime)<TWENTY_SECONDS)){
+				while(!catalogInfo.isFinishedLoadingSchemas()&&((System.currentTimeMillis()-startTime)<TEN_SECONDS)){
 					;//busy wait for timeout or completion
 				}
 				
