@@ -165,7 +165,6 @@ function updateCheckbox(nameKey,failed){
 	
 	nodes.each(function(node)
 	{
-		//console.debug("node value: " +  node.value);
 		if(node.value==nameKey){
 			if(!failed){
 				node.disabled=false;
@@ -333,6 +332,7 @@ var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F(
 function sendRequestByCatalogue(catalogue, request,task){
 	var divCatalogue="div_"+catalogue;
 	$(divCatalogue).addClassName('blueloader').show();
+	$(divCatalogue).innerHTML="";
 	//console.info("REQUEST = "+request);
 	
 new Ajax.Request(urlServer, { parameters: request,
@@ -369,7 +369,7 @@ function updateSchemaHash(cname){
 function parseWriteCatalogues(divCatalogue,json,task){
 	$(divCatalogue).innerHTML="";
 	
-	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>Invalid response returned</p>"/*+json.GetRecordsResponse*/;return }
+	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>&nbsp;Invalid response returned</p>"/*+json.GetRecordsResponse*/;return }
 	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
 	var cName=divCatalogue.replace('div_','');
 	var ct = extracPr(cName);
@@ -386,15 +386,13 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	
 	
 	var schemas = schemaInfo[cName];
-	
-	
 	var schemaResults = "";
 	
 	for(i=0; i < schemas.length;i++){
 		schemaResults = schemaResults+ '<option>'+schemaInfo[cName][i]+'</option>';
 	}	
-				
-	if(candidates >1){				
+	
+	if(candidates >0){
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
@@ -406,20 +404,27 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		htmlText.push('</tr>');
 				
 		htmlText.push('<tr><td colspan="4">');
-		for (i=0;i < json.GetRecordsResponse.Record.length;i++){
-			var identifier = escape(json.GetRecordsResponse.Record[i].identifier);	
+		for (i=0;i <candidates;i++){
+			var currRecord;
+			if(candidates>1){
+				currRecord = json.GetRecordsResponse.Record[i];	
+			}else{
+				currRecord = json.GetRecordsResponse.Record;
+			}
+			var identifier = escape(currRecord.identifier);
+						
 			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');
 			htmlText.push('<tr width="100%" bgcolor="#ECECFF">');			
-			if (!json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString().blank()){
-				htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');
-				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record[i].boundingBox.latlon+',\''+json.GetRecordsResponse.Record[i].boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record[i].boundingBox.upperCorner.toString()+'\');"/></center></td>');			
+			if (!currRecord.boundingBox.lowerCorner.toString().blank() || !currRecord.boundingBox.upperCorner.toString().blank()){
+				htmlText.push('<td width="70%"><h1>'+currRecord.title+'</h1></td>');
+				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+currRecord.boundingBox.latlon+',\''+currRecord.boundingBox.lowerCorner.toString()+'\',\''+currRecord.boundingBox.upperCorner.toString()+'\');"/></center></td>');			
 			}else{
-				htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record[i].title+'</h1></td>');							
+				htmlText.push('<td width="73%"><h1>'+currRecord.title+'</h1></td>');							
 			}
 			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+json.GetRecordsResponse.Record[i].identifier+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
+			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+currRecord.identifier+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
 			htmlText.push('</tr>');
-			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+json.GetRecordsResponse.Record[i].description+'</tr></td>');			
+			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+currRecord.description+'</tr></td>');			
 			htmlText.push('</table>');
 		}
 		htmlText.push('</td></tr></table>');
@@ -427,40 +432,6 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		var md_bounds = new OpenLayers.Bounds(boundingBoxResponse[0], boundingBoxResponse[1], boundingBoxResponse[2], boundingBoxResponse[3]);
 		map.zoomToExtent(md_bounds, false);
 		*/						
-	}else if(candidates==1){
-		//TODO: I'd like to eliminate this block of code, as it essentially repeats the code
-		//above. I plan on doing this within the next two weeks (by December)
-		var identifier = escape(json.GetRecordsResponse.Record.identifier);
-	
-		var req=json.QueryString+"&";					
-		req=req.replace(/%26/g,'&');
-		req=req.replace(/%3D/g,'=');
-		htmlText.push('<table id='+identifier+' border="0"  width="100%">');		
-		htmlText.push('<tr bgcolor="#ECECFF">');
-		htmlText.push('<td width="10% align="left"><b><center>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></center></td>');
-		htmlText.push('<td width="90%" align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
-		htmlText.push(' <select><option>Default</option>'+schemaResults+'</select></td>');
-		
-		htmlText.push('</tr>');
-		htmlText.push('<tr><td colspan="4">');
-		htmlText.push('<table border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');
-		htmlText.push('<tr bgcolor="#ECECFF">');
-		
-		if (!json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString().blank() || !json.GetRecordsResponse.Record.boundingBox.upperCorner.toString().blank()){
-			htmlText.push('<td width="70%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
-			htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+json.GetRecordsResponse.Record.boundingBox.latlon+',\''+json.GetRecordsResponse.Record.boundingBox.lowerCorner.toString()+'\',\''+json.GetRecordsResponse.Record.boundingBox.upperCorner.toString()+'\');"/></center></td>');
-			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-			htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');			
-		}else{
-			htmlText.push('<td width="73%"><h1>'+json.GetRecordsResponse.Record.title+'</h1></td>');
-			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-			htmlText.push('<td width="13%"><center><a href="'+ct.urlcatalog+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+json.GetRecordsResponse.Record.identifier+'&version='+ct["csw-version"]+'" target="_blank">Raw Metadata File</a></center></td>');							
-		}
-		htmlText.push('</tr>');
-		
-		htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+json.GetRecordsResponse.Record.description+'</tr></td>');
-		htmlText.push('</table>');											
-		htmlText.push('</td></tr></table>');		
 	}
 	else{
 		htmlText.push('<p> No records found </p>');
@@ -497,7 +468,6 @@ function parseWriteCatalogues(divCatalogue,json,task){
 				var position=parseInt((k*$F('maxRecords'))+1);
 				pg.push('Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req);
 			}
-			//console.info(pagination);
 			var	catPag=new ajaxpageclass.createBook(
 				{pages:pg,selectedpage:0}
 				, json.Id, [pagination]);
