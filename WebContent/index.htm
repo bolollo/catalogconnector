@@ -96,18 +96,20 @@ function resetAllFields()
   <tr align="center" bgcolor="#0099CC"> 
     <td height="65px" colspan="2" bgcolor="#FFFFFF">
     <div id="cc-header">
-	    <h1>CatalogConnector CSW Client</h1> 
-    	<div id="cc-banner"></div>
+	    <!--h1>CatalogConnector CSW Client</h1> 
+    	<div id="cc-banner"></div-->
     	<div id="cc-logo">
     		<img src="images/header/logo_idec.jpg" width="152" height="50" alt="IDEC Logo" border="0">&nbsp;
         	<img src="images/header/logo_azgs.png" width="50" height="50" alt="AZGS Logo" border="0">
     	</div>    	
     </div>
   </td>
+  
+  
   </tr>
     
-  <tr height="100%" align="center" valign="top"> 
-    <td width="250" align="center"> 
+  <tr align="center" valign="top"> 
+    <td colspan="1" width="20%" align="left"> 
       <form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
 	    <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">
           <tr> 
@@ -183,34 +185,30 @@ function resetAllFields()
         <tr>
             <td colspan="2"></td>
           </tr>
-
-          
         <tr align="right" valign="middle"> 
             <td colspan="2" align="center"> 
               <input type="submit" style="cursor:pointer;font-size:14px;border:1px solid #FF0000" class="textbox"  name="Submit" value="Search">
             </td>
           </tr>
-    	<tr valign="top" align="left"><td colspan="2" valign="top">*Only catalogs that pass validation are searchable</td></tr>
-    	      
+    	<tr valign="top" align="left"><td colspan="2" valign="bottom"><font color=red>*Catalogs listed in red did not pass validation and are not searchable</font></td></tr>    	      
         </table>
 		<input type="hidden" value=""  name="bbox" id="bbox" >
 		<input type="hidden" value=""  name="catalogues" id="catalogues" >
 		<input type="hidden" value="JSON"  name="outputFormat" id="outputFormat" >
 		<input type="hidden" value="GetRecords"  name="Request" id="Request" >
-		<input type="hidden" value="es" name="language"  id="language" >
+		<input type="hidden" value="es" name="language"  id="language">
 		</form>
-	&nbsp;
+		&nbsp;
 	</td>
-    <td align="left"  >
-	<div id="divResults"  style="overflow:hidden;top:5px;left:5px; right:5px; bottom:5px; margin:5px; width:99%; height:620px; z-index:1;"></div>
+    <td width="80%" align="left">
+	<div id="divResults"  style="overflow:hidden;top:5px;left:5px; right:5px; margin:5px; width:99%; height:620; z-index:1;"></div>
     </td>
   </tr>
 
 </table> 
-<table align="center" height="6%" width="100%" cellspacing="0" cellpadding="0">     	
+<table align="center" width="100%" cellspacing="0" cellpadding="0">     	
   <tr valign="top">
-  <td valign="top">
-  
+  <td valign="top" style="height: 62px">
   <p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration </a>|  <a href="examples.html" target="_blank">examples </a>|  <a href="catalogConnector.pdf">documentation</a></p>
   
   </td>
