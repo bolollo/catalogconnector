@@ -44,8 +44,9 @@ function loadMetaData(url,identifier,version,cname){
 	var outSchemaSetting = "";
 	if(currSchema[cname]!="Default"){
 		outSchemaSetting = '&outputSchema='+currSchema[cname]
-	}	
-	window.open(url+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+identifier+'&version='+version+outSchemaSetting);
+	}
+	//console.debug(url);
+	window.open(decodeURI(url)+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+identifier+'&version='+version+outSchemaSetting);
 }
 
 
@@ -292,7 +293,8 @@ htmlText.push('</ul></div>');
 
 var j=1;
 catalogsArray.each(function(item) {
-htmlText.push('<div style="border: 1px solid #2b66a5;" id="catalogue'+j+'"><div id="pag_'+item+'"></div><div id="extr_'+item+'"></div> <div id="div_'+item+'" class="infoTab"></div></div>');
+	//<div id="pag_'+item+'"></div>
+htmlText.push('<div style="border: 1px solid #2b66a5;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
 
 j=j+1;
 });
@@ -381,10 +383,13 @@ function parseWriteCatalogues(divCatalogue,json,task){
 	var url = encodeURI(ct.urlcatalog);
 	var prod = escape(ct["product"]);
 	var encoding = escape(ct["xml-encoding"]);		
-
+	
+	var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
+	//console.debug(pt);
+	if(pt=="NaN"){pt=0;}
+	
+	
 	//This block of code fills output schema drop down box
-	
-	
 	var schemas = schemaInfo[cName];
 	var schemaResults = "";
 	
@@ -396,12 +401,46 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
-		htmlText.push('<table border="0"  width="100%">');
-		htmlText.push('<tr bgcolor="#ECECFF">');
+
+		//var test1 = "asbsdf";
+		
+		//console.debug("ID: "+test1);		
+		//console.debug("VAL: "+test1.value);
+
+		var extr = document.createElement('div');
+
+		
+		
+		//if(task){		
+			var numberPages=Math.ceil(pt);
+			var cmExtra=new Array();
+			//if(numberPages > 15){
+			//console.debug(pos);
+				
+				for (j=0;j < numberPages;j++){
+					var position=parseInt((j*$F('maxRecords'))+1);
+					
+					//This builds drop down box innerhtml
+					var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
+					cmExtra += '<option value="'+rs+'">Go to page: '+(j+1)+'</option>';
+				}
+				extr.innerHTML='<select onChange="sendRequestByCatalogue(\''+json.Id+'\', this.value,true)"><option selected>Select Page</option>'+cmExtra+'</select>';
+		//}
+
+		
+		htmlText.push('<table align="left" border="0"  width="100%">');
+		htmlText.push('<tr align="left" bgcolor="#ECECFF">');
 		htmlText.push('<td width="10% align="left"><b><center>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></center></td>');
-		htmlText.push('<td width="90%" align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
-		htmlText.push(' <select id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select></td>');		
+		htmlText.push('<td width="12%" align="left"><center>');
+		htmlText.push(extr.innerHTML+'</center></td>');
+		htmlText.push('<td align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
+		htmlText.push('<select id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select></td>');
 		htmlText.push('</tr>');
+		
+		//htmlText.push('<tr>');
+		//htmlText.push('<div id="'+pagination+'"></div>');
+		//htmlText.push('<div id="'+pagination+'"></div>');
+		//	htmlText.push('</tr>');
 				
 		htmlText.push('<tr><td colspan="4">');
 		for (i=0;i <candidates;i++){
@@ -445,33 +484,9 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			if(!po){po=0;}
 			$(tb).innerHTML=cName+ " ("+po+")";
 		}
-	} 
-	$(divCatalogue).style.display='block';
-	if(task){
-		var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
-		if(pt=="NaN"){pt=0;}
-		var numberPages=Math.ceil(pt);
-		var cmExtra=new Array();
-		if(numberPages > 15){
-			var extr='extr_'+json.Id;
-			for (j=0;j < numberPages;j++){
-				var position=parseInt((j*$F('maxRecords'))+1);
-				var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
-				cmExtra += '<option value="'+rs+'">go to page:'+j+'</option>';
-			}
-			$(extr).innerHTML='<select onChange="sendRequestByCatalogue(\''+json.Id+'\', this.value,false)"><option selected>Go to page</option>'+cmExtra+'</select>';
-			numberPages=15;
-		}
-		if(numberPages >1){
-			var pg=new Array();
-			for (k=0;k < numberPages;k++){
-				var position=parseInt((k*$F('maxRecords'))+1);
-				pg.push('Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req);
-			}
-			var	catPag=new ajaxpageclass.createBook(
-				{pages:pg,selectedpage:0}
-				, json.Id, [pagination]);
-		}
 	}
+	$(divCatalogue).style.display='block';	
+	//console.debug("ECTR VAR: "+'extr_'+json.Id);
+
 	json=null;
 }
