@@ -147,7 +147,7 @@ form {
 
 /* CatalogConnector Header */
 #cc-header{
-	background-image: url(../images/header/cc_banner_repeat.jpg);
+	background-image: url(../images/header/catalogconnector_banner_repeat.jpg);
 	margin: 0px;
 	padding: 0px;
 	height: 65px;
@@ -159,31 +159,29 @@ form {
 	border-right-width: 0px;
 	border-bottom-width: 0px;
 	border-left-width: 0px;
-}
-#cc-header h1{
-	font-style: normal;
-	text-align: left;
-	margin: 5px;
-	padding: 5px;
-	text-transform: none;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	top: 0px;
+	left: 0px;
 }
 #cc-banner{
-	background-image: url(../images/header/cc_banner_left.jpg);
-	background-repeat: no-repeat;
 	margin: 0px;
 	padding: 0px;
-	height: 65px;
-	width: 666;
 	position: absolute;
-	top: 0px;
 	border-top-width: 0px;
 	border-right-width: 0px;
 	border-bottom-width: 0px;
 	border-left-width: 0px;
 	left: 0px;
+	top: 0px;
 }
 #cc-logo{
 	position: absolute;
-	left: 5px;
+	float: right;
+	margin: 0px;
+	padding: 0px;
 	top: 5px;
+	right: 5px;
 }
