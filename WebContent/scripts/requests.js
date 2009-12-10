@@ -349,7 +349,7 @@ new Ajax.Request(urlServer, { parameters: request,
    }, 
    onFailure: function(error){    
 	   $(divCatalogue).removeClassName('blueloader').show();
-	   $(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
+	   $(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure the URL is correct and supports CSW getRecordByID requests.</center></h2>";
     }
   });
 }

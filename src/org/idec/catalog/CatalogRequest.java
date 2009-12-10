@@ -94,10 +94,9 @@ public class CatalogRequest {
 					res +=leido;					
 				}
 			}
-			is.close();
-			entrada.close();
+
 			
-		logger.debug("SERVER RESPONSE"+res);
+			//logger.debug("SERVER RESPONSE"+res);
 			cat.setResponse(res);
 			httppost.releaseConnection();
 			try {
@@ -109,7 +108,8 @@ public class CatalogRequest {
 			}
 			
 			
-			
+			is.close();
+			entrada.close();
 			
 			
 		} catch (URIException e) {

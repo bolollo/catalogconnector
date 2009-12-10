@@ -44,6 +44,16 @@
 </catalog>
 
 <catalog>
+  <name>USGIN</name>
+  <title>U.S. Geoscience</title>
+  <abstract>U.S. Geoscience Information Network metadata discovery catalog.</abstract>
+  <urlcatalog>http://catalog.usgin.org/geonetwork/srv/en/csw</urlcatalog>
+  <product>geonetwork</product>
+  <csw-version>2.0.2</csw-version>
+  <xml-encoding>UTF-8</xml-encoding>
+</catalog>
+
+<catalog>
 <name>eWater</name>
 <title>eWater Portal</title>
 <abstract>This GIS portal provides access to hydrogeological maps and well data of 12 EU countries. It was developed in frame of EC co-funded project "Multilingual cross-border access to ground water databases" (eWater)</abstract>
@@ -109,31 +119,6 @@
   <product>conterra</product>
   <csw-version>2.0.2</csw-version>
   <xml-encoding>UTF-8</xml-encoding>
-</catalog>
-
-<catalog>
-    <name>geomedia2</name>
-    <title>AdVMIS Catalogue Service Web</title>
-    <abstract>Metadateninformationssystem der AdV - Catalogue
-    Service Web 2.0.2</abstract>
-    <urlcatalog>
-    http://gdz.bkg.bund.de/advmiscsw/advmiscsw</urlcatalog>
-    <product>geomedia</product>
-    <csw-version>2.0.2</csw-version>
-    <xml-encoding>UTF-8</xml-encoding>
-</catalog>
-
-<catalog>
-    <name>portalu</name>
-    <title>PortalU Catalog Server</title>
-    <abstract>Metadata collected from several catalogs owned by the
-    german environmental and surveying authorities. Look at
-    http://INTERFACE_HOST:INTERFACE_PORT for more
-    information</abstract>
-    <urlcatalog>http://www.portalu.de/csw202</urlcatalog>
-    <product>ingrid</product>
-    <csw-version>2.0.2</csw-version>
-    <xml-encoding>UTF-8</xml-encoding>
 </catalog>
 
 

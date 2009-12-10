@@ -8,7 +8,7 @@
 <name>eWater</name>
 <title>eWater Portal</title>
 <abstract>This GIS portal provides access to hydrogeological maps and well data of 12 EU countries. It was developed in frame of EC co-funded project "Multilingual cross-border access to ground water databases" (eWater)</abstract>
-<urlcatalog>http://www.ewater.eu/geonetwork4ewater/srv/en/csw</urlcatalog>
+<urlcatalog>http://217.19.225.45/geonetwork4ewater/srv/en/csw</urlcatalog>
 <product>geonetwork</product>
 <csw-version>2.0.1</csw-version>
 <xml-encoding>UTF-8</xml-encoding>

@@ -51,19 +51,10 @@ public class GetCapabilitiesXSL {
 				output.flush();
 				output.close();
 			
-			
-			//Set up output
 			result = output.toString();
-/*			json = new JSONArray();
-			XMLSerializer xmlS = new XMLSerializer();
-			String rep = output.toString();
-			json = xmlS.read(rep);*/
-
 
 			//result = output.toString();
 		} catch (Exception e1) {	
-			//logger.info("Parse Error");
-			//e1.printStackTrace();
 			failed = true;
 		}
 		if( failed){
