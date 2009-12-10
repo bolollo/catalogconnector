@@ -52,7 +52,6 @@
 <script src="scripts/ajaxpagination.js" type="text/javascript"></script>
 <!--Ajax Pagination Script- Author: Dynamic Drive (http://www.dynamicdrive.com)-->
 <link rel="stylesheet" href="css/menu.css" TYPE="text/css" MEDIA="screen">
-
 <script type="text/javascript">
 var lon = 11;
 var lat = 50;
@@ -84,83 +83,71 @@ function resetAllFields()
 	document.getElementById("maxRecords").value = "10";
 }
 </script>
-
-<style type="text/css">
-
-</style>
-
+<style type="text/css"></style>
 </head>
 <body  onLoad="init();getCapabilities();resetAllFields();">
-
 <table width="99%" height="98%" align="center" border="1" cellspacing="0" cellpadding="1" >
-  <tr align="center" bgcolor="#0099CC"> 
-    <td height="65px" colspan="2" bgcolor="#FFFFFF">
-    <div id="cc-header">
-	    <!--h1>CatalogConnector CSW Client</h1> 
-    	<div id="cc-banner"></div-->
-    	<div id="cc-logo">
-    		<img src="images/header/logo_idec.jpg" width="152" height="50" alt="IDEC Logo" border="0">&nbsp;
-        	<img src="images/header/logo_azgs.png" width="50" height="50" alt="AZGS Logo" border="0">
-    	</div>    	
-    </div>
-  </td>
-  
-  
+  <tr align="center" bgcolor="#0099CC" height="65">
+    <td colspan="2">
+        <div id="cc-header">
+            <div id="cc-banner">
+            	<img src="images/header/catalogconnector_banner.jpg" width="700" height="65" alt="CatalogConnector">
+            </div>
+            <div id="cc-logo">
+            	<img src="images/header/logo_idec.jpg" width="152" height="50" alt="IDEC Logo" border="0">&nbsp;
+            	<img src="images/header/logo_azgs.png" width="50" height="50" alt="AZGS Logo" border="0">
+            </div>
+        </div>
+	</td>
   </tr>
-    
-  <tr align="center" valign="top"> 
-    <td colspan="1" width="20%" align="left"> 
-      <form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
-	    <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">
-          <tr> 
+  <tr align="center" valign="top">
+    <td colspan="1" width="20%" align="left"><form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
+        <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">
+          <tr>
             <td colspan="2">Metadata search:</td>
           </tr>
-          <tr> 
+          <tr>
             <td width="30%">AnyText: </td>
             <td ><input type="text" class="textbox" id="any" value="" name="any"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Title: </td>
             <td width="52%"><input type="text" class="textbox" id="title" name="title"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Description: </td>
             <td width="52%"><input type="text" class="textbox" id="description" name="description"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Subject: </td>
             <td width="52%"><input type="text" class="textbox" id="subject" name="subject"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Organization: </td>
             <td width="52%"><input type="text" class="textbox" id="organization" name="organization"></td>
-          </tr>         
-          <tr> 
+          </tr>
+          <tr>
             <td colspan="2"><input type="checkbox" id="chkbbox"  name="chkbbox" value="checkbox">
               bbox filter view map</td>
           </tr>
-          <tr align="center" valign="middle" > 
-            <td height="210" colspan="2"> <div id="map" style="border: 1px solid #000000; width: 240; height: 200;"> 
-              </div></td>
+          <tr align="center" valign="middle" >
+            <td height="210" colspan="2"><div id="map" style="border: 1px solid #000000; width: 240px; height: 200px;"> </div></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Projects</td>
-            <td>
-            <select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
-            <option value="catalogues">catalogues (by default)</option>
-            <option value="project1">project1</option>
-           
-            </select>
-            </td>
+            <td><select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
+                <option value="catalogues">catalogues (by default)</option>
+                <option value="project1">project1</option>
+              </select></td>
           </tr>
-           <tr> 
+          <tr>
             <td colspan="2">Pagination parameters</td>
           </tr>
-          <tr> 
+          <tr>
             <td>Start position: </td>
             <td width="52%"><input type="text" size="5" value="1" class="textbox" id="startPosition" name="startPosition"></td>
           </tr>
-          <tr> 
+          <tr>
             <td>Max records: </td>
             <td width="52%"><input type="text" size="5" class="textbox" value="10" id="maxRecords" name="maxRecords"></td>
           </tr>
@@ -170,49 +157,37 @@ function resetAllFields()
           <tr>
             <td colspan="2">Available catalogs:</td>
           </tr>
-          
-          
-          <tr> 
+          <tr>
             <td colspan="2"><input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
               Select/Deselect All</td>
           </tr>
-          
-          <tr> 
-            <td height="100" colspan="2"> 
-              <div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div>
-            </td>
-        </tr>
-        <tr>
+          <tr>
+            <td height="100" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
+          </tr>
+          <tr>
             <td colspan="2"></td>
           </tr>
-        <tr align="right" valign="middle"> 
-            <td colspan="2" align="center"> 
-              <input type="submit" style="cursor:pointer;font-size:14px;border:1px solid #FF0000" class="textbox"  name="Submit" value="Search">
-            </td>
+          <tr align="right" valign="middle">
+            <td colspan="2" align="center"><input type="submit" style="cursor:pointer;font-size:14px;border:1px solid #FF0000;" class="textbox"  name="Submit" value="Search"></td>
           </tr>
-    	<tr valign="top" align="left"><td colspan="2" valign="bottom"><font color=red>*Catalogs listed in red did not pass validation and are not searchable</font></td></tr>    	      
+          <tr valign="top" align="left">
+            <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not pass validation and are not searchable</div></td>
+          </tr>
         </table>
-		<input type="hidden" value=""  name="bbox" id="bbox" >
-		<input type="hidden" value=""  name="catalogues" id="catalogues" >
-		<input type="hidden" value="JSON"  name="outputFormat" id="outputFormat" >
-		<input type="hidden" value="GetRecords"  name="Request" id="Request" >
-		<input type="hidden" value="es" name="language"  id="language">
-		</form>
-		&nbsp;
-	</td>
-    <td width="80%" align="left">
-	<div id="divResults"  style="overflow:hidden;top:5px;left:5px; right:5px; margin:5px; width:99%; height:700; z-index:1;"></div>
-    </td>
+        <input type="hidden" value=""  name="bbox" id="bbox" >
+        <input type="hidden" value=""  name="catalogues" id="catalogues" >
+        <input type="hidden" value="JSON"  name="outputFormat" id="outputFormat" >
+        <input type="hidden" value="GetRecords"  name="Request" id="Request" >
+        <input type="hidden" value="es" name="language"  id="language">
+      </form>
+      &nbsp; </td>
+    <td width="80%" align="left"><div id="divResults"  style="overflow:hidden;top:5px;left:5px; right:5px; margin:5px; width:99%; height:700px; z-index:1;"></div></td>
   </tr>
-
-</table> 
-<table align="center" width="100%" cellspacing="0" cellpadding="0">     	
+</table>
+<table align="center" width="100%" cellspacing="0" cellpadding="0">
   <tr valign="top">
-  <td valign="top" style="height: 62px">
-  <p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration </a>|  <a href="examples.html" target="_blank">examples </a>|  <a href="catalogConnector.pdf">documentation</a></p>
-  
-  </td>
+    <td valign="top" style="height: 62px"><p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration</a> | <a href="examples.html" target="_blank">examples</a> | <a href="catalogConnector.pdf">documentation</a></p></td>
   </tr>
-  </table>
+</table>
 </body>
 </html>
