@@ -520,9 +520,9 @@ import org.jdom.JDOMException;
 		
 		//TODO: Make this work
 		public void run() {			
-			//For now, this is a proof of concept and the only actual schema will be the default one.
-			capabilitesMap.get(name).getOutputSchemas().add("http://www.opengis.net/cat/csw/2.0.2");
-			//capabilitesMap.get(name).getOutputSchemas().add("http://www.isotc211.org/2005/gmd");
+			
+			//capabilitesMap.get(name).getOutputSchemas().add("http://www.opengis.net/cat/csw/2.0.2");
+			
 
 			boolean error = false;			
 			String capabilities = "";			
@@ -548,14 +548,14 @@ import org.jdom.JDOMException;
 						Object results =  JSONObject.fromObject(json).get("outSchema");
 						if(results instanceof JSONArray){
 							for(Object schema : (JSONArray)results){
-								if(!((String)schema).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
+								//if(!((String)schema).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
 									capabilitesMap.get(name).getOutputSchemas().add((String) schema);
-								}
+								//}
 							}	
 						}else if(results instanceof String){
-							if(!((String)results).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
+							//if(!((String)results).equalsIgnoreCase(("http://www.opengis.net/cat/csw/2.0.2"))){
 									capabilitesMap.get(name).getOutputSchemas().add((String)results);
-							}
+							//}
 						}
 					}else{
 						logger.info("Validation request succeeded but unable to parse results. Probably" +
