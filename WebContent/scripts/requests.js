@@ -339,7 +339,7 @@ function sendRequestByCatalogue(catalogue, request,task, displayedPageNum){
 	   }, 
 	   onFailure: function(error){    
 		   $(divCatalogue).removeClassName('blueloader').show();
-		   $(divCatalogue).innerHTML="<br><br><br><h8><center>Server did not respond. Make sure the URL is correct and supports CSW getRecordByID requests.</center></h8>";
+		   $(divCatalogue).innerHTML="<br><br><br><h8><center>Server did not respond. Because it passed initial validation, make sure URL supports CSW getRecordByID requests.</center></h8>";
 	    }
 	});
 }

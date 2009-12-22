@@ -1,5 +1,5 @@
 * {
-	font-size: 11; 
+	font-size: 11.5; 
 }
 
 body {
@@ -65,7 +65,8 @@ h7 {
 }
 
 h8 {
-	font: bold 14px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font: bold 18px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 18px;
 }
 
 a {

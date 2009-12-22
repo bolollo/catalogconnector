@@ -58,50 +58,6 @@
 
 <!--Ajax Pagination Script- Author: Dynamic Drive (http://www.dynamicdrive.com)-->
 <link rel="stylesheet" href="css/menu.css" TYPE="text/css" MEDIA="screen">
-<script type="text/javascript">
-var lon =  0;
-var lat =  0;
-var zoom = 0;
-var map, layer, boxes;
-
-function init(){
-
-
-	
-//Using a sledgehammer (OpenLayers) to crack a nut (capture BBOX), sorry
-	map = new OpenLayers.Map('map');//http://labs.metacarta.com/wms/vmap0
-//    layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
- //       "http://openlayers.org/api/OpenLayers.js", {layers: 'basic'} );
- //   map.addLayer(layer);
- 	var google = new OpenLayers.Layer.Google( "Google", { type: G_HYBRID_MAP } );
-	map.addLayer(google);
- 
-    boxes = new OpenLayers.Layer.Vector( "Boxes" );
-    map.addLayer(boxes);
-    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
-}
-
-function resetAllFields()
-{
-	document.getElementById("chkallboxes").checked = false;
-	document.getElementById("chkbbox").checked = false;
-	document.getElementById("any").value = "";
-	document.getElementById("title").value = "";
-	document.getElementById("description").value = "";
-	document.getElementById("subject").value = "";
-	document.getElementById("organization").value = "";
-
-	document.getElementById("startPosition").value = "1";
-	document.getElementById("maxRecords").value = "10";
-}
-
-function updateMap(selected){
- 	//var google = new OpenLayers.Layer.Google( "Google", { type: G_NORMAL_MAP } );
-	//map.r
-	//map.addLayer(google);
-	//console.debug("selected: " + selected);
-}
-</script>
 <style type="text/css"></style>
 </head>
 <body  onLoad="init();getCapabilities();resetAllFields();">
@@ -119,8 +75,9 @@ function updateMap(selected){
         </div>
 	</td>
   </tr>
-  <tr align="center" valign="middle">
-    <td colspan="1" width="20%" align="left"><form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
+  <tr align="center" valign="top">
+    <td colspan="1" valign="middle" width="20%" align="left">
+    <form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
         <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
           
           <tr align="center" valign="middle" >
@@ -131,8 +88,8 @@ function updateMap(selected){
 		  	<td>Map Type:</td>
             <td colspan="2">
             <select id="filterSelecter" onChange="updateMap(this.value);">
-                <option>Hybrid (default)</option>
-                <option>Normal</option>
+				<option>Normal (default)</option>
+                <option>Hybrid </option>
                 <option>Satellite</option>
               </select>
              </td>
@@ -218,14 +175,6 @@ function updateMap(selected){
           <tr valign="top" align="left">
             <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not pass validation and are not searchable</div></td>
           </tr>
-          
-
-		  	          
-          		
-          		
-		
-          
-          
         </table>
         <input type="hidden" value=""  name="bbox" id="bbox" >
         <input type="hidden" value=""  name="catalogues" id="catalogues" >
@@ -243,4 +192,54 @@ function updateMap(selected){
   </tr>
 </table>
 </body>
+<script type="text/javascript">
+var lon =  0;
+var lat =  0;
+var zoom = 0;
+var map, layer, boxes;
+var hybrid = new OpenLayers.Layer.Google( "Google", { type: G_HYBRID_MAP } );
+var normal = new OpenLayers.Layer.Google( "Google", { type: G_NORMAL_MAP } );
+var satellite = new OpenLayers.Layer.Google( "Google", { type: G_SATELLITE_MAP } );
+
+function init(){
+	map = new OpenLayers.Map('map');
+	map.addLayer(satellite);
+	map.addLayer(normal);
+	map.addLayer(hybrid);
+	map.setBaseLayer(normal);
+	 
+    boxes = new OpenLayers.Layer.Vector( "Boxes" );
+    map.addLayer(boxes);
+    map.zoomToMaxExtent();
+ 
+ 	
+}
+
+function resetAllFields()
+{
+	document.getElementById("chkallboxes").checked = false;
+	document.getElementById("chkbbox").checked = false;
+	document.getElementById("any").value = "";
+	document.getElementById("title").value = "";
+	document.getElementById("description").value = "";
+	document.getElementById("subject").value = "";
+	document.getElementById("organization").value = "";
+
+	document.getElementById("startPosition").value = "1";
+	document.getElementById("maxRecords").value = "10";
+}
+
+function updateMap(selected){
+	if(selected.toLowerCase().contains("normal")){
+		map.setBaseLayer(normal);
+	}
+	if(selected.toLowerCase().contains("hybrid")){
+		map.setBaseLayer(hybrid);
+	}
+	if(selected.toLowerCase().contains("satellite")){
+		map.setBaseLayer(satellite);
+	}
+}
+</script>
+
 </html>
