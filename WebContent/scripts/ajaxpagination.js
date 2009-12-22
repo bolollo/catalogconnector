@@ -80,6 +80,8 @@ ajaxpageclass.getInitialPage=function(divId, pageinfo){
 
 ajaxpageclass.createBook=function(pageinfo, divId, paginateIds){ //MAIN CONSTRUCTOR FUNCTION
 
+	//console.debug("HERE");
+	
 //console.info("initial page:"+pageinfo);
 	this.pageinfo=pageinfo //store object containing URLs of pages to fetch, selected page number etc
 	this.divId=divId
@@ -91,7 +93,13 @@ ajaxpageclass.createBook=function(pageinfo, divId, paginateIds){ //MAIN CONSTRUC
 	this.pagerangestyle=''
 	this.ellipse='<span style="display:none">'+ajaxpageclass.ellipse+'</span>' //construct HTML for ellipse
 	//console.info("initial1 page:"+pageinfo);
+	
+	//console.debug("HERE2");
+	
 	var initialpage=ajaxpageclass.getInitialPage(divId, pageinfo)
+	
+	//console.debug("HERE3");
+	
 	var initialpage=0;
 	//console.info("initial2 page:"+initialpage);
 	this.buildpagination(initialpage)
@@ -99,19 +107,26 @@ ajaxpageclass.createBook=function(pageinfo, divId, paginateIds){ //MAIN CONSTRUC
 	//this.selectpage(initialpage)
 	var paginateInfo=this.paginateInfo
 		
+	//console.debug("HERE4");
+	
 			paginateInfo.pagelinks[0][0].className="currentpage" 
 	
-	
+				//console.debug("HERE5");			
 	
 }
 
 ajaxpageclass.createBook.prototype={
 
 	buildpagination:function(selectedpage){ //build pagination links based on length of this.pageinfo.pages[]
+	//console.debug("A");
+	
 		this.dopagerange=(this.pageinfo.pages.length>ajaxpageclass.pagerange) //Bool: enable limitpagerange if pagerange value is less than total pages available
 		this.pagerangestyle=this.dopagerange? 'style="display:none"' : '' //if limitpagerange enabled, hide pagination links when building them
 		this.paginateInfo.previousrange=null //Set previousrange[start, finish] to null to start
-		if (this.pageinfo.pages.length<=1){ //no 0 or just 1 page
+		
+		//console.debug("B");
+		
+		if (this.pageinfo.pages.length<=1){ //no 0 or just 1 page			
 			document.getElementById(this.paginateIds[0]).innerHTML=(this.pageinfo.pages.length==1)? "Page 1 of 1" : ""
 			return
 		}
@@ -125,11 +140,14 @@ ajaxpageclass.createBook.prototype={
 			paginateHTML+='<li><a href="#next" rel="'+(selectedpage+1)+'">next »</a></li>\n' //next link HTML
 			paginateHTML+='</ul></div>'
 		}// end construction
+		
+		
 		this.paginateInfo.previouspage=selectedpage //remember last viewed page
 		for (var i=0; i<this.paginateIds.length; i++){ //loop through # of pagination DIVs specified
 			var paginatediv=document.getElementById(this.paginateIds[i]) //reference pagination DIV
 			this.paginateInfo.divs[i]=paginatediv //store ref to this paginate DIV
 			paginatediv.innerHTML=paginateHTML
+			
 			var paginatelinks=paginatediv.getElementsByTagName("a")
 			var ellipsespans=paginatediv.getElementsByTagName("span")
 			this.paginateInfo.prevlink[i]=paginatelinks[0]
@@ -137,10 +155,12 @@ ajaxpageclass.createBook.prototype={
 				this.paginateInfo.nextlink[i]=paginatelinks[paginatelinks.length-1]
 			this.paginateInfo.leftellipse[i]=ellipsespans[0]
 			this.paginateInfo.rightellipse[i]=ellipsespans[1]
+			
 			this.paginateInfo.pagelinks[i]=[] //array to store the page links of pagination DIV
 			for (var p=1; p<paginatelinks.length-1; p++){
 				this.paginateInfo.pagelinks[i][p-1]=paginatelinks[p]
 			}
+			
 			var pageinstance=this
 			paginatediv.onclick=function(e){
 				var targetobj=window.event? window.event.srcElement : e.target

@@ -1,7 +1,10 @@
 .pagination{
 padding: 0px;
-margin: 1em 0;
-clear: both;
+margin: .1em 0;
+width: 95%;
+margin-left:auto;
+margin-right:auto;
+/*clear: both;*/
 }
 
 .pagination ul{
@@ -15,7 +18,7 @@ font-size: 100%;
 .pagination li{
 list-style-type: none;
 display: inline;
-padding-bottom: 1px;
+/*padding-bottom: 1px;/*
 }
 
 *:first-child+html .pagination li a{ /*IE7 only CSS hack*/

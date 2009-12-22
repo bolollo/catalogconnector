@@ -94,6 +94,13 @@ function resetAllFields()
 	document.getElementById("startPosition").value = "1";
 	document.getElementById("maxRecords").value = "10";
 }
+
+function updateMap(selected){
+ 	//var google = new OpenLayers.Layer.Google( "Google", { type: G_NORMAL_MAP } );
+	//map.r
+	//map.addLayer(google);
+	//console.debug("selected: " + selected);
+}
 </script>
 <style type="text/css"></style>
 </head>
@@ -112,11 +119,45 @@ function resetAllFields()
         </div>
 	</td>
   </tr>
-  <tr align="center" valign="top">
+  <tr align="center" valign="middle">
     <td colspan="1" width="20%" align="left"><form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
-        <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">
+        <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
+          
+          <tr align="center" valign="middle" >
+            <td height="260" colspan="2"><div id="map" style="border: 1px solid #000000; width: 280px; height: 260px;"> </div></td>
+          </tr>
+          
+		<tr align="center" >
+		  	<td>Map Type:</td>
+            <td colspan="2">
+            <select id="filterSelecter" onChange="updateMap(this.value);">
+                <option>Hybrid (default)</option>
+                <option>Normal</option>
+                <option>Satellite</option>
+              </select>
+             </td>
+          </tr>
+          
           <tr>
-            <td colspan="2">Metadata search:</td>
+            <td><br></td>
+          </tr>
+          
+          <tr>
+            <td colspan="2"><center><font size="14"><b>METADATA SEARCH</b></font></center></td>
+          </tr>
+         
+         
+         
+         <tr>
+			<td colspan="2"><input type="checkbox" id="chkbbox"  name="chkbbox" value="checkbox">
+			Limit Search To Area Displayed In Map</td>
+		</tr>
+          <tr>
+            <td>Projects</td>
+            <td><select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
+                <option value="catalogues">catalogues (by default)</option>
+                <option value="project1">project1</option>
+              </select></td>
           </tr>
           <tr>
             <td width="30%">AnyText: </td>
@@ -139,21 +180,7 @@ function resetAllFields()
             <td width="52%"><input type="text" class="textbox" id="organization" name="organization"></td>
           </tr>
           <tr>
-            <td colspan="2"><input type="checkbox" id="chkbbox"  name="chkbbox" value="checkbox">
-              bbox filter view map</td>
-          </tr>
-          <tr align="center" valign="middle" >
-            <td height="210" colspan="2"><div id="map" style="border: 1px solid #000000; width: 280px; height: 240px;"> </div></td>
-          </tr>
-          <tr>
-            <td>Projects</td>
-            <td><select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
-                <option value="catalogues">catalogues (by default)</option>
-                <option value="project1">project1</option>
-              </select></td>
-          </tr>
-          <tr>
-            <td colspan="2">Pagination parameters</td>
+            <td colspan="2"><b>Pagination parameters:</b></td>
           </tr>
           <tr>
             <td>Start position: </td>
@@ -166,15 +193,21 @@ function resetAllFields()
           <tr>
             <td colspan="2"></td>
           </tr>
+          
           <tr>
-            <td colspan="2">Available catalogs:</td>
+            <td><br></td>
           </tr>
+          
           <tr>
+            <td colspan="2"><center><font size="14"><b>SEARCHABLE CATALOGS</b></font></center></td>
+          </tr>
+
+          <tr>
+            <td height="140" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
+          </tr>
+           <tr>
             <td colspan="2"><input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
               Select/Deselect All</td>
-          </tr>
-          <tr>
-            <td height="100" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
           </tr>
           <tr>
             <td colspan="2"></td>
@@ -185,6 +218,14 @@ function resetAllFields()
           <tr valign="top" align="left">
             <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not pass validation and are not searchable</div></td>
           </tr>
+          
+
+		  	          
+          		
+          		
+		
+          
+          
         </table>
         <input type="hidden" value=""  name="bbox" id="bbox" >
         <input type="hidden" value=""  name="catalogues" id="catalogues" >

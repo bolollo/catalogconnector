@@ -45,8 +45,7 @@ function loadMetaData(url,identifier,version,cname){
 	if(currSchema[cname]!="Default"){
 		outSchemaSetting = '&outputSchema='+currSchema[cname]
 	}
-	//console.debug(url);
-	window.open(decodeURI(url)+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+identifier+'&version='+version+outSchemaSetting);
+	window.open(decodeURI(url)+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+unescape(identifier)+'&version='+version+outSchemaSetting);
 }
 
 
@@ -90,7 +89,7 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 	  		onFailure: function(error)
 	  		{ 
 				div.removeClassName('loader').show();	
-				div.innerHTML="<div><h1><center><br>This operation is not yet supported for this outputschema</br></center></h1></div>";
+				div.innerHTML="<div><h8><center><br>This operation is not yet supported for this outputschema</br></center></h8></div>";
 	  		}
 	  	});
 	}else if(currMetadataSchema[cName]!=currSchema[cName]){
@@ -115,7 +114,7 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 			onFailure: function(error)
 			{ 
 		  		$(divID).removeClassName('loader').show();	
-		  		$(divID).innerHTML="<div><h1><center><br>This operation is not yet supported for this outputschema</br></center></h1></div>";
+		  		$(divID).innerHTML="<div><h8><center><br>This operation is not yet supported for this outputschema</br></center></h8></div>";
 			}
 		});
 		
@@ -127,7 +126,6 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 
 function invertDisplay(div){
 	var display = $(div).style.display.toLowerCase();
-	//console.debug("display: " + display);
 	
 	if(display=="none"){
 
@@ -161,9 +159,7 @@ function switchAll()
 }
 
 function updateCheckbox(nameKey,failed){
-	
-	var nodes = $A(document.frmRequest.chkCatalog);
-	
+	var nodes = $A(document.frmRequest.chkCatalog);	
 	nodes.each(function(node)
 	{
 		if(node.value==nameKey){
@@ -177,8 +173,7 @@ function updateCheckbox(nameKey,failed){
 			throw $break;
 		}
 	}				
-	);
-	
+	);	
 }
 
 
@@ -205,10 +200,10 @@ function getCapabilities(){
  $( 'divCapabilities' ).innerHTML="";
 
 
-new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   
+	new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   
 	onSuccess: function(transport){  
     cataloguesJson = transport.responseText.evalJSON();
-    //console.debug(cataloguesJson);
+
 		for(i=0; i < cataloguesJson.length;i++){
 					 var cb = document.createElement( "input" );
 					  cb.type = "checkbox";cb.id = "chkCatalog";cb.value = cataloguesJson[i].name;cb.checked = false;
@@ -232,8 +227,6 @@ new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='
     },OnCreate:function(){     
     }
     }); 
-
-
 }
 
 var catalogsArray= new Array();
@@ -293,7 +286,7 @@ htmlText.push('</ul></div>');
 
 var j=1;
 catalogsArray.each(function(item) {
-	//<div id="pag_'+item+'"></div>
+	//<div align="center" id="pag_'+item+'"></div>
 htmlText.push('<div style="border: 1px solid #2b66a5;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
 
 j=j+1;
@@ -317,41 +310,38 @@ function showOptions(){
 
 
 function createRequestByCatalogue(){
-
 var req="Request="+$F('Request')+"&Project="+$F('PROJECT')+"&startPosition="+$F('startPosition')+"&maxRecords="+$F('maxRecords')+"&any="+$F('any')+"&bbox="+$F('bbox')+"&description="+$F('description')+"&organization="+$F('organization')+"&outputFormat="+$F('outputFormat')+"&subject="+$F('subject')+"&title="+$F('title')+"&language="+$F('language')+"&";
 	
 	catalogsArray.each(function(item) {
 	
 	var cat=item;
 	
-	var reqF=req+"catalogues="+cat+"&";
-	
-	//console.debug("REQUEST: "+ reqF);
-	sendRequestByCatalogue(cat, reqF,true);
+	var reqF=req+"catalogues="+cat+"&";	
+	sendRequestByCatalogue(cat, reqF,true,1);
 	});
 }
 
-function sendRequestByCatalogue(catalogue, request,task){
+function sendRequestByCatalogue(catalogue, request,task, displayedPageNum){
 	var divCatalogue="div_"+catalogue;
 	$(divCatalogue).addClassName('blueloader').show();
 	$(divCatalogue).innerHTML="";
-	//console.info("REQUEST = "+request);
-	
-new Ajax.Request(urlServer, { parameters: request,
+
+
+	new Ajax.Request(urlServer, { parameters: request,
 	onSuccess: function(transport){  
-	$(divCatalogue).removeClassName('blueloader').show();
-	if(transport.responseText.length == 0){
-		$(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure Catalog URL is correct.</center></h2>";
-	}else{
-		var json = transport.responseText.evalJSON(); 
-		parseWriteCatalogues(divCatalogue,json,task);  
-	}	
-   }, 
-   onFailure: function(error){    
-	   $(divCatalogue).removeClassName('blueloader').show();
-	   $(divCatalogue).innerHTML="<h2><center>Server did not respond. Make sure the URL is correct and supports CSW getRecordByID requests.</center></h2>";
-    }
-  });
+		$(divCatalogue).removeClassName('blueloader').show();
+		if(transport.responseText.length == 0){
+			$(divCatalogue).innerHTML="<br><br><br><h8><center>Parsing of Metadata Failed.</center></h8>";
+		}else{
+			var json = transport.responseText.evalJSON(); 
+			parseWriteCatalogues(divCatalogue,json,task,displayedPageNum);  
+		}	
+	   }, 
+	   onFailure: function(error){    
+		   $(divCatalogue).removeClassName('blueloader').show();
+		   $(divCatalogue).innerHTML="<br><br><br><h8><center>Server did not respond. Make sure the URL is correct and supports CSW getRecordByID requests.</center></h8>";
+	    }
+	});
 }
 
 function extracPr(catalogue){
@@ -367,81 +357,135 @@ function updateSchemaHash(cname){
 	currSchema[cname]=$(cname+"box").value;
 	//could potentially gray out metadata options here too, if no XSL exists for transform
 }
-	
-function parseWriteCatalogues(divCatalogue,json,task){
+
+//The results portion of the page is built in this function
+function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	$(divCatalogue).innerHTML="";
 	
-	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<p>&nbsp;Invalid response returned</p>"/*+json.GetRecordsResponse*/;return }
+	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<h8><center><p>&nbsp;Null response returned</p></center></h8>";return;}
 	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
 	var cName=divCatalogue.replace('div_','');
 	var ct = extracPr(cName);
-	var pagination = 'pag_'+json.Id;
+	var pagnum = 'numdiv_'+json.Id;
 	var pos = json.Position;
-	//var boundingBoxResponse = new Array(0,0,0,0);
 	var htmlText=new Array();
+	var buttonHTML=new Array();
+	
 	var version = escape(ct["csw-version"]);
 	var url = encodeURI(ct.urlcatalog);
 	var prod = escape(ct["product"]);
 	var encoding = escape(ct["xml-encoding"]);		
+
+	var backB = null;
+	var nextB = null;
 	
 	var pt=json.GetRecordsResponse.numberOfRecordsMatched/$F('maxRecords');
-	//console.debug(pt);
+
 	if(pt=="NaN"){pt=0;}
-	
 	
 	//This block of code fills output schema drop down box
 	var schemas = schemaInfo[cName];
-	var schemaResults = "";
-	
+	var schemaResults = "";	
 	for(i=0; i < schemas.length;i++){
 		schemaResults = schemaResults+ '<option>'+schemaInfo[cName][i]+'</option>';
 	}	
 	
+	//This parses the results and builds the results page
 	if(candidates >0){
 		var req=json.QueryString+"&";					
 		req=req.replace(/%26/g,'&');
 		req=req.replace(/%3D/g,'=');
-
-		//var test1 = "asbsdf";
-		
-		//console.debug("ID: "+test1);		
-		//console.debug("VAL: "+test1.value);
-
 		var extr = document.createElement('div');
-
+		var numberPages=Math.ceil(pt);
+		var cmExtra=new Array();
+		var pg=new Array();
+		
+		//Set up number of scrolling pages to allow for
+		var paginationLimit = 15;
+		if(numberPages<paginationLimit){
+			paginationLimit = numberPages;
+		}
+		
+		//Fill up page selection options on results div
+		for (j=0;j< numberPages;j++){
+				var position=parseInt((j*$F('maxRecords'))+1);
+				//This builds drop down box innerhtml
+				var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
+				cmExtra += '<option value="'+rs+'">Page '+(j+1)+'</option>';
+					if(j<paginationLimit){
+						if(numberPages>1){
+							pg.push(rs);
+						}
+					}
+		}
+		
+		var leftBtnClass =  "deadButton";
+		var rightBtnClass = "deadButton";
 		
 		
-		//if(task){		
-			var numberPages=Math.ceil(pt);
-			var cmExtra=new Array();
-			//if(numberPages > 15){
-			//console.debug(pos);
-				
-				for (j=0;j < numberPages;j++){
-					var position=parseInt((j*$F('maxRecords'))+1);
-					
-					//This builds drop down box innerhtml
-					var rs='Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
-					cmExtra += '<option value="'+rs+'">Go to page: '+(j+1)+'</option>';
-				}
-				extr.innerHTML='<select onChange="sendRequestByCatalogue(\''+json.Id+'\', this.value,true)"><option selected>Select Page</option>'+cmExtra+'</select>';
-		//}
-
 		
+		//Set values for both buttons
+		if(currPage>1){
+			var position=parseInt((((currPage-1)-1)*$F('maxRecords'))+1);
+			backB = 'Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;			
+			leftBtnClass = "btnMovers";
+		}
+		if(currPage<numberPages){
+			var position=parseInt((((currPage-1)+1)*$F('maxRecords'))+1);
+			nextB = 'Request=GetRecords&outputFormat=JSON&catalogues='+json.Id+'&startPosition='+position+"&"+req;
+			rightBtnClass = "btnMovers";
+		}
+		
+		extr.innerHTML='<select class="dropboxtext" onChange="javascript:sendRequestByCatalogue(\''+json.Id+'\', this.value,true,this.selectedIndex);"><option selected><b>Current Page: '+currPage+'</b></option>'+cmExtra+'</select>';		
 		htmlText.push('<table align="left" border="0"  width="100%">');
-		htmlText.push('<tr align="left" bgcolor="#ECECFF">');
-		htmlText.push('<td width="10% align="left"><b><center>Found: '+json.GetRecordsResponse.numberOfRecordsMatched+'</b></center></td>');
-		htmlText.push('<td width="12%" align="left"><center>');
-		htmlText.push(extr.innerHTML+'</center></td>');
-		htmlText.push('<td align="left"><b>&nbsp;'+cName+' Metadata OutputSchema: </b>');
-		htmlText.push('<select id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select></td>');
-		htmlText.push('</tr>');
 		
-		//htmlText.push('<tr>');
-		//htmlText.push('<div id="'+pagination+'"></div>');
-		//htmlText.push('<div id="'+pagination+'"></div>');
-		//	htmlText.push('</tr>');
-				
+	//Select metadata dropdown box	
+	htmlText.push('<tr bgcolor="#ECECFF">');		
+		htmlText.push('<td align="center" colspan="4">');
+		htmlText.push('<div><h3>&nbsp;'+cName+' Metadata OutputSchema:&nbsp;</h3>');
+		htmlText.push('<select class="dropboxtext" id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select><br></div>');
+		htmlText.push('</td>');
+	htmlText.push('</tr>');
+		
+	
+
+	
+	//Put all button scrolling html code in an array so we can reuse formatting again at bottom of div
+	//select page box
+	buttonHTML.push('<tr bgcolor="#ECECFF">');		
+	buttonHTML.push('<td align="center" colspan="4">');
+	
+	
+	
+	buttonHTML.push('<div style="display:inline; margin: 0 .5em 0 1em;">');	
+	if(backB==null){
+		buttonHTML.push('<button class='+leftBtnClass+' type="submit" value="Submit"/><< Back</button>');
+	}else{
+		buttonHTML.push('<button onclick="sendRequestByCatalogue(\''+json.Id+'\',\''+backB+'\',true,'+(currPage-1)+');" class='+leftBtnClass+' type="submit" value="Submit"/><< Back</button>');
+	}
+	buttonHTML.push('</div>');
+		
+	buttonHTML.push('<div style="display:inline; margin: 0 .5em 0 1em;">');
+	buttonHTML.push(extr.innerHTML+'</div>');
+			
+	buttonHTML.push('<div style="display:inline; margin: 0 .5em 0 1em;">');
+	
+	if(nextB==null){
+		buttonHTML.push('<button class='+rightBtnClass+' type="submit" value="Submit"/>Next >></button>');
+	}else{
+		buttonHTML.push('<button onclick="sendRequestByCatalogue(\''+json.Id+'\',\''+nextB+'\',true,'+(currPage+1)+');" class='+rightBtnClass+' type="submit" value="Submit"/>Next >></button>');
+	}
+	buttonHTML.push('</div>');
+
+	buttonHTML.push('</td>');
+	buttonHTML.push('</tr>');
+	
+	//This places back/forward button HTML on top of div
+	for(i=0;i<buttonHTML.length;i++){
+		htmlText.push(buttonHTML[i]);
+	}
+
+	
 		htmlText.push('<tr><td colspan="4">');
 		for (i=0;i <candidates;i++){
 			var currRecord;
@@ -452,30 +496,35 @@ function parseWriteCatalogues(divCatalogue,json,task){
 			}
 			var identifier = escape(currRecord.identifier);
 						
-			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');
+			htmlText.push('<table id='+identifier+' border="0" style="border:1px solid #F2F2F2" width="100%" onmouseover="selectMetadata(this)" onmouseout="unselectMetadata(this)">');			
 			htmlText.push('<tr width="100%" bgcolor="#ECECFF">');			
 			if (!currRecord.boundingBox.lowerCorner.toString().blank() || !currRecord.boundingBox.upperCorner.toString().blank()){
-				htmlText.push('<td width="70%"><h1>'+currRecord.title+'</h1></td>');
+				htmlText.push('<td width="72%"><h1>'+currRecord.title+'</h1></td>');
 				htmlText.push('<td width="3%"><center><img src="images/zoom.png" onclick="addBox('+currRecord.boundingBox.latlon+',\''+currRecord.boundingBox.lowerCorner.toString()+'\',\''+currRecord.boundingBox.upperCorner.toString()+'\');"/></center></td>');			
 			}else{
-				htmlText.push('<td width="73%"><h1>'+currRecord.title+'</h1></td>');							
+				htmlText.push('<td width="75%"><h1>'+currRecord.title+'</h1></td>');							
 			}
-			htmlText.push('<td width="14%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
-			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+currRecord.identifier+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
+			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
+			htmlText.push('<td width="12%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+escape(currRecord.identifier)+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
 			htmlText.push('</tr>');
 			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+currRecord.description+'</tr></td>');			
 			htmlText.push('</table>');
 		}
-		htmlText.push('</td></tr></table>');
-		/*
-		var md_bounds = new OpenLayers.Bounds(boundingBoxResponse[0], boundingBoxResponse[1], boundingBoxResponse[2], boundingBoxResponse[3]);
-		map.zoomToExtent(md_bounds, false);
-		*/						
+		htmlText.push('</td></tr>');
+
+		//Place back/forward buttons at bottom of div too
+		for(i=0;i<buttonHTML.length;i++){
+			htmlText.push(buttonHTML[i]);
+		}
+		
+		htmlText.push('</table>');
 	}
 	else{
-		htmlText.push('<p> No records found </p>');
-	}					
+		htmlText.push('<br><br><br><h8><center>No Matching Records Found</center></h8>');
+	}
+	
 	$(divCatalogue).innerHTML=htmlText.join(' ');
+		
 	for (j=1;j < catalogsArray.size()+1;j++){
 		var tb="tablink"+j;
 		var cp=$(tb).innerHTML
@@ -486,7 +535,6 @@ function parseWriteCatalogues(divCatalogue,json,task){
 		}
 	}
 	$(divCatalogue).style.display='block';	
-	//console.debug("ECTR VAR: "+'extr_'+json.Id);
-
+	
 	json=null;
 }

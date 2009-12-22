@@ -1,5 +1,5 @@
 * {
-	font-size: 100%; 
+	font-size: 11; 
 }
 
 body {
@@ -48,6 +48,24 @@ h2 {
 	font-size: 10px;
 	font-weight: bold;
 	text-transform: uppercase;
+}
+
+h3 {
+	font-size: 12px;
+	display: inline;
+}
+
+h4 {
+	font-size: 13px;
+}
+
+h7 {
+	text-transform: uppercase;
+	font: bold 12px Verdana, Arial, Geneva, Helvetica, sans-serif;
+}
+
+h8 {
+	font: bold 14px Verdana, Arial, Geneva, Helvetica, sans-serif;
 }
 
 a {
@@ -185,3 +203,34 @@ form {
 	top: 5px;
 	right: 5px;
 }
+
+.btnMovers {
+	color:darkblue;
+	font: bold 12px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	background:#ECECFF;
+	font-weight: bold;
+	border: 1px solid #ECECFF;
+}
+ 
+.btnMovers:hover {
+	color: white;
+	font: bold 12px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	background:#ECECFF;
+	border: 1px solid white;
+	cursor:pointer;
+	border: 1px solid #ECECFF;
+}
+
+
+.deadButton {
+	color:lightgrey;
+	font: bold 12px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	background:#ECECFF;
+	font-weight: bold;
+	border: 1px solid #ECECFF;
+}
+
+.dropboxtext{
+    font: 10px Verdana, Arial, Geneva, Helvetica, sans-serif;
+}
+
