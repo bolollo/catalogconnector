@@ -36,7 +36,7 @@
  */
  -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<html >
 <head>
 <title>CatalogConnector CSW Client</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -61,7 +61,7 @@
 <style type="text/css"></style>
 </head>
 <body  onLoad="init();getCapabilities();resetAllFields();">
-<table width="99%" height="98%" align="center" border="1" cellspacing="0" cellpadding="1" >
+<table width="99%" height="98%" align="center" border="1" cellspacing="0" cellpadding="1">
   <tr align="center" bgcolor="#0099CC" height="65">
     <td colspan="2">
         <div id="cc-header">
@@ -75,13 +75,13 @@
         </div>
 	</td>
   </tr>
-  <tr align="center" valign="top">
-    <td colspan="1" valign="middle" width="20%" align="left">
+  <tr align="center" height="100%" valign="top">
+    <td colspan="1" valign="top" width="20%" align="left">
     <form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
         <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
           
           <tr align="center" valign="middle" >
-            <td height="260" colspan="2"><div id="map" style="border: 1px solid #000000; width: 280px; height: 260px;"> </div></td>
+            <td colspan="2" height="260px"><div id="map" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
           </tr>
           
 		<tr align="center" >
@@ -156,7 +156,7 @@
           </tr>
           
           <tr>
-            <td colspan="2"><center><font size="14"><b>SEARCHABLE CATALOGS</b></font></center></td>
+            <td colspan="2"><center><font size="14"><b>CATALOGS TO SEARCH</b></font></center></td>
           </tr>
 
           <tr>
@@ -183,7 +183,10 @@
         <input type="hidden" value="es" name="language"  id="language">
       </form>
       &nbsp; </td>
-    <td width="80%" align="left"><div id="divResults"  style="overflow:hidden;top:5px;left:5px; right:5px; margin:5px; width:99%; height:700px; z-index:1;"></div></td>
+    <td width="80%" height="100%" align="left">
+    	<div id="divResults" style="position:relative; overflow:auto; height:100%; z-index:1;">    	
+    	</div>
+    </td>
   </tr>
 </table>
 <table align="center" width="100%" cellspacing="0" cellpadding="0">

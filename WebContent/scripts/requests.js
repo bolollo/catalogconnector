@@ -286,14 +286,13 @@ htmlText.push('</ul></div>');
 
 var j=1;
 catalogsArray.each(function(item) {
-	//<div align="center" id="pag_'+item+'"></div>
-htmlText.push('<div style="border: 1px solid #2b66a5;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
+htmlText.push('<div style="border: 1px solid #FFFFFF; overflow:auto; height:96%;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
 
 j=j+1;
 });
 
-$( 'divResults' ).innerHTML=htmlText.join(' ');
-
+//console.debug("HTML TEXT:"+htmlText.join('\n'));
+$('divResults').innerHTML=htmlText.join(' ');
 }
 
 function showOptions(){
@@ -522,6 +521,8 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	else{
 		htmlText.push('<br><br><br><h8><center>No Matching Records Found</center></h8>');
 	}
+	
+	//console.debug("HTML TEXT:"+htmlText.join('\n'));
 	
 	$(divCatalogue).innerHTML=htmlText.join(' ');
 		

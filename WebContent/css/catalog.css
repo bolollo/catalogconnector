@@ -1,3 +1,6 @@
+
+
+
 * {
 	font-size: 11.5; 
 }
@@ -34,10 +37,9 @@ img {
 	border-width: 0px;
 }
 
-html{
+/*html{
 	overflow:hidden;
-	
-	}
+	}*/
 
 h1 {
 	text-transform: uppercase;
@@ -104,7 +106,7 @@ form {
 	filter:alpha(opacity=60);
 	-moz-opacity:0.6;
 	background-repeat:no-repeat;
-	background-position:44% 40%;; 
+	background-position:48% 40%; 
 	background-image: url('/catalogConnector/images/bigloader.gif');
 	display:block;overflow:hidden;
 }
