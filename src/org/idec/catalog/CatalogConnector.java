@@ -49,8 +49,6 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
-
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jdom.JDOMException;
 
@@ -539,6 +537,16 @@ import org.jdom.JDOMException;
 			}
 			else if(capabilities.length()>0){
 			{
+				
+/*				if(capabilities.toLowerCase().contains("unexpected failure")){404 Not FoundExceptionReportError en tiempo de ejecución
+					logger.debug("FAIL FAIL FAIL FAIL FAIL!");
+					error=true;
+				}else{
+					logger.debug("SUCCESS SUCCESS SUCCESS SUCCESS SUCCESS!");
+				}*/
+				
+				logger.info("CAPABILITIES FOR URL: "+url+"\nSTRING: "+capabilities);
+				
 				String xslPath = AP_PATH+"scripts/parse_capabilities.xsl";
 				try 
 				{
@@ -558,8 +566,9 @@ import org.jdom.JDOMException;
 							//}
 						}
 					}else{
-						logger.info("Validation request succeeded but unable to parse results. Probably" +
-								" malformed.");
+						error = false;
+						logger.info("Server responded for "+name+" but unable to parse results. This means" +
+								" the server probably can't handle POSTs");
 					}
 				}
 				catch (ParserConfigurationException e) {

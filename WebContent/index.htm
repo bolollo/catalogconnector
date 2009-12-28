@@ -51,7 +51,7 @@
 <!-- EASY TABS 1.2 Produced and Copyright by Koller Juergen www.kollermedia.at -->
 <script src="scripts/ajaxpagination.js" type="text/javascript"></script>
 
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false&amp;key=ABQIAAAA4NEz-pHd-Y5r1YIH1vHkNBS_T2Ic0RADb-_WeZgmgdd8LmFUAxSb2uutZXy_cjVbxUM7wQLoqAnXrw" type="text/javascript">
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAA4NEz-pHd-Y5r1YIH1vHkNBS_T2Ic0RADb-_WeZgmgdd8LmFUAxSb2uutZXy_cjVbxUM7wQLoqAnXrw" type="text/javascript">
 </script>
 
 
@@ -80,8 +80,8 @@
     <form action="" method="get" id="frmRequest" OnSubmit="getRecords();return false" name="frmRequest">
         <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
           
-          <tr align="center" valign="middle" >
-            <td colspan="2" height="260px"><div id="map" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
+          <tr align="center" valign="middle">
+            <td colspan="2" height="220px"><div id="map" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
           </tr>
           
 		<tr align="center" >
@@ -100,15 +100,13 @@
           </tr>
           
           <tr>
-            <td colspan="2"><center><font size="14"><b>METADATA SEARCH</b></font></center></td>
+            <td colspan="2"><center><b>METADATA SEARCH</b></center></td>
           </tr>
-         
-         
-         
          <tr>
 			<td colspan="2"><input type="checkbox" id="chkbbox"  name="chkbbox" value="checkbox">
-			Limit Search To Area Displayed In Map</td>
+			Limit Search To Current Map Extent</td>
 		</tr>
+		
           <tr>
             <td>Projects</td>
             <td><select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
@@ -156,11 +154,11 @@
           </tr>
           
           <tr>
-            <td colspan="2"><center><font size="14"><b>CATALOGS TO SEARCH</b></font></center></td>
+            <td colspan="2"><center><b>CATALOGS TO SEARCH</b></center></td>
           </tr>
 
           <tr>
-            <td height="140" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
+            <td height="90px" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
           </tr>
            <tr>
             <td colspan="2"><input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
@@ -191,7 +189,7 @@
 </table>
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
   <tr valign="top">
-    <td valign="top" style="height: 62px"><p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration</a> | <a href="examples.html" target="_blank">examples</a> | <a href="catalogConnector.pdf">documentation</a></p></td>
+    <td valign="top"><p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration</a> | <a href="examples.html" target="_blank">examples</a> | <a href="catalogConnector.pdf">documentation</a></p></td>
   </tr>
 </table>
 </body>
@@ -213,15 +211,13 @@ function init(){
 	 
     boxes = new OpenLayers.Layer.Vector( "Boxes" );
     map.addLayer(boxes);
-    map.zoomToMaxExtent();
- 
- 	
+    map.zoomToMaxExtent(); 	
 }
 
 function resetAllFields()
 {
 	document.getElementById("chkallboxes").checked = false;
-	document.getElementById("chkbbox").checked = false;
+	//document.getElementById("chkbbox").checked = false;
 	document.getElementById("any").value = "";
 	document.getElementById("title").value = "";
 	document.getElementById("description").value = "";

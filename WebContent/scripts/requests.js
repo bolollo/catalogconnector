@@ -42,12 +42,15 @@ function insertAfter(newElement,targetElement) {
 //url,json.GetRecordsResponse.Record[i].identifier,version
 function loadMetaData(url,identifier,version,cname){
 	var outSchemaSetting = "";
-	if(currSchema[cname]!="Default"){
-		outSchemaSetting = '&outputSchema='+currSchema[cname]
+	var catName = unescape(cname);
+	
+	if(!currSchema[catName].contains("Default")){
+		outSchemaSetting = '&outputSchema='+currSchema[catName]
 	}
 	window.open(decodeURI(url)+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+unescape(identifier)+'&version='+version+outSchemaSetting);
 }
 
+var errorDiv = "<div><h8><center><br><p>An error was thrown while parsing raw metadata.</p><p> Either metadata is malformed or the current outputschema is not yet supported for this operation.</p></br></center></h8></div>";
 
 //Does Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
@@ -55,26 +58,23 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 	var cName = unescape(catName);
 	var divID = "div_new"+id;
 	
-	//this checks to see if metadaata has been inserted yet
+	//this IF checks to see if metadata has been generated yet
 	if($(divID)==null){
-
 		var div = document.createElement('div');
 		div.id=divID;
 		div.innerHTML="<br><br><br><br><br><br><br><br>";
 
 		var outSchemaSetting = "";
-		if(currSchema[cName]!="Default"){
+		if(!currSchema[cName].contains("Default")){
 			outSchemaSetting = currSchema[cName];
 		}	
 
 		//This remembers what the drop box was when metadata was loaded
 		currMetadataSchema[cName]=currSchema[cName];
-		
 		div.style.marginRight ="auto";
 		div.style.marginLeft = "auto";
 		div.style.width = "92%";
 		div.setAttribute("textAlign","left");		
-		
 		div.addClassName('loader').show();
 				
 		insertAfter(div,catalogTable);
@@ -89,14 +89,16 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 	  		onFailure: function(error)
 	  		{ 
 				div.removeClassName('loader').show();	
-				div.innerHTML="<div><h8><center><br>This operation is not yet supported for this outputschema</br></center></h8></div>";
+				div.innerHTML=errorDiv;
 	  		}
 	  	});
-	}else if(currMetadataSchema[cName]!=currSchema[cName]){
+	}
+	//This checks to see if metadata has already been generated, but under a different output schema
+	else if(currMetadataSchema[cName]!=currSchema[cName]){
 		currMetadataSchema[cName]=currSchema[cName];
 		
 		var outSchemaSetting = "";
-		if(currSchema[cName]!="Default"){
+		if(!currSchema[cName].contains("Default")){
 			outSchemaSetting = currSchema[cName];
 		}	
 		
@@ -114,7 +116,7 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 			onFailure: function(error)
 			{ 
 		  		$(divID).removeClassName('loader').show();	
-		  		$(divID).innerHTML="<div><h8><center><br>This operation is not yet supported for this outputschema</br></center></h8></div>";
+		  		$(divID).innerHTML=errorDiv;
 			}
 		});
 		
@@ -286,7 +288,7 @@ htmlText.push('</ul></div>');
 
 var j=1;
 catalogsArray.each(function(item) {
-htmlText.push('<div style="border: 1px solid #FFFFFF; overflow:auto; height:96%;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
+htmlText.push('<div style="overflow:hidden; height:96%;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
 
 j=j+1;
 });
@@ -442,7 +444,7 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	htmlText.push('<tr bgcolor="#ECECFF">');		
 		htmlText.push('<td align="center" colspan="4">');
 		htmlText.push('<div><h3>&nbsp;'+cName+' Metadata OutputSchema:&nbsp;</h3>');
-		htmlText.push('<select class="dropboxtext" id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Default</option>'+schemaResults+'</select><br></div>');
+		htmlText.push('<select class="dropboxtext" id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Service Default</option>'+schemaResults+'</select><br></div>');
 		htmlText.push('</td>');
 	htmlText.push('</tr>');
 		
