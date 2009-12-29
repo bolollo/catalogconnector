@@ -50,8 +50,6 @@
 <script type="text/javascript" src="scripts/map.js"></script>
 <!-- EASY TABS 1.2 Produced and Copyright by Koller Juergen www.kollermedia.at -->
 <script src="scripts/ajaxpagination.js" type="text/javascript"></script>
-
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAA4NEz-pHd-Y5r1YIH1vHkNBS_T2Ic0RADb-_WeZgmgdd8LmFUAxSb2uutZXy_cjVbxUM7wQLoqAnXrw" type="text/javascript">
 </script>
 
 
@@ -83,14 +81,15 @@
           <tr align="center" valign="middle">
             <td colspan="2" height="220px"><div id="map" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
           </tr>
-          
+
 		<tr align="center" >
 		  	<td>Map Type:</td>
             <td colspan="2">
             <select id="filterSelecter" onChange="updateMap(this.value);">
-				<option>Normal (default)</option>
-                <option>Hybrid </option>
-                <option>Satellite</option>
+				<!--option>World_Topo_Map (default)</option-->
+                <option>World_Street_Map (default)</option>
+                <option>ESRI_Imagery_World_2D </option>
+                <!--option>I3_Imagery_Prime_World_2D</option-->
               </select>
              </td>
           </tr>
@@ -198,26 +197,47 @@ var lon =  0;
 var lat =  0;
 var zoom = 0;
 var map, layer, boxes;
-var hybrid = new OpenLayers.Layer.Google( "Google", { type: G_HYBRID_MAP } );
-var normal = new OpenLayers.Layer.Google( "Google", { type: G_NORMAL_MAP } );
-var satellite = new OpenLayers.Layer.Google( "Google", { type: G_SATELLITE_MAP } );
+
+var ESRI_Imagery_World_2D = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
+            "http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer/export");
+
+var World_Street_Map = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
+"http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer/export");
+
+/*
+var World_Topo_Map = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
+"http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/export",
+{srs:"102113",TRANSPARENT:true},{isBaseLayer:false,opacity:0.5}); SRS!!!
+
+var I3_Imagery_Prime_World_2D = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
+"http://server.arcgisonline.com/ArcGIS/rest/services/I3_Imagery_Prime_World_2D/MapServer/export");
+*/
+
 
 function init(){
-	map = new OpenLayers.Map('map');
-	map.addLayer(satellite);
-	map.addLayer(normal);
-	map.addLayer(hybrid);
-	map.setBaseLayer(normal);
-	 
+
+    map = new OpenLayers.Map('map');
+
+
+    map.addLayer(ESRI_Imagery_World_2D);
+    map.addLayer(World_Street_Map);
+    //map.addLayer(World_Topo_Map);
+    //map.addLayer(I3_Imagery_Prime_World_2D); 
+    
+    map.setBaseLayer(World_Street_Map);
+
+    map.addControl( new OpenLayers.Control.MousePosition() );
+
     boxes = new OpenLayers.Layer.Vector( "Boxes" );
     map.addLayer(boxes);
-    map.zoomToMaxExtent(); 	
+    map.zoomToMaxExtent(); 
 }
+
 
 function resetAllFields()
 {
 	document.getElementById("chkallboxes").checked = false;
-	//document.getElementById("chkbbox").checked = false;
+	document.getElementById("chkbbox").checked = false;
 	document.getElementById("any").value = "";
 	document.getElementById("title").value = "";
 	document.getElementById("description").value = "";
@@ -229,15 +249,19 @@ function resetAllFields()
 }
 
 function updateMap(selected){
-	if(selected.toLowerCase().contains("normal")){
-		map.setBaseLayer(normal);
+	if(selected.contains("ESRI_Imagery_World_2D")){
+		map.setBaseLayer(ESRI_Imagery_World_2D);
 	}
-	if(selected.toLowerCase().contains("hybrid")){
-		map.setBaseLayer(hybrid);
+	if(selected.contains("World_Street_Map")){
+		map.setBaseLayer(World_Street_Map);
 	}
-	if(selected.toLowerCase().contains("satellite")){
-		map.setBaseLayer(satellite);
-	}
+/*	if(selected.toLowerCase().contains("World_Topo_Map")){
+		map.setBaseLayer(World_Topo_Map);
+	}if(selected.toLowerCase().contains("I3_Imagery_Prime_World_2D")){
+		map.setBaseLayer(I3_Imagery_Prime_World_2D);
+	}*/
+
+	
 }
 </script>
 

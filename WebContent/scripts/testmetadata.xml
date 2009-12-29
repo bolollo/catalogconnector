@@ -1,8 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ows:ExceptionReport xmlns:ows="http://www.opengis.net/ows" version="2.0">
-<ows:Exception exceptionCode="wrs:InvalidRequest">
-<ows:ExceptionText>XML Schema validation error. 
-</ows:ExceptionText><ows:ExceptionText>Error:Error Line:    2 Column:  85 Message: cvc-elt.1: Cannot find the declaration of element 'csw:GetCapabilities'.
-</ows:ExceptionText>
-</ows:Exception>
-</ows:ExceptionReport>
+<?xml version = '1.0' encoding = 'ISO-8859-1'?><GetRecordByIdResponse xmlns="http://www.opengis.net/cat/csw/2.0.2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd">
+<csw:Record xmlns:csw="http://www.opengis.net/cat/csw/2.0.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ows="http://www.opengis.net/ows" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <dc:language>es</dc:language>
+  <dc:identifier>ES_MMA_MRB_20060518_0000</dc:identifier>
+  <dc:description>Las Reservas de la Biosfera son zonas que pertenecen a ecosistemas terrestres o costeros propuestas por los diferentes Estados Miembros y reconocidas a nivel internacional por el programa "Hombre y Biosfera" MaB, promovido por la UNESCO para fomentar y mostrar una relación equilibrada entre la humanidad y el medio ambiente. Las Reservas de la Biosfera incluyen una gran variedad de entornos naturales y tratan de integrar la protección de los elementos naturales existentes con la protección de formas tradicionales de explotación sostenible de los recursos naturales. Este información cubre todo el teeeitorio nacional. Se encuentra almacenado en los formatos: Dxf y ARCC.</dc:description>
+  <dc:format>Dxf</dc:format>
+  <dc:format>ARCC</dc:format>
+
+  <dc:identifier>http://www.mma.es/portal/secciones/biodiversidad/banco_datos/</dc:identifier>
+  <dc:language>es</dc:language>
+  <dc:source>Comunidades Autónomas en la mayoría de los casos, pero pueden ser universidades, Diputaciones o quien se haya encargado de la realizacion de la cartografía</dc:source>
+  <dc:subject>Recursos Naturales Y Medio Ambiente</dc:subject>
+  <dc:subject>MEDIO AMBIENTE</dc:subject>
+  <dc:subject>BIOSFERA</dc:subject>
+
+  <dc:subject>ASPECTOS SOCIALES, POLITICA AMBIENTAL, MEDIDAS.POLÍTICA AMBIENTAL.política ambiental</dc:subject>
+  <dc:subject>MEDIO NATURAL, MEDIO ANTRÓPICO.MEDIO AMBIENTE (medio natural, medio antrópico).medio ambiente.medio natural</dc:subject>
+  <dc:subject>MEDIO NATURAL, MEDIO ANTRÓPICO.BIOSFERA (organismos, ecosistemas)</dc:subject>
+  <dc:subject>Lugares protegidos</dc:subject>
+  <dc:subject>Regiones biogeográficas</dc:subject>
+  <dc:subject>CIENCIA.RECURSOS NATURALES</dc:subject>
+
+  <dc:subject>Biota</dc:subject>
+  <dc:subject>Medio ambiente</dc:subject>
+  <dc:title>Reservas de la Biosferea (MaB)</dc:title>
+  <dc:type>Conjunto de datos</dc:type>
+  <dcterms:accessRights>Derecho de propiedad intelectual</dcterms:accessRights>
+  <dcterms:issued>2003-09-22</dcterms:issued>
+
+  <dcterms:spatial>ESPAÑA</dcterms:spatial>
+  <ows:BoundingBox>
+    <ows:LowerCorner>-18.50609 27.476</ows:LowerCorner>
+    <ows:UpperCorner>4.8158119999999975 44.272</ows:UpperCorner>
+  </ows:BoundingBox>
+</csw:Record>
+</GetRecordByIdResponse>

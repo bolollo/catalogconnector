@@ -224,4 +224,24 @@ public class Utils {
 		return true;
 	}
 
+	//This class takes 4 necessary values for a GetRecordByID and creates a valid catalog, 
+	//filling in the rest of the fields. We do this, because our recordrequest method requires
+	//a catalog as a parameter (rather than a series of individual catalog fields).
+	static Catalog generateRequestCatalog(String idVal, String urlVal,String versionVal, String encoding, String productVal) throws IOException 
+	{		
+		String name="";
+		String title= "";
+		String description= "";
+		String XMLRequestsPath=""; 
+		String product= productVal;
+		String urlcatalog= urlVal;
+		String cswversion=versionVal;
+		String XMLencoding= encoding;
+		String ProxyHost= "";
+		int ProxyPort= -1;
+	
+		Catalog cat = new Catalog(name, title, description, urlcatalog, product, cswversion, XMLRequestsPath, XMLencoding, ProxyHost, ProxyPort);
+		
+		return cat;
+	}
 }

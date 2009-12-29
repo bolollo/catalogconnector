@@ -39,7 +39,8 @@ function insertAfter(newElement,targetElement) {
 	}
 }
 
-//url,json.GetRecordsResponse.Record[i].identifier,version
+//This function takes some arguments and opens a raw metadata
+//file in a new windo
 function loadMetaData(url,identifier,version,cname){
 	var outSchemaSetting = "";
 	var catName = unescape(cname);
@@ -52,7 +53,7 @@ function loadMetaData(url,identifier,version,cname){
 
 var errorDiv = "<div><h8><center><br><p>An error was thrown while parsing raw metadata.</p><p> Either metadata is malformed or the current outputschema is not yet supported for this operation.</p></br></center></h8></div>";
 
-//Does Html Conversion 
+//Does Metadata to Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
 	var catalogTable = $(id); 	
 	var cName = unescape(catName);
@@ -523,8 +524,6 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	else{
 		htmlText.push('<br><br><br><h8><center>No Matching Records Found</center></h8>');
 	}
-	
-	//console.debug("HTML TEXT:"+htmlText.join('\n'));
 	
 	$(divCatalogue).innerHTML=htmlText.join(' ');
 		

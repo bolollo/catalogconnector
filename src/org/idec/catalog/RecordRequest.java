@@ -32,7 +32,7 @@ public class RecordRequest {
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		
 		String res = "";
-		String request = parseCatalogForGetRecById(recordID, cat, outSchema);
+		String request = createGetRecByIdQuery(recordID, cat, outSchema);
 		logger.info("GET RECORD BY ID REQ:\n"+request);
 		
 		try {
@@ -54,7 +54,7 @@ public class RecordRequest {
 			}
 			is.close();
 			entry.close();		
-			logger.debug("SERVER RESPONSE"+res);
+			//logger.debug("SERVER RESPONSE"+res);
 			httppost.releaseConnection();
 												
 		} catch (IOException e) {
@@ -72,23 +72,30 @@ public class RecordRequest {
 	 * @throws IOException
 	 */
 	//This may need to be more generalized for a few params
-	public static String parseCatalogForGetRecById(String id, Catalog cat, String outputSchema) {
+	public static String createGetRecByIdQuery(String id, Catalog cat, String outputSchema) {
 		String schemaString = "";
 		if(!outputSchema.equals("")){//\"csw:IsoRecord\"
 			schemaString = "outputSchema=\""+outputSchema+"\"\r\n";
 		}
 		
+		String idString = "<csw:Id>"+id+"</csw:Id> \r\n";
 		
-		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?>\r\n"+
+		if(cat.product.equalsIgnoreCase("gpt9")){
+			idString = "<Id>"+id+"</Id> \r\n";
+		}
+		
+		//logger.info("PRODUCT: "+cat.product);
+		
+		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?> \r\n"+
 		"<csw:GetRecordById \r\n"+
-			"service=\"CSW\"\r\n"+
-			"version=\""+cat.cswversion+"\"\r\n"+ 
-			"outputFormat=\"application/xml\"\r\n"+ 
+			"service=\"CSW\" \r\n"+
+			"version=\""+cat.cswversion+"\" \r\n"+ 
+			"outputFormat=\"application/xml\" \r\n"+ 
 			schemaString+
 			//"outputSchema=\"http://www.opengis.net/cat/csw/"+
-			"xmlns:csw=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\">\r\n"+
-			"<csw:Id>"+id+"</csw:Id>\r\n"+
-			"<csw:ElementSetName>full</csw:ElementSetName>\r\n"+
-			"</csw:GetRecordById>\r\n";
+			"xmlns:csw=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\"> \r\n"+
+			idString+
+			"<csw:ElementSetName>full</csw:ElementSetName> \r\n"+
+			"</csw:GetRecordById> \r\n";
 	}
 }

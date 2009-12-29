@@ -78,6 +78,7 @@ public class CatalogRequest {
 			PostMethod httppost = new PostMethod(cat.urlcatalog);
 			httppost.setRequestBody(cat.CSWRequest);
 			
+			logger.info("QUERY:\n" + cat.CSWRequest);
 			
 			httpclient.setConnectionTimeout(20000);
 			if (cat.ProxyHost != null && !cat.ProxyHost.equalsIgnoreCase("")){
@@ -86,12 +87,12 @@ public class CatalogRequest {
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+cat.XMLencoding+"");
 			httpclient.executeMethod(httppost);			
 			is = httppost.getResponseBodyAsStream();
-			BufferedReader entrada = new BufferedReader(new InputStreamReader(is,cat.XMLencoding));
-			String leido = "";
-			while (leido != null) {
-				leido = entrada.readLine();
-				if (leido != null) {
-					res +=leido;					
+			BufferedReader entry = new BufferedReader(new InputStreamReader(is,cat.XMLencoding));
+			String read = "";
+			while (read != null) {
+				read = entry.readLine();
+				if (read != null) {
+					res +=read;					
 				}
 			}
 
@@ -109,7 +110,7 @@ public class CatalogRequest {
 			
 			
 			is.close();
-			entrada.close();
+			entry.close();
 			
 			
 		} catch (URIException e) {
@@ -125,13 +126,6 @@ public class CatalogRequest {
 			e.printStackTrace();
 		}
 		return cat;
-		/*
-		finally{
-			////logger.debug("Finnaly");
-			//cat.setResponse(res);
-			return cat;
-		}
-		*/
 	}
 
 	/**
@@ -263,6 +257,7 @@ public class CatalogRequest {
 		Position=Position.valueOf(Integer.parseInt(maxRecords)+ Integer.parseInt(startPosition));
 		logger.debug("POSITION:"+Position);
 		cat.setFinalRequest(CSWRequest,QueryString,Position);
+
 		return cat;
 	}
 }
