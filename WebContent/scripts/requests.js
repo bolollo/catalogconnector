@@ -188,7 +188,7 @@ function getIndividualSchema(nameKey){
 		{
 			method:'get',
 			parameters: {IndivNameKey: unescape(nameKey)},
-			onSuccess: function(transport){  
+			onSuccess: function(transport){			
 				updateCheckbox(nameKey,false);
 				schemaInfo[nameKey]= transport.responseText.split(",");
 				currSchema[nameKey]="Default";
@@ -228,7 +228,6 @@ function getCapabilities(){
 		for(i=0; i < cataloguesJson.length;i++){
 			getIndividualSchema(cataloguesJson[i].name);
 		}
-    },OnCreate:function(){     
     }
     }); 
 }
@@ -541,3 +540,30 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	
 	json=null;
 }
+
+
+function revalidate(){
+	var nodes = $A(document.frmRequest.chkCatalog);
+	nodes.each(function(node)
+		{
+			node.disabled=true;
+			
+		}			
+	);	
+	for(i=0; i < cataloguesJson.length;i++){
+		var name = cataloguesJson[i].name;
+		$(name+"font").style.color="grey";
+	}
+	
+	
+	//Send revalidate request
+	new Ajax.Request(urlServer+'?REQUEST=Revalidate', {   method:'get',   
+		onSuccess: function(transport){  		
+			for(i=0; i < cataloguesJson.length;i++){
+				getIndividualSchema(cataloguesJson[i].name);
+			}
+	    }
+	    }); 
+	
+}
+

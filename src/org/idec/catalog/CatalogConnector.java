@@ -201,8 +201,6 @@ import org.jdom.JDOMException;
 				String ot="JSON";
 				if(paramsRequest.containsKey("OUTPUTFORMAT")){ot=paramsRequest.get("OUTPUTFORMAT").toString();}
 				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
-				
-				
 				if(ot.equalsIgnoreCase("XML")){
 								response.setContentType("text/xml;charset="+charset);
 								writer.write("<?xml version=\"1.0\" encoding=\""+charset+"\"?>");
@@ -210,11 +208,10 @@ import org.jdom.JDOMException;
 				}else
 				{
 					response.setContentType("text/json;charset="+charset);
-					//JSONArray capabilitiesArray=Capabilities.getCapabilitiesJSON(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE);						
 					writer.write(capabilitiesArray.toString());
-					//validateRecords(capabilitiesArray);
-											
 				}
+			}else if(methodRequest.equalsIgnoreCase("revalidate")){
+					validateRecords(capabilitiesArray);
 			}
 			//Here we process a request to get records
 			else if(methodRequest.equalsIgnoreCase("GetRecords")){
@@ -280,11 +277,7 @@ import org.jdom.JDOMException;
 				//logger.info("GOT SCHEMA REQUEST: "+schemaReqs);								
 				String idVal = request.getParameter("IndivNameKey");
 				
-				//busy wait for now
-				
-				
-				OutputSchemaContainer catalogInfo = capabilitesMap.get(idVal);
-				
+				OutputSchemaContainer catalogInfo = capabilitesMap.get(idVal);				
 				long startTime = System.currentTimeMillis();
 				while(!catalogInfo.isFinishedLoadingSchemas()&&((System.currentTimeMillis()-startTime)<TWENTY_SECONDS)){
 					;//busy wait for timeout or completion

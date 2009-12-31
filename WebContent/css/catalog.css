@@ -76,8 +76,8 @@ h7 {
 }
 
 h8 {
-	font: bold Verdana, Arial, Geneva, Helvetica, sans-serif;
-	font-size: 14px;
+	font: bold 13px Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 13px;
 }
 
 a {
@@ -99,6 +99,14 @@ form {
 .textbox {
 	border: 1px solid #000066;
 }
+
+.validateButton{
+	cursor:pointer;
+}
+.validateButton:hover{
+	cursor:pointer;
+}
+
 .div {
 	border: 1px solid #000066;
 }
