@@ -33,12 +33,10 @@ is working.
   }
 
 h3 {
-   font-size: 1.1em;
+   font-size: 11;
    color: #21507B;
    margin-top: 0.6em;
 }
-
-
 
 .captioneddiv
   { margin: 2em 0em 0em 0em;
@@ -46,6 +44,7 @@ h3 {
     height:auto;
     border: solid #E2E2E2    1px;
     background: #ffffff;
+    font-size: 11;
   }
  
 .captioneddiv h3
@@ -55,7 +54,7 @@ h3 {
     left: -1.0em;
     padding: 0em 0.5em;
     display: inline; 
-    font-size: 0.9em;
+    font-size: 11;
     background: #ffffff;
   }
 
@@ -173,7 +172,7 @@ h3 {
       </xsl:call-template>
  
   <xsl:variable name="address" select="./gmd:CI_ResponsibleParty/gmd:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString"/>
-	<tr>
+	<tr class="basicText">
 	  <td class="meta-param">Email:</td>
 	  <td class="meta-value">
 	    <a><xsl:attribute name="href">
@@ -217,7 +216,7 @@ h3 {
       </xsl:call-template>
 
       <!--abstract is handled seperately because of text formatting-->
-      <tr>
+      <tr class="basicText">
       <td class="meta-param">Abstract:</td>
       <td class="meta-value">
       <xsl:apply-templates select="./gmd:abstract"/>
@@ -308,18 +307,18 @@ h3 {
 <h3>Geographic box</h3>
 <br/>
 <table class="meta" width="50%" height="30%" align="center"><tr></tr>
-<tr>
+<tr class="basicText">
 <td></td><td class="meta-param" align="center">North bound latitude<br/>
 <font color="#000000"><xsl:value-of select="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:northBoundLatitude/gco:Decimal"/></font></td><td></td>
 </tr>
-<tr>
+<tr class="basicText">
 <td class="meta-param" align="center">West bound longitude<br/>
 <font color="#000000"><xsl:value-of select="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:westBoundLongitude/gco:Decimal"/></font></td>
 <td></td>
 <td class="meta-param" align="center">East bound longitude<br/>
 <font color="#000000"><xsl:value-of select="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:eastBoundLongitude/gco:Decimal"/></font></td>
 </tr>
-<tr>
+<tr class="basicText">
 <td></td><td class="meta-param" align="center">South bound latitude<br/>
 <font color="#000000"><xsl:value-of select="./gmd:EX_Extent/gmd:geographicElement/gmd:EX_GeographicBoundingBox/gmd:southBoundLatitude/gco:Decimal"/></font></td><td></td>
 </tr>
@@ -429,7 +428,7 @@ h3 {
       <xsl:with-param name="cvalue" select="./dc:identifier"/>
       </xsl:call-template>
 <xsl:if test="./dct:abstract">
-<tr><!-- this "tr" causes problems for new line replacement by "p" -->
+<tr class="basicText"><!-- this "tr" causes problems for new line replacement by "p" -->
 <td class="meta-param">Abstract:</td><td class="meta-value"><xsl:apply-templates select="./dct:abstract"/></td>
 </tr>
 </xsl:if>
@@ -505,7 +504,7 @@ h3 {
   <xsl:param name="cvalue"/>
   <xsl:choose>
     <xsl:when test="string($cvalue)">
-	<tr>
+	<tr class="basicText">
     <td class="meta-param"><xsl:value-of select="$cname"/><xsl:text>: </xsl:text></td>
     <td class="meta-value"><xsl:value-of select="$cvalue"/></td>
 	</tr>

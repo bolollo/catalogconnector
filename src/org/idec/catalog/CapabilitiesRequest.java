@@ -33,12 +33,12 @@ public class CapabilitiesRequest {
 	 * @return An XML response containing the catalog's capabilities
 	 * @throws IOException
 	 */
-	public static String getCapabilities(String encoding, String catURL){
+	public static String getCapabilities(String encoding, String version, String catURL){
 		String res = "";
 
 		try {
 			PostMethod httppost = new PostMethod(catURL);
-			httppost.setRequestBody(genGetCapabilitiesRequest(encoding));
+			httppost.setRequestBody(genGetCapabilitiesRequest(encoding,version));
 			httpclient.setConnectionTimeout(TWENTY_SECONDS);
 	
 			httppost.addRequestHeader("Content-type", "text/xml; charset="+encoding+"");
@@ -74,21 +74,19 @@ public class CapabilitiesRequest {
 	 * @return A properly formatted request string
 	 * @throws IOException
 	 */
-	public static String genGetCapabilitiesRequest(String encoding) {		
+	public static String genGetCapabilitiesRequest(String encoding, String version) {		
 		return "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>\r\n"+
-		"<csw:GetCapabilities xmlns:csw=\"http://www.opengis.net/cat/csw/2.0.2\" service=\"CSW\">\r\n"+
+		"<csw:GetCapabilities xmlns:ogc=\"http://www.opengis.net/ogc\"  xmlns:csw=\"http://www.opengis.net/cat/csw\" " +
+		"version=\""+version+"\" "+
+		"service=\"CSW\">\r\n"+
 		"</csw:GetCapabilities>";
 	}
 	
 	
-	
-	
-	
-	public static void main(String[] args){
-		String url = "http://www.fao.org/geonetwork/srv/en/csw";
-		String request = genGetCapabilitiesRequest("UTF-8");
-		
-		//String response = getCapabilities("UTF-8",url);
-		System.out.println(request);
-	}
+/*	<csw:GetCapabilities xmlns:csw="http://www.opengis.net/cat/csw" 
+		xmlns:ogc="http://www.opengis.net/ogc" 
+		xmlns="http://www.opengis.net/cat/csw" 
+		version="2.0.0" 
+		outputFormat="text/xml">
+		</csw:GetCapabilities>*/
 }

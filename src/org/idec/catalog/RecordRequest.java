@@ -79,12 +79,10 @@ public class RecordRequest {
 		}
 		
 		String idString = "<csw:Id>"+id+"</csw:Id> \r\n";
-		
 		if(cat.product.equalsIgnoreCase("gpt9")){
 			idString = "<Id>"+id+"</Id> \r\n";
 		}
 		
-		//logger.info("PRODUCT: "+cat.product);
 		
 		return "<?xml version=\"1.0\" encoding=\""+cat.XMLencoding+"\"?> \r\n"+
 		"<csw:GetRecordById \r\n"+
@@ -92,7 +90,6 @@ public class RecordRequest {
 			"version=\""+cat.cswversion+"\" \r\n"+ 
 			"outputFormat=\"application/xml\" \r\n"+ 
 			schemaString+
-			//"outputSchema=\"http://www.opengis.net/cat/csw/"+
 			"xmlns:csw=\"http://www.opengis.net/cat/csw/"+cat.cswversion+"\"> \r\n"+
 			idString+
 			"<csw:ElementSetName>full</csw:ElementSetName> \r\n"+

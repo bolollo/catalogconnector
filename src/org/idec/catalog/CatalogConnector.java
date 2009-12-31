@@ -334,7 +334,7 @@ import org.jdom.JDOMException;
 					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat,outSchema);
 					String xslPath = AP_PATH+"/scripts/metadata_to_html.xsl";	
 					htmlResult = GetRecordByIdXSL.Transform(metadata, xslPath);
-					writer.write(htmlResult);
+					writer.write(htmlResult); 
 				}catch (Exception e) {
 					e.printStackTrace();
 					response.sendError(-1, "Transform failed for "+ cat);
@@ -358,17 +358,17 @@ import org.jdom.JDOMException;
 	private void validateRecords(JSONArray capabilitiesArray) {
 		//start thread here that will run until all are validated but allows initial
 		//response to get back w/ out any delay
+		
 		for(int i = 0; i<capabilitiesArray.size();i++){
 			String name = (String) capabilitiesArray.getJSONObject(i).get("name");
 			String url = (String) capabilitiesArray.getJSONObject(i).get("urlcatalog");
 			String encoding = (String) capabilitiesArray.getJSONObject(i).get("xml-encoding");
-			
-			
+			String version = (String) capabilitiesArray.getJSONObject(i).get("csw-version");
+
 			//Here, initialize a catalog in the map. Used later to confirm 
 			//whether all getcapabilities requests are finished.
 			capabilitesMap.put(name, new OutputSchemaContainer());
-			
-			new ValidationThread(name,url,encoding).start();
+			new ValidationThread(name,url,encoding,version).start();
 			
 		}
 		
@@ -494,37 +494,33 @@ import org.jdom.JDOMException;
 		String name;
 		String encoding;
 		String url;
-		public ValidationThread(String nameArg,String urlArg,String encodingArg){
+		String version;
+		public ValidationThread(String nameArg,String urlArg,String encodingArg,String versionArg){
 			name = nameArg;
 			url = urlArg;
 			encoding=encodingArg;
+			version=versionArg;
 		}
 		
 		//TODO: Make this work
 		public void run() {			
 			boolean error = false;			
-			String capabilities = "";			
+			String capabilities = null;			
 			
 			try{
-				capabilities =  CapabilitiesRequest.getCapabilities(encoding,url);			
+				capabilities =  CapabilitiesRequest.getCapabilities(encoding,version,url);			
 			}catch(Exception e){
 				error = true;
 			}
-
-			logger.info(name);			
-			if(name.equalsIgnoreCase("IDEE")){
-				logger.info("DEBUG HERE");
-			}
-
 			
 			if(null == capabilities){
 				error = true;
 			}
-			else if(capabilities.length()>0){
-			{
-				
+			else if(capabilities.length()>0  
+					&& !capabilities.toLowerCase().contains("404 not found")
+					&& !capabilities.contains("internal server error")){
 				logger.info("CAPABILITIES FOR URL: "+name+"\nSTRING: "+capabilities);
-				
+	
 				String xslPath = AP_PATH+"scripts/parse_capabilities.xsl";
 					String result = null;
 					
@@ -544,8 +540,6 @@ import org.jdom.JDOMException;
 								results =  JSONObject.fromObject(json).get("outSchema");
 							}catch(Exception e){
 								logger.info("JSON Parse error for "+name);
-								logger.info("RESULT: "+result);
-								logger.info("JSON: "+json); 
 							}
 							if(results instanceof JSONArray){
 								for(Object schema : (JSONArray)results){
@@ -558,14 +552,15 @@ import org.jdom.JDOMException;
 							}
 						}else{
 							error = false;
-							logger.info("Server responded for "+name+" but no outputSchema paramter defined");
+							logger.info("Server responded for "+name+" but no outputSchema parameter defined");
 						}
 					}else{
-						error = false;
+						//error = true;
 						logger.info("Server responded for "+name+" but unable to parse results. This means" +
 								" the server probably can't handle POSTs");
 					}
-			}
+			}else{
+				error=true;
 			}
 			if(error){
 				capabilitesMap.get(name).setValidationFailed(true);

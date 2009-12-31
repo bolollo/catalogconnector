@@ -46,7 +46,7 @@
 	display:block; 
 	position:relative; 
 	background-color: #FFFFFF; 
-	overflow:hidden; 
+	overflow:auto; 
 	z-index:142;
 	border: 1px solid #2b66a5;
 }

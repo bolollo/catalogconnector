@@ -61,8 +61,9 @@ function metaDataToHTML(id,url,version,catName,product,encoding){
 	
 	//this IF checks to see if metadata has been generated yet
 	if($(divID)==null){
-		var div = document.createElement('div');
+		var div = $(document.createElement('div'));
 		div.id=divID;
+		
 		div.innerHTML="<br><br><br><br><br><br><br><br>";
 
 		var outSchemaSetting = "";
@@ -289,7 +290,7 @@ htmlText.push('</ul></div>');
 
 var j=1;
 catalogsArray.each(function(item) {
-htmlText.push('<div style="overflow:hidden; height:96%;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
+htmlText.push('<div style="overflow:auto; height:96%;" id="catalogue'+j+'"><div id="div_'+item+'" class="infoTab"></div></div>');
 
 j=j+1;
 });
@@ -364,7 +365,7 @@ function updateSchemaHash(cname){
 function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	$(divCatalogue).innerHTML="";
 	
-	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<h8><center><p>&nbsp;Null response returned</p></center></h8>";return;}
+	if(json==null||json.GetRecordsResponse==null){ $(divCatalogue).innerHTML="<h8><center><p>&nbsp;No Matching Records Found</p></center></h8>";return;}
 	var candidates=json.GetRecordsResponse.numberOfRecordsReturned;
 	var cName=divCatalogue.replace('div_','');
 	var ct = extracPr(cName);
@@ -444,7 +445,7 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 	//Select metadata dropdown box	
 	htmlText.push('<tr bgcolor="#ECECFF">');		
 		htmlText.push('<td align="center" colspan="4">');
-		htmlText.push('<div><h3>&nbsp;'+cName+' Metadata OutputSchema:&nbsp;</h3>');
+		htmlText.push('<div class="labelText"><h3>&nbsp;'+cName+' Metadata OutputSchema:&nbsp;</h3>');
 		htmlText.push('<select class="dropboxtext" id='+(cName+'box')+' onChange="javascript:updateSchemaHash(\''+cName+'\');"><option>Service Default</option>'+schemaResults+'</select><br></div>');
 		htmlText.push('</td>');
 	htmlText.push('</tr>');
@@ -509,7 +510,7 @@ function parseWriteCatalogues(divCatalogue,json,task,currPage){
 			htmlText.push('<td width="13%"><center><a href="#" onclick="javascript:metaDataToHTML(\''+identifier+'\',\''+url+'\',\''+version+'\',\''+escape(cName)+'\',\''+prod+'\',\''+encoding+'\');">Show/Hide Metadata</a></center></td>');
 			htmlText.push('<td width="12%"><center><a href="#" onclick="javascript:loadMetaData(\''+url+'\',\''+escape(currRecord.identifier)+'\',\''+version+'\',\''+escape(cName)+'\');">Raw Metadata File</a></center></td>');
 			htmlText.push('</tr>');
-			htmlText.push('<tr><td colspan="4"><h1>Description:</h1>'+currRecord.description+'</tr></td>');			
+			htmlText.push('<tr class="basicText"><td colspan="4"><h1>Description:</h1>'+currRecord.description+'</tr></td>');			
 			htmlText.push('</table>');
 		}
 		htmlText.push('</td></tr>');

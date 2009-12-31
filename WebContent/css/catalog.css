@@ -1,10 +1,18 @@
 
 
 
-* {
+/** {
+	font-size: 11; 
+}
+*/
+
+.basicText{
 	font-size: 11; 
 }
 
+.labelText{
+	font-size: 12; 
+}
 
 body {
 	margin: 0px;
@@ -68,8 +76,8 @@ h7 {
 }
 
 h8 {
-	font: bold 18px Verdana, Arial, Geneva, Helvetica, sans-serif;
-	font-size: 18px;
+	font: bold Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 14px;
 }
 
 a {
@@ -100,7 +108,7 @@ form {
 	background-repeat:no-repeat;
 	background-position:center; 
 	background-image: url('/catalogConnector/images/loader.gif');
-	display:block;overflow:hidden;
+	display:block;
 }
 
 .blueloader{
@@ -109,7 +117,7 @@ form {
 	background-repeat:no-repeat;
 	background-position:48% 40%; 
 	background-image: url('/catalogConnector/images/bigloader.gif');
-	display:block;overflow:hidden;
+	display:block;
 }
 
 .smallloader{
@@ -118,7 +126,7 @@ form {
 	background-repeat:no-repeat;
 	background-position:center; 
 	background-image: url('/catalogConnector/images/smallloader.gif');
-	display:block;overflow:hidden;
+	display:block;
 }
 
 .header{
@@ -213,6 +221,7 @@ form {
 	font: bold 12px Verdana, Arial, Geneva, Helvetica, sans-serif;
 	background:#ECECFF;
 	font-weight: bold;
+	cursor:pointer;
 	border: 1px solid #ECECFF;
 }
  
@@ -238,3 +247,14 @@ form {
     font: 10px Verdana, Arial, Geneva, Helvetica, sans-serif;
 }
 
+
+
+
+
+/**
+ * Layer switcher
+ */
+div.olMapViewport {
+    text-align: left;
+    font-size: 14;     
+}

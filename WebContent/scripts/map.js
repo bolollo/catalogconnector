@@ -30,20 +30,17 @@ function addBox(latlon, lowerCorner, upperCorner){
 	}
 	var md_bounds = new OpenLayers.Bounds(xmin, ymin, xmax, ymax);
 	map.zoomToExtent(md_bounds, false);
-	map.zoomOut();
 	
 	/////////TODO: Figure out how to set minZoom in OpenLayers//////////
 	//This quickly takes care of zoom needs based on scale, but not
 	//very accurately or efficiently..
-	if((Math.abs(ymin-ymax)<1)||(Math.abs(ymax-ymin)<1)){
+	/*if((Math.abs(ymin-ymax)<1)||(Math.abs(ymax-ymin)<1)){
 		map.zoomOut();
 	}if((Math.abs(ymin-ymax)<.5)&&(Math.abs(ymax-ymin)<.5)){
 		map.zoomOut();
+	}*//*if((Math.abs(ymin-ymax)<.1)&&(Math.abs(ymax-ymin)<.1)){
 		map.zoomOut();
-	}if((Math.abs(ymin-ymax)<.1)&&(Math.abs(ymax-ymin)<.1)){
-		map.zoomOut();
-		map.zoomOut();
-	}
+	}*/
 	//////////The above block of code needs fixing (min zoom)///////////
 	
 	

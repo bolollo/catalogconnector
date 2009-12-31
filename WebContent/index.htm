@@ -79,98 +79,86 @@
         <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
           
           <tr align="center" valign="middle">
-            <td colspan="2" height="220px"><div id="map" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
-          </tr>
-
-		<tr align="center" >
-		  	<td>Map Type:</td>
-            <td colspan="2">
-            <select id="filterSelecter" onChange="updateMap(this.value);">
-				<!--option>World_Topo_Map (default)</option-->
-                <option>World_Street_Map (default)</option>
-                <option>ESRI_Imagery_World_2D </option>
-                <!--option>I3_Imagery_Prime_World_2D</option-->
-              </select>
-             </td>
+            <td colspan="2" height="220px"><div id="map" class="smallmap" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
           </tr>
           
           <tr>
             <td><br></td>
           </tr>
           
-          <tr>
+          <tr class="labelText">
             <td colspan="2"><center><b>METADATA SEARCH</b></center></td>
           </tr>
-         <tr>
+         <tr class="basicText" >
 			<td colspan="2"><input type="checkbox" id="chkbbox"  name="chkbbox" value="checkbox">
 			Limit Search To Current Map Extent</td>
 		</tr>
 		
-          <tr>
+          <tr class="basicText" >
             <td>Projects</td>
-            <td><select name="PROJECT" id="PROJECT" onChange="getCapabilities();">
+            <td><select class="basicText"  name="PROJECT" id="PROJECT" onChange="getCapabilities();">
                 <option value="catalogues">catalogues (by default)</option>
                 <option value="project1">project1</option>
               </select></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td width="30%">AnyText: </td>
-            <td ><input type="text" class="textbox" id="any" value="" name="any"></td>
+            <td ><input class="basicText" type="text" class="textbox" id="any" value="" name="any"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Title: </td>
-            <td width="52%"><input type="text" class="textbox" id="title" name="title"></td>
+            <td width="52%"><input class="basicText" type="text" class="textbox" id="title" name="title"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Description: </td>
-            <td width="52%"><input type="text" class="textbox" id="description" name="description"></td>
+            <td width="52%"><input class="basicText" type="text" class="textbox" id="description" name="description"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Subject: </td>
-            <td width="52%"><input type="text" class="textbox" id="subject" name="subject"></td>
+            <td width="52%"><input class="basicText" type="text" class="textbox" id="subject" name="subject"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Organization: </td>
-            <td width="52%"><input type="text" class="textbox" id="organization" name="organization"></td>
+            <td width="52%"><input class="basicText" type="text" class="textbox" id="organization" name="organization"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td colspan="2"><b>Pagination parameters:</b></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Start position: </td>
-            <td width="52%"><input type="text" size="5" value="1" class="textbox" id="startPosition" name="startPosition"></td>
+            <td width="52%"><input class="basicText" type="text" size="5" value="1" class="textbox" id="startPosition" name="startPosition"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td>Max records: </td>
-            <td width="52%"><input type="text" size="5" class="textbox" value="10" id="maxRecords" name="maxRecords"></td>
+            <td width="52%"><input class="basicText" type="text" size="5" class="textbox" value="10" id="maxRecords" name="maxRecords"></td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td colspan="2"></td>
           </tr>
           
-          <tr>
+          <tr class="basicText" >
             <td><br></td>
           </tr>
           
-          <tr>
+          <tr class="labelText" >
             <td colspan="2"><center><b>CATALOGS TO SEARCH</b></center></td>
           </tr>
 
-          <tr>
-            <td height="90px" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
+          <tr class="basicText" >
+            <td height="95px" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
           </tr>
-           <tr>
+           <tr class="basicText" >
             <td colspan="2"><input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
               Select/Deselect All</td>
           </tr>
-          <tr>
+          <tr class="basicText" >
             <td colspan="2"></td>
           </tr>
           <tr align="right" valign="middle">
             <td colspan="2" align="center"><input type="submit" style="cursor:pointer;font-size:14px;border:1px solid #FF0000;" class="textbox"  name="Submit" value="Search"></td>
           </tr>
-          <tr valign="top" align="left">
-            <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not pass validation and are not searchable</div></td>
+          <tr class="basicText"  valign="bottom" align="left">
+            <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not provide a valid response to a GetCapabilities request</div></td>
           </tr>
         </table>
         <input type="hidden" value=""  name="bbox" id="bbox" >
@@ -187,48 +175,34 @@
   </tr>
 </table>
 <table align="center" width="100%" cellspacing="0" cellpadding="0">
-  <tr valign="top">
+  <tr class="basicText"  valign="top">
     <td valign="top"><p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration</a> | <a href="examples.html" target="_blank">examples</a> | <a href="catalogConnector.pdf">documentation</a></p></td>
   </tr>
 </table>
 </body>
+
+<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
 <script type="text/javascript">
 var lon =  0;
 var lat =  0;
 var zoom = 0;
 var map, layer, boxes;
 
-var ESRI_Imagery_World_2D = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
-            "http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_Imagery_World_2D/MapServer/export");
 
-var World_Street_Map = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
-"http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer/export");
+var road = new OpenLayers.Layer.VirtualEarth("Road", { type: VEMapStyle.Road } );
+var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", { type: VEMapStyle.Shaded } );
+var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", { type: VEMapStyle.Aerial } );
+var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", { type: VEMapStyle.Hybrid } );
 
-/*
-var World_Topo_Map = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
-"http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/export",
-{srs:"102113",TRANSPARENT:true},{isBaseLayer:false,opacity:0.5}); SRS!!!
-
-var I3_Imagery_Prime_World_2D = new OpenLayers.Layer.ArcGIS93Rest( "ArcGIS Server Layer",
-"http://server.arcgisonline.com/ArcGIS/rest/services/I3_Imagery_Prime_World_2D/MapServer/export");
-*/
 
 
 function init(){
-
     map = new OpenLayers.Map('map');
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	map.addLayers([hybrid,road,shaded,aerial]);
 
 
-    map.addLayer(ESRI_Imagery_World_2D);
-    map.addLayer(World_Street_Map);
-    //map.addLayer(World_Topo_Map);
-    //map.addLayer(I3_Imagery_Prime_World_2D); 
-    
-    map.setBaseLayer(World_Street_Map);
-
-    map.addControl( new OpenLayers.Control.MousePosition() );
-
-    boxes = new OpenLayers.Layer.Vector( "Boxes" );
+    boxes = new OpenLayers.Layer.Vector( "Bounding Box" );
     map.addLayer(boxes);
     map.zoomToMaxExtent(); 
 }
@@ -248,21 +222,7 @@ function resetAllFields()
 	document.getElementById("maxRecords").value = "10";
 }
 
-function updateMap(selected){
-	if(selected.contains("ESRI_Imagery_World_2D")){
-		map.setBaseLayer(ESRI_Imagery_World_2D);
-	}
-	if(selected.contains("World_Street_Map")){
-		map.setBaseLayer(World_Street_Map);
-	}
-/*	if(selected.toLowerCase().contains("World_Topo_Map")){
-		map.setBaseLayer(World_Topo_Map);
-	}if(selected.toLowerCase().contains("I3_Imagery_Prime_World_2D")){
-		map.setBaseLayer(I3_Imagery_Prime_World_2D);
-	}*/
 
-	
-}
 </script>
 
 </html>
