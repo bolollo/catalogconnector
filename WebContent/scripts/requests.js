@@ -546,6 +546,7 @@ function revalidate(){
 	var nodes = $A(document.frmRequest.chkCatalog);
 	nodes.each(function(node)
 		{
+			node.checked = false;
 			node.disabled=true;
 			
 		}			
