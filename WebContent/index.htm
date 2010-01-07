@@ -207,7 +207,7 @@ var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", { type: VEMapStyle.Hybr
 function init(){
     map = new OpenLayers.Map('map');
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.addLayers([hybrid,road,shaded,aerial]);
+	map.addLayers([shaded,hybrid,road,aerial]);
 
 
     boxes = new OpenLayers.Layer.Vector( "Bounding Box" );

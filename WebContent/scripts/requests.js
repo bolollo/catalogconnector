@@ -51,7 +51,7 @@ function loadMetaData(url,identifier,version,cname){
 	window.open(decodeURI(url)+'?request=GetRecordById&elementSetName=full&outputFormat=application/xml&service=CSW&id='+unescape(identifier)+'&version='+version+outSchemaSetting);
 }
 
-var errorDiv = "<div><h8><center><br><p>An error was thrown while parsing raw metadata.</p><p> Either metadata is malformed or the current outputschema is not yet supported for this operation.</p></br></center></h8></div>";
+var errorDiv = "<div><h8><center><br><p>An error was thrown while parsing raw metadata.</p><p> Either metadata is malformed or the current outputschema is not yet supported for this operation. See the Raw Metadata file.</p></br></center></h8></div>";
 
 //Does Metadata to Html Conversion 
 function metaDataToHTML(id,url,version,catName,product,encoding){
