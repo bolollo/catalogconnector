@@ -202,8 +202,6 @@ function getIndividualSchema(nameKey){
 var cataloguesJson;
 function getCapabilities(){
  $( 'divCapabilities' ).innerHTML="";
-
-
 	new Ajax.Request(urlServer+'?REQUEST=GetCapabilities&outputFormat=JSON&PROJECT='+$F('PROJECT'), {   method:'get',   
 	onSuccess: function(transport){  
     cataloguesJson = transport.responseText.evalJSON();

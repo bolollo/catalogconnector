@@ -96,13 +96,9 @@ a.no-help:hover {
 form {
 	margin: 0px;
 }
-.textbox {
-	border: 1px solid #000066;
-}
 
-.validateButton{
-	cursor:pointer;
-}
+
+
 .validateButton:hover{
 	cursor:pointer;
 }
@@ -242,6 +238,26 @@ form {
 	border: 1px solid #ECECFF;
 }
 
+.textbox {
+	background:#ECECFF;
+	color:Black;
+	cursor:pointer;
+	font-size:10.5px;
+	border:1px solid orange;
+}
+
+
+.smallbutton {
+	border: 1px solid #000066;
+}
+
+
+
+.validateButton{
+	border: .5px solid #000066;
+	cursor:pointer;
+	font-size:.9em;
+}
 
 .deadButton {
 	color:lightgrey;
@@ -255,8 +271,46 @@ form {
     font: 10px Verdana, Arial, Geneva, Helvetica, sans-serif;
 }
 
+/***************THIS IS SUBMIT BUTTON STUFF***************/
+/*Credits: Dynamic Drive CSS Library */
+/*URL: http://www.dynamicdrive.com/style/ */
 
+a.ovalbutton{
+background: transparent url('../images/oval-blue-left.gif') no-repeat top left;
+display: block;
+float: left;
+font: normal 13px Tahoma; /* Change 13px as desired */
+line-height: 16px; /* This value + 4px + 4px (top and bottom padding of SPAN) must equal height of button background (default is 24px) */
+height: 24px; /* Height of button background height */
+padding-left: 11px; /* Width of left menu image */
+text-decoration: none;
 
+}
+
+a:link.ovalbutton, a:visited.ovalbutton, a:active.ovalbutton{
+color: #494949; /*button text color*/
+}
+
+a.ovalbutton span{
+background: transparent url('../images/oval-blue-right.gif') no-repeat top right;
+display: block;
+padding: 4px 11px 4px 0; /*Set 11px below to match value of 'padding-left' value above*/
+}
+
+a.ovalbutton:hover{ /* Hover state CSS */
+background-position: bottom left;
+}
+
+a.ovalbutton:hover span{ /* Hover state CSS */
+background-position: bottom right;
+color: black;
+}
+
+.buttonwrapper{ /* Container you can use to surround a CSS button to clear float */
+overflow: hidden; /*See: http://www.quirksmode.org/css/clearing.html */
+width: 86px;
+}
+/*************END SUBMIT BUTTON STUFF***************/
 
 
 /**
@@ -266,3 +320,49 @@ div.olMapViewport {
     text-align: left;
     font-size: 14;     
 }
+
+
+/* Custom controls*/
+
+.olControlPanel div { 
+	display:block;
+	width:  50px;
+	height: 50px;
+	background-color:yellow;
+	background-image: url("images/zoom.png");
+}
+        
+.olControlPanel .olMyButtonItemActive { 
+	background-color: blue;
+	background-image: url("images/zoom.png");
+}
+
+.olControlPanel .olMyButtonItemInactive { 
+  background-color: orange;
+  background-image: url("images/zoom.png");
+}
+
+
+/*THIS IS MAP ENLARGEMENT STUFF */
+    /*This is the gray box */
+    .popupcontainer{
+      width: 250px;
+      padding: 10px;
+      margin: 0 0 10px 0;
+      background: #eee;
+      border: 1px solid #ccc;
+      font: normal 12px Arial, Helvetica, sans-serif;
+      color: #000;
+    }
+    
+    /* This is the textbox that pops up*/ 
+    .popupdiv{
+      width: 90%;
+      margin-right: auto;
+	  margin-left: auto;
+      padding: 5px;
+      background: #ffc;
+      border: 1px solid #ccc;
+      font: normal 12px Arial, Helvetica, sans-serif;
+      color: #000;
+    }

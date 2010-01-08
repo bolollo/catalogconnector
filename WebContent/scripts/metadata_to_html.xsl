@@ -452,7 +452,23 @@ h3 {
 </xsl:template>
 
 <!-- 'Identification->Geographic box' block -->
-<xsl:template match="ows:BoundingBox|ows:WGS84BoundingBox">
+<xsl:template match="ows:WGS84BoundingBox">
+<div class="captioneddiv">
+<h3>WGS84 Geographic box</h3>
+<table class="meta"><tr></tr>
+      <xsl:call-template name="tablerow">
+      <xsl:with-param name="cname" select="'Lower corner'"/>
+      <xsl:with-param name="cvalue" select="./ows:LowerCorner"/>
+      </xsl:call-template>
+      <xsl:call-template name="tablerow">
+      <xsl:with-param name="cname" select="'Upper corner'"/>
+      <xsl:with-param name="cvalue" select="./ows:UpperCorner"/>
+      </xsl:call-template>
+</table>
+</div>
+</xsl:template>
+
+<xsl:template match="ows:BoundingBox">
 <div class="captioneddiv">
 <h3>Geographic box</h3>
 <table class="meta"><tr></tr>

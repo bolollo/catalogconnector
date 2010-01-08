@@ -79,7 +79,8 @@
         <table align="center" width="99%" border="0" cellspacing="1" cellpadding="1">          
           
           <tr align="center" valign="middle">
-            <td colspan="2" height="220px"><div id="map" class="smallmap" style="border: 1px solid #000000; width:260px; height: 100%;"> </div></td>
+            <td colspan="2" height="200px"><div id="map" class="smallmap" style="border: 1px solid #000000; width:260px; height: 100%;"></div>           	
+          	</td>
           </tr>
           
           <tr>
@@ -144,27 +145,34 @@
             <td colspan="2"><center><b>CATALOGS TO SEARCH</b></center></td>
           </tr>
 
-          <tr class="basicText" >
-            <td height="95px" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
-          </tr>
+
            <tr class="basicText">
             <td colspan="2">
               <input type="checkbox" id="chkallboxes"  name="chkallboxes" onclick='switchAll();'>
               Select/Deselect All
               &nbsp;&nbsp;&nbsp;&nbsp;
-              
-				<input type="button" value="Revalidate" class="validateButton" onclick='revalidate();'>
-              
+				<input type="button" value="Revalidate" class="textbox" onclick='revalidate();'>
               </td>
           </tr>
+          
+          <tr class="basicText" >
+            <td height="95px" colspan="2"><div id="divCapabilities" style="overflow:auto;border: 1px solid #000000;width:99%; height:99%; z-index:1"></div></td>
+          </tr>
+
           <tr class="basicText" >
             <td colspan="2"></td>
           </tr>
 	
-          <tr align="right" valign="middle">
+          <tr align="right" align="center" valign="middle">            
             <td colspan="2" align="center">
-            	<input type="submit" style="cursor:pointer;font-size:14px;border:1px solid #FF0000;" class="textbox"  name="Submit" value="Search"></td>
+            	<div align="center">
+					<div class="buttonwrapper" align="center">
+		              		<a class="ovalbutton" href="#" onClick="getRecords()"><span>&nbsp;&nbsp;&nbsp;Search&nbsp;&nbsp;&nbsp;</span></a>
+					</div>
+				</div>
+			</td>	
           </tr>
+          
           <tr class="basicText"  valign="bottom" align="left">
             <td colspan="2" valign="bottom"><div style="color:#C00;">*Catalogs listed in red did not provide a valid response to a GetCapabilities request</div></td>
           </tr>
@@ -187,31 +195,64 @@
     <td valign="top"><p align="center"class="style6"><a href="/catalogConnector/AdminConnector?" target="_blank">administration</a> | <a href="examples.html" target="_blank">examples</a> | <a href="catalogConnector.pdf">documentation</a></p></td>
   </tr>
 </table>
+	    <div id="dwindow" style="position:absolute;background-color:#EBEBEB;cursor:hand;left:0px;top:0px;display:none" onMousedown="initializedrag(event)" onMouseup="stopdrag()" onSelectStart="return false">
+			<div align="right" style="background-color:navy"><img src="max.gif" id="maxname" onClick="maximize()"><img src="close.gif" onClick="closeit()">
+			</div>
+			
+			<div id="dwindowcontent" style="height:100%">
+			<iframe id="cframe" src="" width=100% height=100%></iframe>
+			</div>
+		</div>
 </body>
 
+<script src="scripts/firebug.js"></script>
 <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
-<script type="text/javascript">
+<script type="text/javascript"><!--
 var lon =  0;
 var lat =  0;
 var zoom = 0;
 var map, layer, boxes;
 
+function maxMap(){
+	loadwindow($(map),600,400);
+}
 
 var road = new OpenLayers.Layer.VirtualEarth("Road", { type: VEMapStyle.Road } );
 var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", { type: VEMapStyle.Shaded } );
 var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", { type: VEMapStyle.Aerial } );
 var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", { type: VEMapStyle.Hybrid } );
 
-
-
 function init(){
+    var lon = 5;
+    var lat = 40;
+    var zoom = 5;
+
     map = new OpenLayers.Map('map');
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addLayers([shaded,hybrid,road,aerial]);
 
-
     boxes = new OpenLayers.Layer.Vector( "Bounding Box" );
     map.addLayer(boxes);
+
+    /*
+    This is how we add expandable option to map
+    
+	vlayer = new OpenLayers.Layer.Vector( "Editable" );
+	map.addLayer(vlayer);
+
+    
+    var button = new OpenLayers.Control.Button({
+        displayClass: "MyButton",
+        title:"Toggle map size", 
+        trigger: function(){maxMap();}
+    });
+	
+    var panel = new OpenLayers.Control.Panel({defaultControl: button});
+    panel.addControls([button]);
+    map.addControl(panel);
+    */
+    
+	
     map.zoomToMaxExtent(); 
 }
 
@@ -230,6 +271,85 @@ function resetAllFields()
 	document.getElementById("maxRecords").value = "10";
 }
 
+
+</script>
+
+<script>
+//DHTML Window script- Copyright Dynamic Drive (http://www.dynamicdrive.com)
+//For full source code, documentation, and terms of usage,
+//Visit http://www.dynamicdrive.com/dynamicindex9/dhtmlwindow.htm
+
+var dragapproved=false
+var minrestore=0
+var initialwidth,initialheight
+var ie5=document.all&&document.getElementById
+var ns6=document.getElementById&&!document.all
+
+function iecompattest(){
+return (!window.opera && document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function drag_drop(e){
+	if (ie5&&dragapproved&&event.button==1){
+	document.getElementById("dwindow").style.left=tempx+event.clientX-offsetx+"px"
+	document.getElementById("dwindow").style.top=tempy+event.clientY-offsety+"px"
+	}
+	else if (ns6&&dragapproved){
+	document.getElementById("dwindow").style.left=tempx+e.clientX-offsetx+"px"
+	document.getElementById("dwindow").style.top=tempy+e.clientY-offsety+"px"
+	}
+}
+
+function initializedrag(e){
+	offsetx=ie5? event.clientX : e.clientX
+	offsety=ie5? event.clientY : e.clientY
+	document.getElementById("dwindowcontent").style.display="none" //extra
+	tempx=parseInt(document.getElementById("dwindow").style.left)
+	tempy=parseInt(document.getElementById("dwindow").style.top)
+	
+	dragapproved=true
+	document.getElementById("dwindow").onmousemove=drag_drop
+}
+
+function loadwindow(url,width,height){
+	if (!ie5&&!ns6)
+	window.open(url,"","width=width,height=height,scrollbars=1")
+	else{
+	document.getElementById("dwindow").style.display=''
+	document.getElementById("dwindow").style.width=initialwidth=width+"px"
+	document.getElementById("dwindow").style.height=initialheight=height+"px"
+	document.getElementById("dwindow").style.left="400px"
+	document.getElementById("dwindow").style.top=ns6? window.pageYOffset*1+30+"px" : iecompattest().scrollTop*1+30+"px"
+	document.getElementById("cframe").src=url
+	}
+}
+
+function maximize(){
+if (minrestore==0){
+minrestore=1 //maximize window
+document.getElementById("maxname").setAttribute("src","restore.gif")
+document.getElementById("dwindow").style.width=ns6? window.innerWidth-20+"px" : iecompattest().clientWidth+"px"
+document.getElementById("dwindow").style.height=ns6? window.innerHeight-20+"px" : iecompattest().clientHeight+"px"
+}
+else{
+minrestore=0 //restore window
+document.getElementById("maxname").setAttribute("src","max.gif")
+document.getElementById("dwindow").style.width=initialwidth
+document.getElementById("dwindow").style.height=initialheight
+}
+document.getElementById("dwindow").style.left=ns6? window.pageXOffset+"px" : iecompattest().scrollLeft+"px"
+document.getElementById("dwindow").style.top=ns6? window.pageYOffset+"px" : iecompattest().scrollTop+"px"
+}
+
+function closeit(){
+document.getElementById("dwindow").style.display="none"
+}
+
+function stopdrag(){
+dragapproved=false;
+document.getElementById("dwindow").onmousemove=null;
+document.getElementById("dwindowcontent").style.display="" //extra
+}
 
 </script>
 
