@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+ 						xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
+   <ShortName>CatalogConnector</ShortName>
+   <Description>Search in many catalogues</Description>
+   <Tags>Catalog CSW CatalogConnector</Tags>
+   <Contact>admin@example.com</Contact>
+   <Url type="text/html"
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=XML&amp;catalogues=IDEE&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+</OpenSearchDescription>

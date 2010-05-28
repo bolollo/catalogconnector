@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 import javax.servlet.ServletException;
@@ -215,18 +217,15 @@ import org.jdom.JDOMException;
 			}
 			//Here we process a request to get records
 			else if(methodRequest.equalsIgnoreCase("GetRecords")){
-				if(paramsRequest.containsKey("PROJECT")){PROJECT=paramsRequest.get("PROJECT").toString();}
+				if (paramsRequest.containsKey("PROJECT")){
+					PROJECT=paramsRequest.get("PROJECT").toString();
+				}
 				boolean nCat=paramsRequest.get("CATALOGUES").toString().contains(",");
-				if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
-					response.setContentType("text/xml;charset="+charset);
-					writer.write("<CatalogConnector>");
-				}else{
-					if(nCat){
-						writer.write("[");
-						}
-				} 
-				for (int i=0;i < catalogs.length;i++){
-
+				String outputFormat = paramsRequest.get("OUTPUTFORMAT").toString().toUpperCase();
+				
+				// Get all responses and put them into cswResponses array
+				ArrayList<String> cswResponses = new ArrayList<String>();
+				for (int i=0; i<catalogs.length; i++){
 					Catalog cat =catalogs[i];
 					cat.ProxyHost = PROXY_HOST;
 					cat.ProxyPort = PROXY_PORT;
@@ -234,43 +233,53 @@ import org.jdom.JDOMException;
 					if(Utils.checkExistsCatalogue(cat.name,(String)paramsRequest.get("CATALOGUES"))){
 						cat=CatalogRequest.buildCSWQuery(paramsRequest, cat);
 						cat=CatalogRequest.sendRequest(cat);
-						if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
+						cswResponses.add(cat.CSWFinalResponse);
+					}
+				}
+				
+				HashMap<String, String> knownFormats = new HashMap<String, String>();
+				knownFormats.put("HTML","text/html");
+				knownFormats.put("KML","application/vnd.google-earth.kml+xml");
+				knownFormats.put("ATOM","application/atom+xml");
+				knownFormats.put("XML","text/xml");
+				
+				Iterator<String> iter = cswResponses.iterator();
+				
+				// Serialize responses, depending on outputformat
+				if(!knownFormats.containsKey(outputFormat)) { // Defaults to JSON
+					response.setContentType("text/json;charset="+charset);
+					if(nCat) writer.write("[");
+					while (iter.hasNext()){
+						JSON jsonResponse = new JSONArray();
+					    XMLSerializer xmlS= new XMLSerializer();
+						jsonResponse = xmlS.read(iter.next());
+						writer.write(jsonResponse.toString());
+						if(iter.hasNext()) writer.write(",");
+					}
+					if(nCat) writer.write("]");
+				} else { // Any known format
+					String xmlResponse = new String("<CatalogConnector>");
+					while (iter.hasNext()){
+						xmlResponse += iter.next();
+					}
+					xmlResponse += "</CatalogConnector>";
+					response.setContentType(knownFormats.get(outputFormat)+";charset="+charset);
 
-
-							writer.write(cat.CSWFinalResponse);
-						}else{
-							//TODO: Find out why UTF-8 causes unrecognized characters when using GZIP
-							if(doGZIP){
-								response.setContentType("text/json;charset="+charset);
-							}else{
-								response.setContentType("text/json;charset="+catalogs[i].XMLencoding);
-							}
-							
-							JSON  jsonResponse = new JSONArray();
-						    XMLSerializer xmlS= new XMLSerializer();
-							jsonResponse = xmlS.read(cat.CSWFinalResponse);//TODO: Fix this!!!
-							if(nCat){
-							resp +=jsonResponse+",";
-
-							}else{
-								//logger.info("Doing respnse: "+ jsonResponse.toString());
-								writer.write(jsonResponse.toString());
-							}
+					if(outputFormat.equals("XML")) { // Write directly
+						writer.write(xmlResponse);
+					} else { // Need to transform
+						String xslPath = AP_PATH+"/scripts/getRecords2"+outputFormat+".xsl";
+						try {
+							String transformedResponse = GetCapabilitiesXSL.Transform(xmlResponse, xslPath);
+							writer.write(transformedResponse);
+						}catch (Exception e) {
+							e.printStackTrace();
+							response.sendError(-1, "Transform failed for "+outputFormat);
 						}
+											
 					}
 				}
-				if(paramsRequest.get("OUTPUTFORMAT").toString().equalsIgnoreCase("XML")){
-					writer.write("</CatalogConnector>");
-				}else{
-					if(resp.length()>1){
-						resp=resp.substring(0, resp.length()-1);
-						writer.write(resp);
-					}
-					if(nCat){
-								writer.write("]");
-					}
-				}
-			}			
+			}
 			//Once we get schema request, wait on getcapabilities thread to finish,
 			// or timeout and return results
 			else if(methodRequest.equalsIgnoreCase("GetIndivSchemas")){
@@ -323,7 +332,7 @@ import org.jdom.JDOMException;
 				Catalog cat = Utils.generateRequestCatalog(idVal,urlVal,versionVal,catalogCharset,product);
 				String htmlResult = null;
 				try {
-					logger.debug("XSL PATH:"+AP_PATH+"/WebContent/scripts");
+					logger.debug("XSL PATH:"+AP_PATH+"/scripts/metadata_to_html.xsl");
 					String metadata = RecordRequest.getRecordByIdRequest(idVal,cat,outSchema);
 					String xslPath = AP_PATH+"/scripts/metadata_to_html.xsl";	
 					htmlResult = GetRecordByIdXSL.Transform(metadata, xslPath);
