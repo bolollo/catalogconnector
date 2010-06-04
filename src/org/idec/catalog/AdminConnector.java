@@ -3,7 +3,7 @@
  * http://www.geoportal-idec.cat
  * 
  * Copyright (c) 2009, Spatial Data Infrastructure of Catalonia (IDEC)
- * Institut Cartogràfic de Catalunya (ICC)
+ * Institut Cartogrï¿½fic de Catalunya (ICC)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -115,7 +115,7 @@ import org.apache.log4j.Logger;
 						map.put("project", project.getName());
 						list.add(map);
 					}
-					response.setContentType("text/json;charset=ISO-8859-1");
+					response.setContentType("text/json;charset=UTF-8");
 					JSONArray jsonArray = JSONArray.fromObject( list );   
 					out.println( jsonArray ); 
 				}
@@ -155,7 +155,7 @@ import org.apache.log4j.Logger;
 							list.add(map);
 						}
 					}
-					response.setContentType("text/json;charset=ISO-8859-1");
+					response.setContentType("text/json;charset=UTF-8");
 					JSONArray jsonArray = JSONArray.fromObject( list );   
 					out.println( jsonArray ); 
 				}
@@ -235,14 +235,14 @@ import org.apache.log4j.Logger;
 			}
 		}else{
 			//Client Administrator
-			response.setContentType("text/html;charset=ISO-8859-1");
+			response.setContentType("text/html;charset=UTF-8");
 			String url = "";
 			if (request.getParameter("user") != null && request.getParameter("password") != null){
 				if (request.getParameter("user").equals(USER_NAME) && request.getParameter("password").equals(PASSWORD)){
 					String page = "";
 					page += "<html>";
 					page += "<head>";
-					page += "<meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'>";
+					page += "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>";
 					page += "<title>CatalogConector</title>";
 					page += "<link href='css/catalog.css' rel='stylesheet' type='text/css'>";
 					page += "<script type='text/javascript' src='scripts/prototype.js'></script>";

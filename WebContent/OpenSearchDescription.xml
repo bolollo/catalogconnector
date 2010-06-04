@@ -4,7 +4,21 @@
    <ShortName>CatalogConnector</ShortName>
    <Description>Search in many catalogues</Description>
    <Tags>Catalog CSW CatalogConnector</Tags>
-   <Contact>admin@example.com</Contact>
+   <Contact>idec@icc.cat</Contact>
    <Url type="text/html"
-        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=XML&amp;catalogues=IDEE&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=HTML&amp;catalogues=FAO&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+ 
+   <Url type="application/vnd.google-earth.kml+xml"
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=KML&amp;catalogues=FAO&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+
+ <!--
+   <Url type="application/atom+xml"
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=ATOM&amp;catalogues=FAO&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+ -->
+ <!-- 
+   <Url type="text/xml"
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=XML&amp;catalogues=FAO&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+   <Url type="text/json"
+        template="http://localhost:8080/catalogConnector/Connector?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=JSON&amp;catalogues=FAO&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+ -->
 </OpenSearchDescription>

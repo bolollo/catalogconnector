@@ -6,7 +6,7 @@ xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
 xmlns:wrs="http://www.opengis.net/cat/wrs"
 xmlns:gml="http://www.opengis.net/gml"
 >
-<xsl:output method="xml" version="1.0" encoding="ISO-8859-1" indent="yes" />
+<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
   <xsl:template match="/">
       <GetRecordsResponse>
        <xsl:for-each select="/csw:GetRecordsResponse/csw:SearchResults">

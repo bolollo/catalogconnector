@@ -3,7 +3,7 @@
  * http://www.geoportal-idec.cat
  *
  * Copyright (c) 2009, Spatial Data Infrastructure of Catalonia (IDEC)
- * Institut Cartogràfic de Catalunya (ICC)
+ * Institut Cartogrï¿½fic de Catalunya (ICC)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ package org.idec.catalog;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -177,8 +178,8 @@ import org.jdom.JDOMException;
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String charset = "UTF-8";
-		response.setContentType("text/xml;charset="+charset);
-
+		response.setContentType("text/xml");
+		response.setCharacterEncoding(charset);
 
 		//Check to see if client accepts gzip compression
 		boolean doGZIP = false;
@@ -187,9 +188,9 @@ import org.jdom.JDOMException;
 			logger.debug("Gzip encoding is supported - Now using gzip encoding");
 			response.setHeader("Content-Encoding", "gzip");
 			doGZIP = true;
-			charset="ISO-8859-1";
 		}
 		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response);
+		//Writer writer = response.getWriter();
 
 
 		Map paramsRequest = Utils.getParametersToMap(request);
@@ -263,7 +264,9 @@ import org.jdom.JDOMException;
 						xmlResponse += iter.next();
 					}
 					xmlResponse += "</CatalogConnector>";
+					response.setCharacterEncoding(null);
 					response.setContentType(knownFormats.get(outputFormat)+";charset="+charset);
+					response.setHeader("Content-Type", knownFormats.get(outputFormat)+"");
 
 					if(outputFormat.equals("XML")) { // Write directly
 						writer.write(xmlResponse);

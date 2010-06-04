@@ -3,7 +3,7 @@
  * http://www.geoportal-idec.cat
  * 
  * Copyright (c) 2009, Spatial Data Infrastructure of Catalonia (IDEC)
- * Institut Cartogràfic de Catalunya (ICC)
+ * Institut Cartogrï¿½fic de Catalunya (ICC)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -193,7 +193,7 @@ public class Catalog {
 							.length());
 
 			CSWFinalResponseXML = "<Catalogue><Id>" + this.name+"</Id><QueryString>"
-					+ URLEncoder.encode(this.QueryString, "ISO-8859-1")
+					+ URLEncoder.encode(this.QueryString, "UTF-8")
 					+ "</QueryString><Position>" + this.Position
 					+ "</Position>" + CSWFinalResponseXML + "</Catalogue>";
 

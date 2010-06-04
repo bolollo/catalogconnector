@@ -20,7 +20,7 @@
 <urlcatalog>http://idee.unizar.es/csw/servlet/cswservlet</urlcatalog>
 <product>catogc_server</product>
 <csw-version>2.0.2</csw-version>
-<xml-encoding>ISO-8859-1</xml-encoding>
+<xml-encoding>UTF-8</xml-encoding>
 </catalog>
 
 <catalog>

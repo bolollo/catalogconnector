@@ -12,7 +12,7 @@ to the xsl will be made - this script is necessary now though, to show that the 
 is working.
 -->
 
-<xsl:output method="xml" encoding="ISO-8859-1"/>
+<xsl:output method="xml" encoding="UTF-8"/>
 <xsl:template match="/">
   <div witdh="100%">
   	<style type="text/css">

@@ -8,7 +8,7 @@ xmlns:dc="http://purl.org/dc/elements/1.1/"
 xmlns:dcmiBox="http://dublincore.org/documents/2000/07/11/dcmi-box/"
 xmlns:ows="http://www.opengis.net/ows"
 >
-<xsl:output method="xml" version="1.0" encoding="ISO-8859-1" indent="yes" />
+<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:template match="/">
 		<GetCapabilitiesResponse>
 				<xsl:for-each select="//ows:Operation[@name='GetRecordById']//ows:Parameter[@name='outputSchema']/ows:Value">

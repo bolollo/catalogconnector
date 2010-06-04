@@ -2,9 +2,9 @@
  {
   "product":"catogc_server",
   "urlcatalog":"http://idee.unizar.es/csw/servlet/cswservlet",
-  "title":"Infraestructura de Datos Espaciales de España",
+  "title":"Infraestructura de Datos Espaciales de EspaÃ±a",
   "description":"IDEE metadata catalog",
-  "XMLencoding":"ISO-8859-1",
+  "XMLencoding":"UTF-8",
   "cswversion":"2.0.2",
   "name":"idee"
  },

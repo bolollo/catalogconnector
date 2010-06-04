@@ -5,7 +5,7 @@ xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
 xmlns:dct="http://purl.org/dc/terms/" 
 xmlns:gmd="http://www.isotc211.org/2005/gmd"
 xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <xsl:output method="xml" version="1.0" encoding="ISO-8859-1" indent="yes" />
+    <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:template match="/">
         <GetRecordsResponse>
             <xsl:for-each select="/csw:GetRecordsResponse/csw:SearchResults">
