@@ -125,8 +125,12 @@ import org.jdom.JDOMException;
 	/**
 	 * The full path of file service.xml. AP_PATH + XML_SERVICE_FILE;
 	 */
-	
 	String PROJECT="catalogues";
+	/**
+	 * The full path of the OpenSearch description document template
+	 */
+	String OPENSEARCH_DESCRIPTION_TEMPLATE="";
+	
 	public String PATH_SERVICE="";
 	public String XML_CATALOGUES_PROJECTS_FOLDER="";
 	public String PATH_PROJECTS="";
@@ -208,13 +212,12 @@ import org.jdom.JDOMException;
 								response.setContentType("text/xml;charset="+charset);
 								writer.write("<?xml version=\"1.0\" encoding=\""+charset+"\"?>");
 								writer.write(Capabilities.getCapabilitiesXML(PATH_PROJECTS + PROJECT+".xml", PATH_SERVICE));
-				}else
-				{
+				} else {
 					response.setContentType("text/json;charset="+charset);
 					writer.write(capabilitiesArray.toString());
 				}
 			}else if(methodRequest.equalsIgnoreCase("revalidate")){
-					validateRecords(capabilitiesArray);
+				validateRecords(capabilitiesArray);
 			}
 			//Here we process a request to get records
 			else if(methodRequest.equalsIgnoreCase("GetRecords")){
@@ -345,7 +348,41 @@ import org.jdom.JDOMException;
 					response.sendError(-1, "Transform failed for "+ cat);
 				}
 			}
-		else{
+			// Generates OpenSearch description documents
+			else if(methodRequest.equalsIgnoreCase("GetOpenSearchDescription")) {
+				String baseurl = request.getRequestURL().toString();
+				// No catalogues parameter => generate a list referencing all descriptionDocuments
+				if(!paramsRequest.containsKey("CATALOGUES")) {
+					// HTML response format
+					if(paramsRequest.containsKey("FORMAT") && paramsRequest.get("FORMAT").toString().equalsIgnoreCase("HTML")) {
+						response.setContentType("text/html");
+						for (int i=0; i<catalogs.length; i++){
+							String catname = catalogs[i].name;
+							String descriptionURL = baseurl + "?Request=" + methodRequest + "&Catalogues=" + catname;
+							writer.write("<link rel=\"search\" type=\"application/opensearchdescription+xml\" ");
+							writer.write("href=\"" + descriptionURL + "\" title=\"" + catname + " (CatalogConnector)\" />\r\n");
+						}
+					// Defaults to JSON response format
+					} else {
+						response.setContentType("text/json");
+						JSONArray jsonResponse = new JSONArray();
+						for (int i=0; i<catalogs.length; i++){
+							String catname = catalogs[i].name;
+							String descriptionURL = baseurl + "?Request=" + methodRequest + "&Catalogues=" + catname;
+							jsonResponse.element(descriptionURL);
+						}
+						writer.write(jsonResponse.toString());
+					}
+				// There is a 'catalogues' param. Generate a descriptionDocument.
+				} else {
+					response.setContentType("application/opensearchdescription+xml");
+					String descriptionTemplatePath = OPENSEARCH_DESCRIPTION_TEMPLATE;
+					String description = Utils.file2string(descriptionTemplatePath);
+					String catalogues = paramsRequest.get("CATALOGUES").toString();
+					writer.write(description.replaceAll("\\$CATALOGUES", catalogues).replaceAll("\\$BASEURL", baseurl));
+				}
+			}
+			else{
 				//interface not recognized
 				writer.write("Unknown interface");
 				logger.error("Unknown interface: Use GetCapabilities or GetRecords");
@@ -358,8 +395,6 @@ import org.jdom.JDOMException;
 		writer.close();
 	}
 
-	
-	
 	private void validateRecords(JSONArray capabilitiesArray) {
 		//start thread here that will run until all are validated but allows initial
 		//response to get back w/ out any delay
@@ -413,6 +448,8 @@ import org.jdom.JDOMException;
 		//PATH_CATALOGUES=AP_PATH + XML_CATALOGUES_FILE;
 		PATH_SERVICE=AP_PATH + XML_SERVICE_FILE;
 		PATH_PROJECTS=AP_PATH + XML_CATALOGUES_PROJECTS_FOLDER;
+		OPENSEARCH_DESCRIPTION_TEMPLATE=AP_PATH + getInitParameter("opensearch_description_template");
+		
 		String port = getInitParameter("proxyPort");
 		if (port != null){
 			PROXY_PORT = Integer.parseInt(port);

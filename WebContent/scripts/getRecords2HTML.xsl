@@ -8,26 +8,36 @@
     <title>CatalogConnector - GetRecords Response</title>
     <style type="text/css">
     	body {
-    		font-family: arial,sans-serif;
-    		font-size: 13px;
-    	}
+			font: 10px Verdana,Arial,Helvetica,sans-serif;
+		}
+		h3 {
+			font: bold 12px Verdana,Arial,Geneva,Helvetica,sans-serif;
+			text-transform: uppercase;
+			background-color: #ececff;
+			padding: 2px;
+			margin: 0px;
+		}
+		h2 {
+			font: bold 16px Verdana,Arial,Geneva,Helvetica,sans-serif;
+			text-transform: uppercase;
+			background-color: #ececff;
+			padding: 2px;
+			margin: 0px;			
+		}
         .catalogue {
-            border: 1px solid #0000cc;
-            padding: 10px;
-            margin: 10px;
-            background-color: #ddddff;
+			border: 3px solid #F2F2F2;
+			padding: 3px;
+			background-color: #f6f6f6;
         }
         .record {
-            border: 1px solid #cc0000;
-            padding: 10px;
-            margin: 10px;
-            background-color: #ffdddd;
-        }
-        .bbox, .id {
-            border: 1px solid #000000;
-            padding: 5px;
-            background-color: #dddddd;
-        }
+			border: 1px solid #F2F2F2;
+			padding: 3px;
+			margin: 3px;
+			background-color: #ffffff;
+		}
+		div.record:hover {
+			background-color:#B3D4EF;
+		}
     </style>
 </head>
 <body>
@@ -39,22 +49,22 @@
 <xsl:template match="Catalogue">
 	<div class="catalogue">
     <h2><xsl:value-of select="Id"/></h2>
-    <p class="querystring">Query String: <span><xsl:value-of select="QueryString"/></span></p>
-    <p class="results">Showing results <span> <xsl:value-of select="Position - GetRecordsResponse/numberOfRecordsReturned"/></span>
+    <p class="querystring"><b>QUERY:</b><span><xsl:value-of select="QueryString"/></span></p>
+    <p class="results">Showing results <b><span><xsl:value-of select="Position - GetRecordsResponse/numberOfRecordsReturned"/></span>
         - <span><xsl:value-of select="Position - 1"/></span> /
-        <span><xsl:value-of select="GetRecordsResponse/numberOfRecordsMatched"/></span>.</p>
+        <span><xsl:value-of select="GetRecordsResponse/numberOfRecordsMatched"/></span></b>.</p>
     <xsl:apply-templates select="GetRecordsResponse/Record"/>
     </div>
 </xsl:template>
 <xsl:template match="GetRecordsResponse/Record">
 	<div class="record">
     <h3><xsl:value-of select="title"/></h3>
-    <p><xsl:value-of select="description"/></p>
-    <p class="id">ID: <span><xsl:value-of select="identifier"/></span></p>
+    <p><span><b>DESCRIPTION:</b></span><xsl:value-of select="description"/></p>
+    <p class="id"><span><b>UUID:</b></span><span><xsl:value-of select="identifier"/></span></p>
     <xsl:apply-templates select="boundingBox[latlon=1]"/>
      </div>
 </xsl:template>
 <xsl:template match="boundingBox[latlon=1]">
-    <p class="bbox">BBOX: <span> <xsl:value-of  select="translate(lowerCorner,' ',',')"/>,<xsl:value-of  select="translate(upperCorner,' ',',')"/></span></p>
+    <p class="bbox"><span><b>BBOX:</b></span><span> <xsl:value-of  select="translate(lowerCorner,' ',',')"/>,<xsl:value-of  select="translate(upperCorner,' ',',')"/></span></p>
 </xsl:template>
 </xsl:stylesheet>

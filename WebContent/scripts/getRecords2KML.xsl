@@ -6,6 +6,15 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
     <name>CatalogConnector - GetRecords Response</name>
+    <Style id="tronja">
+		<LineStyle>
+			<color>ff0080ff</color>
+			<width>2</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>4c0080ff</color>
+		</PolyStyle>
+	</Style>
     <xsl:apply-templates select="Catalogue"/>
 </Document>
  </kml>
@@ -33,7 +42,8 @@
         <xsl:variable name="Xmin" select="substring-before(lowerCorner, ' ')"/>
         <xsl:variable name="Ymin" select="substring-after(lowerCorner, ' ')"/>
         <xsl:variable name="Xmax" select="substring-before(upperCorner, ' ')"/>
-        <xsl:variable name="Ymax" select="substring-after(upperCorner, ' ')"/>                    
+        <xsl:variable name="Ymax" select="substring-after(upperCorner, ' ')"/>
+        <styleUrl>#tronja</styleUrl>                    
         <Polygon>
         <outerBoundaryIs>
             <LinearRing>

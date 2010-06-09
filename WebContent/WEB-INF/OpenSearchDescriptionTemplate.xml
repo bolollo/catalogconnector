@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+		xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
+   <ShortName>$CATALOGUES (CatalogConnector)</ShortName>
+   <Description>Query $CATALOGUES catalog via CatalogConnector</Description>
+   <Tags>CSW Catalog Connector $CATALOGUES</Tags>
+   <Contact>idec@icc.cat</Contact>
+   <Developer>http://sourceforge.net/projects/catalogconnecto</Developer>
+   <SyndicationRight>open</SyndicationRight>
+   <AdultContent>false</AdultContent>
+   <Image height="32" width="32" type="image/x-icon">http://www.geoportal-idec.net/geoportal/cat/images/favicon.ico</Image>
+   <Image height="206" width="667" type="image/png">http://www.geoportal-idec.net/geoportal/cat/images/Catalog_connector.png</Image>
+
+   <Url type="text/json"
+        template="$BASEURL?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=JSON&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+   <Url type="text/xml"
+        template="$BASEURL?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=XML&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+   <Url type="application/atom+xml"
+        template="$BASEURL?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=ATOM&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+   <Url type="text/html"
+        template="$BASEURL?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=HTML&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+   <Url type="application/vnd.google-earth.kml+xml"
+        template="$BASEURL.kml?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=KML&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>
+
+</OpenSearchDescription>

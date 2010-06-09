@@ -3,7 +3,7 @@
  * http://www.geoportal-idec.cat
  * 
  * Copyright (c) 2009, Spatial Data Infrastructure of Catalonia (IDEC)
- * Institut Cartogràfic de Catalunya (ICC)
+ * Institut Cartogrï¿½fic de Catalunya (ICC)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -113,6 +113,11 @@ public class Utils {
 	public static String[] parseBBOX(String bboxRequest) {
 		String[] bbox = new String[4];
 		bbox = bboxRequest.split(",");
+		// Just fit bbox to its limits [-180,-90,180,90]
+		bbox[0] = Double.toString(Math.max(-180.0, Double.parseDouble(bbox[0])));
+		bbox[1] = Double.toString(Math.max(-90.0, Double.parseDouble(bbox[1])));
+		bbox[2] = Double.toString(Math.min(180.0, Double.parseDouble(bbox[2])));
+		bbox[3] = Double.toString(Math.min(90.0, Double.parseDouble(bbox[3])));
 		return bbox;
 	}
 

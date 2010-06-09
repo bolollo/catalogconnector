@@ -34,6 +34,10 @@
       <param-value>WEB-INF/projects/</param-value>
     </init-param> 
     
+    <init-param>
+      <param-name>opensearch_description_template</param-name>
+      <param-value>WEB-INF/OpenSearchDescriptionTemplate.xml</param-value>
+    </init-param>
     
     <init-param>
       <param-name>catalog_service</param-name>
@@ -94,6 +98,10 @@
 	<servlet-mapping>
 		<servlet-name>Connector</servlet-name>
 		<url-pattern>/Connector</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Connector</servlet-name>
+		<url-pattern>/Connector.kml</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>AdminConnector</servlet-name>

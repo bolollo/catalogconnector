@@ -1,4 +1,4 @@
- 	<!--
+<!--
  /*
  * CatalogConnector - OpenSource CSW client
  * http://www.geoportal-idec.cat
@@ -40,7 +40,9 @@
 <head>
 <title>CatalogConnector CSW Client</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="search" type="application/opensearchdescription+xml" href="OpenSearchDescription.xml" title="CatalogConnector" />
+<!-- OpenSearch autodiscovery sample mixing various catalogues
+<link rel="search" type="application/opensearchdescription+xml" href="Connector?Request=GetOpenSearchDescription&Catalogues=IDEC,IDEE,FAO" title="CatalogConnector" />
+ -->
 <link href="css/catalog.css" rel="stylesheet" type="text/css">
 <link href="css/ajaxpagination.css" rel="stylesheet" type="text/css"  />
 <!--Ajax Pagination Script- Author: Dynamic Drive (http://www.dynamicdrive.com)-->
@@ -243,10 +245,16 @@ function init(){
     panel.addControls([button]);
     map.addControl(panel);
     */
-    
 	
-    map.zoomToMaxExtent(); 
+    map.zoomToMaxExtent();
+
+	// OpenSearch: Dynamically load description document links to document head
+    OpenLayers.loadURL("Connector", "?Request=GetOpenSearchDescription&Format=HTML", this, onOpenSearchDescriptionsResponse);
+    function onOpenSearchDescriptionsResponse(response) {
+    	document.getElementsByTagName("head")[0].innerHTML += response.responseText;
+    }
 }
+
 
 
 function resetAllFields()
