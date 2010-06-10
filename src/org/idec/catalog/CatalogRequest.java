@@ -3,7 +3,7 @@
  * http://www.geoportal-idec.cat
  * 
  * Copyright (c) 2009, Spatial Data Infrastructure of Catalonia (IDEC)
- * Institut Cartogràfic de Catalunya (ICC)
+ * Institut Cartogrï¿½fic de Catalunya (ICC)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -260,4 +260,5 @@ public class CatalogRequest {
 
 		return cat;
 	}
+
 }

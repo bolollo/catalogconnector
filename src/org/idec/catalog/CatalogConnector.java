@@ -197,7 +197,7 @@ import org.jdom.JDOMException;
 		//Writer writer = response.getWriter();
 
 
-		Map paramsRequest = Utils.getParametersToMap(request);
+		HashMap<String, String> paramsRequest = Utils.getParametersToMap(request);
 		String resp="";
 		
 		boolean checkParams = paramsRequest.containsKey("REQUEST");
@@ -273,10 +273,12 @@ import org.jdom.JDOMException;
 
 					if(outputFormat.equals("XML")) { // Write directly
 						writer.write(xmlResponse);
-					} else { // Need to transform
+					} else { // Needs XSLT transform from XML to target format
 						String xslPath = AP_PATH+"/scripts/getRecords2"+outputFormat+".xsl";
 						try {
-							String transformedResponse = GetCapabilitiesXSL.Transform(xmlResponse, xslPath);
+							Catalog cat = getCatalogByName(paramsRequest.get("CATALOGUES").toString(), catalogs);
+							String selfURL = request.getRequestURL().toString();
+							String transformedResponse = GetRecordsXSL.Transform(xmlResponse, xslPath, cat, selfURL, paramsRequest, knownFormats);
 							writer.write(transformedResponse);
 						}catch (Exception e) {
 							e.printStackTrace();
@@ -464,10 +466,7 @@ import org.jdom.JDOMException;
 			logger.error("Problem fetching project.xml file. Make sure file exists");
 		} catch (IOException e) {
 			logger.error("Problem fetching project.xml file. Make sure file exists");
-		}
-		
-
-	
+		}	
 	}
 	
 	/* (non-Javadoc)
@@ -610,5 +609,15 @@ import org.jdom.JDOMException;
 			capabilitesMap.get(name).setFinishedLoadingSchemas(true);
 			return;
 		}
+	}
+		
+	private Catalog getCatalogByName(String catName, Catalog[] catalogs) {
+		Catalog catalog = null;
+		for (int i=0; i < catalogs.length && catalog == null; i++) {
+			if (catalogs[i].name.equalsIgnoreCase(catName)) {
+				catalog = catalogs[i];
+			}
+		}
+		return catalog;
 	}
 }

@@ -174,8 +174,8 @@ public class Utils {
 	 *            The servelt request
 	 * @return Map with the request parameters
 	 */
-	public static Map getParametersToMap(HttpServletRequest request) {
-		Map mapParameters = new HashMap();
+	public static HashMap<String, String> getParametersToMap(HttpServletRequest request) {
+		HashMap<String, String> mapParameters = new HashMap<String, String>();
 		String keyValue;
 		String parameterValue;
 		for (Enumeration enu = request.getParameterNames(); enu
