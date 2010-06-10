@@ -1,0 +1,90 @@
+html {
+	overflow: auto;
+}
+
+body {
+	margin: 0;
+	font-family: Helvetica, Verdana, Arial;
+	font-size: 12px;
+	overflow: hidden;
+}
+
+#map {
+	position: absolute;
+	top: 0;
+	left: 482px;
+	//height: 100%;
+	bottom: 0;
+	right: 0;
+	margin-bottom: 0;
+	background-color: black;
+	border: 1px solid black;
+	cursor: pointer;
+	z-index: 0;
+}
+
+#leftbar {
+	position: absolute;
+	//height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 480px;
+	border: 1px solid gray;
+	background-color: #CCCCCC;
+	overflow: auto;
+}
+
+.olControlOpenSearchTitle {
+
+}
+
+.olControlOpenSearchInput {
+
+}
+
+.olControlOpenSearchResults {
+	padding: 0px;
+	max-height: 250px;
+	overflow: auto;
+}
+
+.olControlOpenSearchItem {
+	border: 1px solid black;
+	margin-bottom: 3px;
+	font-size: 9px;
+}
+
+.olControlOpenSearchSelectedItem {
+	border: 1px solid #0000FF;
+	margin-bottom: 3px;
+	font-size: 9px;
+}
+
+.olControlOpenSearchSelectedItem .olControlOpenSearchItemAttributeName {
+	background-color: #0000FF;
+}
+
+.olControlOpenSearchSelectedItem .olControlOpenSearchItemAttributeValue {
+	background-color: #CCCCFF;
+}
+
+.olControlOpenSearchItemAttribute {
+	
+}
+
+.olControlOpenSearchItemAttributeName {
+	display: block;
+	background-color: #444444;
+	font-weight: bold;
+	font-style: italic;
+    color: #EEEEEE;
+}
+
+.olControlOpenSearchItemAttributeValue {
+	display: block;
+	background-color: #EEEEEE;
+	padding-left: 10px;
+    color: #444444;
+}
+
