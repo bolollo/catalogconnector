@@ -187,19 +187,20 @@ import org.jdom.JDOMException;
 
 		//Check to see if client accepts gzip compression
 		boolean doGZIP = false;
+		
+		HashMap<String, String> paramsRequest = Utils.getParametersToMap(request);
 		String aEncoding = request.getHeader("accept-encoding");
-		if((aEncoding != null && aEncoding.toLowerCase().contains("gzip"))){
+		
+		if(paramsRequest.containsKey("REQUEST") && paramsRequest.get("REQUEST").equalsIgnoreCase("GetOpenSearchDescription")) {
+			doGZIP = false;
+		} else if((aEncoding != null && aEncoding.toLowerCase().contains("gzip"))){
 			logger.debug("Gzip encoding is supported - Now using gzip encoding");
 			response.setHeader("Content-Encoding", "gzip");
 			doGZIP = true;
 		}
 		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response);
 		//Writer writer = response.getWriter();
-
-
-		HashMap<String, String> paramsRequest = Utils.getParametersToMap(request);
-		String resp="";
-		
+	
 		boolean checkParams = paramsRequest.containsKey("REQUEST");
 		if(checkParams){
 			String methodRequest=(String)paramsRequest.get("REQUEST");
@@ -353,6 +354,7 @@ import org.jdom.JDOMException;
 			// Generates OpenSearch description documents
 			else if(methodRequest.equalsIgnoreCase("GetOpenSearchDescription")) {
 				String baseurl = request.getRequestURL().toString();
+				if (!baseurl.endsWith("Connector")) baseurl += "Connector";
 				// No catalogues parameter => generate a list referencing all descriptionDocuments
 				if(!paramsRequest.containsKey("CATALOGUES")) {
 					// HTML response format

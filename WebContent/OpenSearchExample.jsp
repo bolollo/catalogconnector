@@ -1,9 +1,14 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 	<title>CatalogConnector and OpenLayers integration example (via OpenSearch)</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<link rel="stylesheet" href="css/opensearch-openlayers.css" type="text/css">
+	<link rel="stylesheet" href="css/opensearch-openlayers.css" type="text/css"><!-- Importing OpenSearch link autodiscovery tags -->
+	<c:import url="/Connector">
+		<c:param name="Request" value="GetOpenSearchDescription"/>
+		<c:param name="Format" value="HTML"/>
+	</c:import>
 	<script src="http://www.openlayers.org/api/OpenLayers.js" type="text/javascript"></script>
 	<script src="scripts/opensearch-openlayers/Format/Atom.js" type="text/javascript"></script>
 	<script src="scripts/opensearch-openlayers/Format/OpenSearchDescription.js" type="text/javascript"></script>
@@ -22,9 +27,9 @@
          * Layers *
          **********/
         var osmMapnik = new OpenLayers.Layer.OSM("OpenStreetMap - Mapnik", [
-	            "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-	            "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-	            "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+	            "http://a.tile.openstreetmap.org/\${z}/\${x}/\${y}.png",
+	            "http://b.tile.openstreetmap.org/\${z}/\${x}/\${y}.png",
+	            "http://c.tile.openstreetmap.org/\${z}/\${x}/\${y}.png"
 	        ], { transitionEffect : 'resize'});
 
         var layers = [osmMapnik];
@@ -66,14 +71,7 @@
         /**************
          * OpenSearch *
          **************/
-        OpenLayers.loadURL("Connector", "?Request=GetOpenSearchDescription&Format=HTML", this, onOpenSearchHTMLDescriptions);
         OpenLayers.loadURL("Connector", "?Request=GetOpenSearchDescription", this, onOpenSearchJSONDescriptions);
-
-        // Set autodiscovery tags, see:
-        // http://www.opensearch.org/Specifications/OpenSearch/1.1#Autodiscovery_in_HTML.2FXHTML
-        function onOpenSearchHTMLDescriptions(response) {
-        	document.getElementsByTagName("head")[0].innerHTML += response.responseText;
-        }
 
         // Add OpenSearch Control and load search engines
         function onOpenSearchJSONDescriptions(response) {

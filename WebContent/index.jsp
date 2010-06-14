@@ -35,6 +35,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
  -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html >
 <head>
@@ -52,13 +53,78 @@
 <script type="text/javascript" src="scripts/easytabs.js"></script>
 <script type="text/javascript" src="scripts/map.js"></script>
 <!-- EASY TABS 1.2 Produced and Copyright by Koller Juergen www.kollermedia.at -->
-
-
-
-
 <!--Ajax Pagination Script- Author: Dynamic Drive (http://www.dynamicdrive.com)-->
 <link rel="stylesheet" href="css/menu.css" TYPE="text/css" MEDIA="screen">
-<style type="text/css"></style>
+<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
+<!-- Importing OpenSearch link autodiscovery tags -->
+<c:import url="/Connector">
+  <c:param name="Request" value="GetOpenSearchDescription"/>  
+  <c:param name="Format" value="HTML"/>
+</c:import>
+<script type="text/javascript">
+var lon =  0;
+var lat =  0;
+var zoom = 0;
+var map, layer, boxes;
+
+function maxMap(){
+	loadwindow($(map),600,400);
+}
+
+var road = new OpenLayers.Layer.VirtualEarth("Road", { type: VEMapStyle.Road } );
+var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", { type: VEMapStyle.Shaded } );
+var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", { type: VEMapStyle.Aerial } );
+var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", { type: VEMapStyle.Hybrid } );
+function init(){
+    var lon = 5;
+    var lat = 40;
+    var zoom = 5;
+
+    map = new OpenLayers.Map('map');
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	map.addLayers([shaded,hybrid,road,aerial]);
+
+    boxes = new OpenLayers.Layer.Vector( "Bounding Box" );
+    map.addLayer(boxes);
+
+    /*
+    This is how we add expandable option to map
+    
+	vlayer = new OpenLayers.Layer.Vector( "Editable" );
+	map.addLayer(vlayer);
+
+    
+    var button = new OpenLayers.Control.Button({
+        displayClass: "MyButton",
+        title:"Toggle map size", 
+        trigger: function(){maxMap();}
+    });
+	
+    var panel = new OpenLayers.Control.Panel({defaultControl: button});
+    panel.addControls([button]);
+    map.addControl(panel);
+    */
+	
+    map.zoomToMaxExtent();
+
+}
+
+
+
+function resetAllFields()
+{
+	document.getElementById("chkallboxes").checked = false;
+	document.getElementById("chkbbox").checked = false;
+	document.getElementById("any").value = "";
+	document.getElementById("title").value = "";
+	document.getElementById("description").value = "";
+	document.getElementById("subject").value = "";
+	document.getElementById("organization").value = "";
+
+	document.getElementById("startPosition").value = "1";
+	document.getElementById("maxRecords").value = "10";
+}
+</script>
 </head>
 <body  onLoad="resetAllFields();getCapabilities();init();">
 <table width="99%" height="98%" align="center" border="1" cellspacing="0" cellpadding="1">
@@ -198,81 +264,4 @@
   </tr>
 </table>
 </body>
-
-
-<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
-<script type="text/javascript">
-var lon =  0;
-var lat =  0;
-var zoom = 0;
-var map, layer, boxes;
-
-function maxMap(){
-	loadwindow($(map),600,400);
-}
-
-var road = new OpenLayers.Layer.VirtualEarth("Road", { type: VEMapStyle.Road } );
-var shaded = new OpenLayers.Layer.VirtualEarth("Shaded", { type: VEMapStyle.Shaded } );
-var aerial = new OpenLayers.Layer.VirtualEarth("Aerial", { type: VEMapStyle.Aerial } );
-var hybrid = new OpenLayers.Layer.VirtualEarth("Hybrid", { type: VEMapStyle.Hybrid } );
-
-function init(){
-    var lon = 5;
-    var lat = 40;
-    var zoom = 5;
-
-    map = new OpenLayers.Map('map');
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.addLayers([shaded,hybrid,road,aerial]);
-
-    boxes = new OpenLayers.Layer.Vector( "Bounding Box" );
-    map.addLayer(boxes);
-
-    /*
-    This is how we add expandable option to map
-    
-	vlayer = new OpenLayers.Layer.Vector( "Editable" );
-	map.addLayer(vlayer);
-
-    
-    var button = new OpenLayers.Control.Button({
-        displayClass: "MyButton",
-        title:"Toggle map size", 
-        trigger: function(){maxMap();}
-    });
-	
-    var panel = new OpenLayers.Control.Panel({defaultControl: button});
-    panel.addControls([button]);
-    map.addControl(panel);
-    */
-	
-    map.zoomToMaxExtent();
-
-	// OpenSearch: Dynamically load description document links to document head
-    OpenLayers.loadURL("Connector", "?Request=GetOpenSearchDescription&Format=HTML", this, onOpenSearchDescriptionsResponse);
-    function onOpenSearchDescriptionsResponse(response) {
-    	document.getElementsByTagName("head")[0].innerHTML += response.responseText;
-    }
-}
-
-
-
-function resetAllFields()
-{
-	document.getElementById("chkallboxes").checked = false;
-	document.getElementById("chkbbox").checked = false;
-	document.getElementById("any").value = "";
-	document.getElementById("title").value = "";
-	document.getElementById("description").value = "";
-	document.getElementById("subject").value = "";
-	document.getElementById("organization").value = "";
-
-	document.getElementById("startPosition").value = "1";
-	document.getElementById("maxRecords").value = "10";
-}
-
-
-</script>
-
-
 </html>
