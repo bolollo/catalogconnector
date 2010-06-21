@@ -10,6 +10,8 @@
    <AdultContent>false</AdultContent>
    <Image height="32" width="32" type="image/x-icon">http://www.geoportal-idec.net/geoportal/cat/images/favicon.ico</Image>
    <Image height="206" width="667" type="image/png">http://www.geoportal-idec.net/geoportal/cat/images/Catalog_connector.png</Image>
+   <OutputEncoding>UTF-8</OutputEncoding>
+   <InputEncoding>UTF-8</InputEncoding>
 
    <Url type="text/json"
         template="$BASEURL?Request=GetRecords&amp;Project=catalogues&amp;outputFormat=JSON&amp;catalogues=$CATALOGUES&amp;any={searchTerms}&amp;maxRecords={count?}&amp;startPosition={startIndex?}&amp;bbox={geo:box?}"/>

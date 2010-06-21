@@ -198,7 +198,7 @@ import org.jdom.JDOMException;
 			response.setHeader("Content-Encoding", "gzip");
 			doGZIP = true;
 		}
-		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response);
+		OutStreamWrapper writer = new OutStreamWrapper(doGZIP,response,charset);
 		//Writer writer = response.getWriter();
 	
 		boolean checkParams = paramsRequest.containsKey("REQUEST");
@@ -478,18 +478,17 @@ import org.jdom.JDOMException;
 		// TODO Auto-generated method stub
 		return super.toString();
 	}
-
-
-	
 	
 	//This class is a facade to either PrintWriter or GZIPOutputStream
 	private class OutStreamWrapper{
 		private PrintWriter pw;
 		private GZIPOutputStream gz;
 		private boolean doGZIP;
+		private String encoding;
 		
-		public OutStreamWrapper(boolean isGZIPEnabled, HttpServletResponse response) throws IOException{
+		public OutStreamWrapper(boolean isGZIPEnabled, HttpServletResponse response, String encoding) throws IOException{
 			doGZIP = isGZIPEnabled;
+			this.encoding = encoding;
 
 			if(doGZIP){
 				gz=new GZIPOutputStream(response.getOutputStream());
@@ -500,7 +499,7 @@ import org.jdom.JDOMException;
 
 		public void write(String s) throws IOException{
 			if(doGZIP){
-				gz.write(s.getBytes());
+				gz.write(s.getBytes(encoding));
 			}else{
 				pw.write(s);
 			}
@@ -508,7 +507,7 @@ import org.jdom.JDOMException;
 
 		public void writeln(String s) throws IOException{
 			if(doGZIP){
-				gz.write((s+"\n").getBytes());
+				gz.write((s+"\n").getBytes(encoding));
 			}else{
 				pw.write(s+"\n");
 			}
