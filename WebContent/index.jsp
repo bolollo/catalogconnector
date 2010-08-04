@@ -136,7 +136,7 @@ function resetAllFields()
             </div>
             <div id="cc-logo">
             	<img src="images/header/logo_idec.jpg" width="152" height="50" alt="IDEC Logo" border="0">&nbsp;
-            	<img src="images/header/logo_azgs.png" width="50" height="50" alt="AZGS Logo" border="0">
+            	<img src="images/header/logo_usgin.png" width="50" height="50" alt="USGIN Logo" border="0">
             </div>
         </div>
 	</td>
