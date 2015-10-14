@@ -8,3 +8,6 @@ It is a Client Application developed in Java that sends simultaneous OGC CSW req
 
 ##License
 BSD License
+
+###Old repo
+http://sourceforge.net/projects/catalogconnecto/
